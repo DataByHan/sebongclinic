@@ -79,6 +79,12 @@ const notices = [
   },
 ];
 
+export function generateStaticParams() {
+  return notices.map((notice) => ({
+    id: notice.id.toString(),
+  }));
+}
+
 export default function NoticeDetailPage({ params }: { params: { id: string } }) {
   const notice = notices.find((n) => n.id === parseInt(params.id));
 
