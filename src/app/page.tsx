@@ -183,7 +183,7 @@ export default function HomePage() {
                         <img
                           src={s.image}
                           alt={s.title}
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover opacity-95"
                         />
                       </div>
                     )}
