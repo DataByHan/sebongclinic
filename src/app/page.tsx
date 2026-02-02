@@ -177,12 +177,23 @@ export default function HomePage() {
             <div className="mt-10 grid gap-4 lg:grid-cols-3">
               {site.specialties.map((s, idx) => (
                 <Reveal key={s.title} delayMs={idx * 90}>
-                  <div className="flat-card p-7">
-                    <div>
-                      <div className="type-serif text-2xl tracking-tight">{s.title}</div>
-                      <div className="mt-2 text-sm text-[color:var(--muted)]">{s.subtitle}</div>
+                  <div className="flat-card overflow-hidden p-0">
+                    {s.image && (
+                      <div className="relative aspect-[5/3] overflow-hidden bg-[color:var(--paper-2)]">
+                        <img
+                          src={s.image}
+                          alt={s.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="p-7">
+                      <div>
+                        <div className="type-serif text-2xl tracking-tight">{s.title}</div>
+                        <div className="mt-2 text-sm text-[color:var(--muted)]">{s.subtitle}</div>
+                      </div>
+                      <p className="mt-6 text-sm leading-relaxed text-[color:var(--muted)]">{s.description}</p>
                     </div>
-                    <p className="mt-6 text-sm leading-relaxed text-[color:var(--muted)]">{s.description}</p>
                   </div>
                 </Reveal>
               ))}

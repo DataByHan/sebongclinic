@@ -3,6 +3,7 @@ export type Specialty = {
   subtitle: string
   href: string
   description: string
+  image?: string
 }
 
 export type ExternalLink = {
@@ -24,6 +25,7 @@ export const site = {
       href: 'https://seoulgongmyung.com/product02',
       description:
         '일상에서 흐트러진 리듬을 회복하고, 장기적인 체력 기반을 다지는 처방을 목표로 합니다.',
+      image: '/img/dan.jpg',
     },
     {
       title: '척추치료',
@@ -31,6 +33,7 @@ export const site = {
       href: 'https://jangdeuk.com/menu02/menu02_04_01.php',
       description:
         '척추와 주변 조직의 균형을 점검하고, 움직임을 방해하는 긴장을 단계적으로 풀어갑니다.',
+      image: '/img/chim.jpg',
     },
     {
       title: '총명탕',
@@ -38,6 +41,7 @@ export const site = {
       href: 'https://www.xn--299at5mi2e3rootax68d.com/kr/index.php?pCode=MN1000108',
       description:
         '공부와 일의 집중력을 해치지 않도록 컨디션을 정돈하고, 흐릿한 피로감을 가볍게 합니다.',
+      image: '/img/tang.jpg',
     },
   ] satisfies Specialty[],
   externalLinks: [
