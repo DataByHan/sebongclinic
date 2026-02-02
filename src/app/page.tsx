@@ -2,30 +2,36 @@ import Link from 'next/link'
 
 const heroHighlights = [
   '형상의학 전문 클리닉',
-  '한의학박사 직접 진료',
+  '한의학박사 김형규 원장 진료',
   '침 · 뜸 · 부항 · 추나 · 한약 통합 케어',
 ]
 
 const serviceCards = [
-  { icon: '🪡', title: '침 치료', desc: '신경·근육 통증 완화, 기혈 순환 개선' },
-  { icon: '🔥', title: '뜸 치료', desc: '체온 상승, 면역 강화, 냉증 개선' },
-  { icon: '🥛', title: '부항 치료', desc: '혈액 순환 촉진, 노폐물 배출' },
-  { icon: '🤲', title: '추나 요법', desc: '척추·관절 정렬, 자세 교정' },
-  { icon: '🌿', title: '한약 처방', desc: '체질 맞춤 한약으로 근본 개선' },
-  { icon: '🛡️', title: '예방 케어', desc: '형상의학 기반 조기 예측 및 예방' },
+  { title: '침 치료', desc: '신경·근육 통증 완화, 기혈 순환 개선' },
+  { title: '뜸 치료', desc: '체온 상승, 면역 강화, 냉증 개선' },
+  { title: '부항 치료', desc: '혈액 순환 촉진, 노폐물 배출' },
+  { title: '추나 요법', desc: '척추·관절 정렬, 자세 교정' },
+  { title: '한약 처방', desc: '체질 맞춤 한약으로 근본 개선' },
+  { title: '예방 케어', desc: '형상의학 기반 조기 예측 및 예방' },
 ]
 
 const approachSteps = [
-  { title: '정밀 형상 진단', detail: '얼굴·체형·피부 신호를 섬세하게 읽어 장기 상태를 파악합니다.' },
-  { title: '맞춤 통합 처방', detail: '침·뜸·부항·추나·한약을 개인별로 조합한 치료 계획을 설계합니다.' },
-  { title: '회복 & 관리', detail: '생활 코칭과 예방 케어로 재발을 줄이고 체질을 관리합니다.' },
+  { title: '형상의학 진단', detail: '얼굴·체형·피부 신호를 정밀 분석해 장기의 균형과 징후를 읽습니다.' },
+  { title: '통합 처방', detail: '침·뜸·부항·추나·한약을 개인별로 조합해 회복 경로를 설계합니다.' },
+  { title: '예방 관리', detail: '생활 코칭과 예방 중심 관리로 재발을 줄이고 체질을 관리합니다.' },
 ]
 
 const doctor = {
   name: '김형규',
   role: '원장 / 한의학박사',
-  bio: '대한전통한의학회 형상학회 정회원. 형상의학 기반 진단과 맞춤 처방으로 체계적 케어를 제공합니다.',
+  bio: '대한전통한의학회 형상학회 정회원. 형상의학 기반 맞춤 진단·처방으로 체계적 케어를 제공합니다.',
 }
+
+const links = [
+  { label: '부산일보 기사', href: 'https://www.busan.com/view/busan/view.php?code=20050308000083' },
+  { label: '저서/저자 소개', href: 'https://www.aladin.co.kr/author/wauthor_overview.aspx?authorsearch=@106533&srsltid=afmboopoqe6ghm1g3qt4xdp0qzl38s60mzi3wmkqi3r1mrvjv9vrmimb' },
+  { label: '네이버 블로그 후기', href: 'https://blog.naver.com/zxchhi/223858411549' },
+]
 
 const notices = [
   { id: 1, title: '추석 연휴 진료 안내', date: '2024.09.10', snippet: '9/16~18 휴진, 19일부터 정상 진료' },
@@ -115,9 +121,6 @@ export default function HomePage() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {serviceCards.map((item) => (
                 <article key={item.title} className="card p-7 bg-white hover:-translate-y-1">
-                  <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-xl mb-4 text-primary-800">
-                    {item.icon}
-                  </div>
                   <h3 className="text-xl font-bold text-primary-800 mb-2">{item.title}</h3>
                   <p className="text-text-600 leading-relaxed">{item.desc}</p>
                 </article>
@@ -143,6 +146,31 @@ export default function HomePage() {
                   <h3 className="text-xl font-bold text-primary-800 mb-2">{step.title}</h3>
                   <p className="text-text-600 leading-relaxed">{step.detail}</p>
                 </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Links / Media */}
+        <section className="py-18 lg:py-20 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="space-y-2 text-center">
+              <p className="text-sm font-semibold text-primary-600">MEDIA & LINKS</p>
+              <h2 className="text-3xl font-bold text-primary-900">세봉한의원 관련 소식</h2>
+              <p className="text-text-600">언론·저서·블로그 후기를 통해 세봉한의원을 만나보세요.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {links.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="card p-5 bg-white hover:-translate-y-1 transition-transform duration-200 text-primary-800"
+                >
+                  <div className="text-sm text-text-500 mb-2">바로가기</div>
+                  <div className="font-semibold">{link.label}</div>
+                </a>
               ))}
             </div>
           </div>
