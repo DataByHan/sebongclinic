@@ -19,15 +19,29 @@ function loadKakaoScript(appKey: string): Promise<void> {
 
     const existing = document.querySelector<HTMLScriptElement>('script[src*="dapi.kakao.com"]')
     if (existing) {
-      existing.addEventListener('load', () => resolve())
-      existing.addEventListener('error', () => reject(new Error('Failed to load Kakao SDK')))
+      const waitForLoad = () => {
+        if (window.kakao?.maps) {
+          resolve()
+        } else {
+          setTimeout(waitForLoad, 100)
+        }
+      }
+      waitForLoad()
       return
     }
 
     const script = document.createElement('script')
     script.type = 'text/javascript'
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&libraries=services`
-    script.onload = () => resolve()
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false&libraries=services`
+    script.onload = () => {
+      if (window.kakao?.maps?.load) {
+        window.kakao.maps.load(() => {
+          resolve()
+        })
+      } else {
+        reject(new Error('Kakao Maps SDK not initialized'))
+      }
+    }
     script.onerror = () => reject(new Error('Failed to load Kakao SDK'))
     document.head.appendChild(script)
   })
@@ -48,20 +62,7 @@ export default function KakaoMap({ appKey, address, className }: KakaoMapProps) 
       try {
         setState('loading')
         await loadKakaoScript(appKey)
-
-        const waitForInitialization = () =>
-          new Promise<void>((resolve, reject) => {
-            const startedAt = Date.now()
-            const tick = () => {
-              if (cancelled) return
-              if (window.kakao?.maps?.LatLng) return resolve()
-              if (Date.now() - startedAt > 15000) return reject(new Error('Kakao Maps SDK initialization timeout'))
-              window.setTimeout(tick, 100)
-            }
-            tick()
-          })
-
-        await waitForInitialization()
+        
         if (cancelled) return
         if (!window.kakao?.maps) {
           setState('error')
