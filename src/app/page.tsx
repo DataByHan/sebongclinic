@@ -117,23 +117,21 @@ export default function HomePage() {
                 <div className="space-y-6">
                   <div className="flat-chip">의료진 소개</div>
                   <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">{site.doctorName} 원장</h2>
-                  <p className="text-[color:var(--muted)] leading-relaxed">
-                    빠른 결론보다 충분한 관찰을 우선합니다. 설명 가능한 진료, 기록으로 남는 치료,
-                    환자가 이해하는 계획을 지향합니다.
-                  </p>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {[
-                      { t: '상담', d: '증상/생활/패턴을 함께 정리' },
-                      { t: '진단', d: '몸의 균형과 흐름을 체크' },
-                      { t: '치료', d: '맞춤 처방으로 단계적 회복' },
-                      { t: '관리', d: '재발을 줄이는 루틴 설계' },
-                    ].map((c) => (
-                      <div key={c.t} className="flat-card p-5">
-                        <div className="text-sm font-semibold">{c.t}</div>
-                        <div className="mt-2 text-sm text-[color:var(--muted)]">{c.d}</div>
-                      </div>
-                    ))}
+                  <div className="space-y-4 text-[color:var(--muted)] leading-relaxed">
+                    <p>
+                      빠른 결론보다 충분한 관찰을 우선합니다. 
+                      증상만 보는 것이 아니라, 그 증상이 생긴 흐름을 함께 봅니다.
+                    </p>
+                    <p>
+                      한의학은 몸 안의 리듬을 읽는 작업입니다. 
+                      무너진 균형을 다시 세우고, 일상으로 돌아갈 힘을 회복시키는 것.
+                      그것이 세봉이 집중하는 방향입니다.
+                    </p>
+                    <p>
+                      과장된 약속 대신, 환자가 스스로 이해할 수 있는 설명을 드립니다.
+                      기록으로 남는 치료, 재발을 줄이는 관리 계획까지.
+                      단순한 처방이 아니라, &ldquo;회복의 과정&rdquo;을 함께 설계합니다.
+                    </p>
                   </div>
                 </div>
               </Reveal>
