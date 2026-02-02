@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 const heroHighlights = [
   '형상의학 전문 클리닉',
@@ -37,9 +35,7 @@ const notices = [
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-text-900">
-      <Header />
-
+    <div className="bg-white text-text-900">
       <main>
         <section id="hero" className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white py-20 lg:py-28">
           <div className="absolute inset-0 pointer-events-none">
@@ -230,8 +226,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   )
 }
