@@ -46,11 +46,11 @@ export default function HomePage() {
         {/* Hero */}
         <section
           id="hero"
-          className="relative overflow-hidden bg-white text-primary-900 py-16 lg:py-24"
+          className="relative overflow-hidden bg-gradient-to-b from-white via-primary-50/60 to-white text-primary-900 py-18 lg:py-24"
         >
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-28 -left-24 w-80 h-80 bg-primary-100/70 blur-3xl" />
-            <div className="absolute top-12 right-0 w-72 h-72 bg-secondary-100/50 blur-3xl" />
+            <div className="absolute -top-28 -left-24 w-80 h-80 bg-primary-100/60 blur-3xl" />
+            <div className="absolute top-12 right-0 w-72 h-72 bg-secondary-50/50 blur-3xl" />
           </div>
 
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
@@ -68,7 +68,7 @@ export default function HomePage() {
                 <Link href="/#services" className="btn-primary text-center">
                   진료 과목 보기
                 </Link>
-                <a href="tel:051-623-7227" className="btn-secondary text-center">
+                <a href="tel:051-623-7227" className="btn-secondary text-center border border-primary-200 text-primary-800 bg-white">
                   전화 예약
                 </a>
               </div>
@@ -84,7 +84,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="bg-white/85 backdrop-blur rounded-3xl shadow-strong p-8 border border-accent-200 space-y-6">
+            <div className="bg-white/90 backdrop-blur rounded-3xl shadow-strong p-8 border border-accent-200 space-y-6">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl bg-primary-50 text-primary-800 flex items-center justify-center text-3xl shadow-soft">
                   👨‍⚕️
