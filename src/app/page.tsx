@@ -53,65 +53,33 @@ export default function HomePage() {
             <div className="absolute top-12 right-0 w-72 h-72 bg-secondary-50/50 blur-3xl" />
           </div>
 
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 text-sm font-semibold">
-                형상의학 전문 한의원 · 부산 수영구
-              </p>
-              <h1 className="text-4xl lg:text-5xl font-bold leading-tight text-primary-900">
-                세봉한의원
-                <span className="block text-text-600 text-lg mt-3 font-normal">
-                  몸의 형상에서 건강을 읽고, 맞춤 치료로 회복을 설계합니다.
-                </span>
-              </h1>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/#services" className="btn-primary text-center">
-                  진료 과목 보기
-                </Link>
-                <a href="tel:051-623-7227" className="btn-secondary text-center border border-primary-200 text-primary-800 bg-white">
-                  전화 예약
-                </a>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-primary-800">
-                {heroHighlights.map((item) => (
-                  <div
-                    key={item}
-                    className="rounded-xl border border-accent-200 bg-white px-4 py-3 shadow-soft"
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
+          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            <p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 text-sm font-semibold">
+              형상의학 전문 한의원 · 부산 수영구
+            </p>
+            <h1 className="text-4xl lg:text-5xl font-bold leading-tight text-primary-900">
+              세봉한의원
+            </h1>
+            <p className="text-text-600 text-lg max-w-3xl mx-auto leading-relaxed">
+              얼굴·체형·피부의 신호를 읽어 통증 완화부터 체질 개선, 예방까지 설계합니다. 침·뜸·부항·추나·한약을 통합한 맞춤 케어를 제공합니다.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link href="/#services" className="btn-primary text-center">
+                진료 과목 보기
+              </Link>
+              <a href="tel:051-623-7227" className="btn-secondary text-center border border-primary-200 text-primary-800 bg-white">
+                전화 예약
+              </a>
             </div>
-
-            <div className="bg-white/85 backdrop-blur rounded-3xl shadow-strong p-8 border border-accent-200 space-y-5">
-              <div className="space-y-2">
-                <p className="text-sm font-semibold text-primary-600">세봉(世奉)한의원</p>
-                <h3 className="text-2xl font-bold text-primary-900">형상의학으로 건강을 읽습니다</h3>
-                <p className="text-text-600 leading-relaxed">
-                  얼굴·체형·피부 신호를 섬세히 분석해 통증 완화부터 체질 개선, 예방까지 한 번에 설계합니다.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-primary-800">
-                <div className="rounded-xl bg-primary-50 p-3">형상의학 정밀 진단</div>
-                <div className="rounded-xl bg-primary-50 p-3">침·뜸·부항·추나 통합</div>
-                <div className="rounded-xl bg-primary-50 p-3">체질 맞춤 한약 처방</div>
-                <div className="rounded-xl bg-primary-50 p-3">예방 중심 생활 코칭</div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <a
-                  href="tel:051-623-7227"
-                  className="btn-primary text-center"
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-primary-800">
+              {heroHighlights.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-xl border border-accent-200 bg-white px-4 py-3 shadow-soft"
                 >
-                  전화 예약 051-623-7227
-                </a>
-                <Link
-                  href="/#location"
-                  className="btn-secondary text-center border border-primary-200 text-primary-800 bg-white"
-                >
-                  오시는 길
-                </Link>
-              </div>
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
         </section>
