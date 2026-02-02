@@ -84,22 +84,33 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="bg-white/90 backdrop-blur rounded-3xl shadow-strong p-8 border border-accent-200 space-y-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-primary-50 text-primary-800 flex items-center justify-center text-3xl shadow-soft">
-                  👨‍⚕️
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-primary-900">{doctor.name}</h3>
-                  <p className="text-text-600">{doctor.role}</p>
-                </div>
+            <div className="bg-white/85 backdrop-blur rounded-3xl shadow-strong p-8 border border-accent-200 space-y-5">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-primary-600">세봉(世奉)한의원</p>
+                <h3 className="text-2xl font-bold text-primary-900">형상의학으로 건강을 읽습니다</h3>
+                <p className="text-text-600 leading-relaxed">
+                  얼굴·체형·피부 신호를 섬세히 분석해 통증 완화부터 체질 개선, 예방까지 한 번에 설계합니다.
+                </p>
               </div>
-              <p className="text-text-600 leading-relaxed">{doctor.bio}</p>
-              <div className="grid grid-cols-2 gap-3 text-sm text-primary-800">
-                <div className="rounded-xl bg-primary-50 p-3">형상의학 진단</div>
-                <div className="rounded-xl bg-primary-50 p-3">체질 맞춤 처방</div>
-                <div className="rounded-xl bg-primary-50 p-3">예방 중심 케어</div>
-                <div className="rounded-xl bg-primary-50 p-3">생활 코칭</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-primary-800">
+                <div className="rounded-xl bg-primary-50 p-3">형상의학 정밀 진단</div>
+                <div className="rounded-xl bg-primary-50 p-3">침·뜸·부항·추나 통합</div>
+                <div className="rounded-xl bg-primary-50 p-3">체질 맞춤 한약 처방</div>
+                <div className="rounded-xl bg-primary-50 p-3">예방 중심 생활 코칭</div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a
+                  href="tel:051-623-7227"
+                  className="btn-primary text-center"
+                >
+                  전화 예약 051-623-7227
+                </a>
+                <Link
+                  href="/#location"
+                  className="btn-secondary text-center border border-primary-200 text-primary-800 bg-white"
+                >
+                  오시는 길
+                </Link>
               </div>
             </div>
           </div>
