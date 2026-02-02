@@ -1,301 +1,251 @@
-import Link from 'next/link';
+import Link from 'next/link'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
-export default function Home() {
-  const features = [
-    {
-      icon: '👁️',
-      title: '형상 진단',
-      description: '얼굴과 체형으로 오장육부 상태를 정밀하게 분석하여 질병의 근본 원인을 파악합니다.',
-      gradient: 'from-emerald-400 to-teal-500',
-    },
-    {
-      icon: '🌿',
-      title: '맞춤 치료',
-      description: '개인별 체질과 증상에 맞춘 한방 치료로 자연스러운 회복을 유도합니다.',
-      gradient: 'from-green-400 to-emerald-500',
-    },
-    {
-      icon: '🛡️',
-      title: '예방 의학',
-      description: '질병 발생 전에 미리 예방하여 건강한 삶을 유지할 수 있도록 돕습니다.',
-      gradient: 'from-teal-400 to-cyan-500',
-    },
-  ];
+const features = [
+  {
+    title: '형상의학 진단',
+    description: '얼굴과 체형의 형상을 읽어 몸속 장기의 균형을 파악하고, 실질적 치료 포인트를 제시합니다.',
+  },
+  {
+    title: '맞춤 치료',
+    description: '개인 체질과 증상에 맞춰 침/뜸/부항/한약을 연결한 토털 티어진요법을 설계합니다.',
+  },
+  {
+    title: '예방 의학',
+    description: '형상의학 기반 신호를 분석해 위험 징후를 조기 발견하고, 질병을 막습니다.',
+  },
+]
 
-  const treatments = [
-    { icon: '📍', title: '침 치료', desc: '통증 완화와 기혈 순환 개선' },
-    { icon: '🔥', title: '뜸 치료', desc: '체온 상승과 면역력 강화' },
-    { icon: '🥛', title: '부항 치료', desc: '혈액 순환과 독소 배출' },
-    { icon: '🌿', title: '한약 처방', desc: '개인별 맞춤 한방 처방' },
-  ];
+const treatments = [
+  { icon: '📍', title: '침 치료', detail: '통증 완화와 기혈 흐름 회복', duration: '30분~45분' },
+  { icon: '🔥', title: '뜸 치료', detail: '체온 상승 및 면역 강화', duration: '20분' },
+  { icon: '🥛', title: '부항 치료', detail: '혈액 순환과 독소 배출 촉진', duration: '15분~25분' },
+  { icon: '🤝', title: '추나 요법', detail: '척추와 관절 정렬, 자세 교정', duration: '20분~40분' },
+  { icon: '🌿', title: '한약 처방', detail: '체질 맞춤 한약으로 근본 체질 개선', duration: '처방마다 상이' },
+]
 
+const notices = [
+  {
+    id: 1,
+    title: '2024년 추석 연휴 진료 안내',
+    date: '2024.09.10',
+    snippet: '추석 연휴 기간 16~18일 휴진, 19일부터 정상 진료합니다.',
+  },
+  {
+    id: 2,
+    title: '형상의학 건강강좌 개최',
+    date: '2024.08.15',
+    snippet: '세봉한의원에서 형상의학 자가 진단 강좌를 무료로 진행합니다.',
+  },
+  {
+    id: 3,
+    title: '가을철 건강관리 수칙',
+    date: '2024.08.01',
+    snippet: '건조한 가을, 충분한 수분과 스트레칭을 통해 기혈 순환을 유지하세요.',
+  },
+]
+
+const doctors = [
+  {
+    name: '김형규',
+    title: '원장 / 한의학박사',
+    bio: '대한전통한의학회 형상학회 소속, 형상의학 구체적 진단법을 임상에 적용합니다.',
+  },
+]
+
+export default function HomePage() {
   return (
-    <div className="min-h-screen">
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-20 lg:py-32">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-200/20 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary-200/20 rounded-full blur-3xl" />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-in">
-              <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-primary-100 text-primary-700 text-sm font-medium mb-6">
-                <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
-                <span>형상의학 전문 한의원</span>
-              </div>
-              
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-primary-900 leading-tight mb-6">
-                <span className="block">세봉한의원</span>
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
-                  몸의 형상으로
-                </span>
-                <span className="block text-primary-600">건강을 읽다</span>
-              </h1>
-              
-              <p className="text-lg lg:text-xl text-text-600 mb-8 leading-relaxed max-w-xl">
-                김형규 원장 (한의학박사)이 직접 진단하고 치료합니다. 
-                전통 한의학의 지혜를 현대적으로 해석하여 환자 한 분 한 분에게 
-                맞춤 치료를 제공합니다.
-              </p>
+    <div className="bg-white text-text-900 min-h-screen">
+      <Header />
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/treatment"
-                  className="btn-primary text-center"
-                >
-                  진료 안내 보기
-                </Link>
-                <a
-                  href="tel:051-623-7227"
-                  className="btn-secondary text-center"
-                >
-                  전화 예약하기
-                </a>
-              </div>
-
-              <div className="mt-10 flex items-center gap-6 text-sm text-text-500">
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span>한의학박사</span>
+      <main>
+        <section id="hero" className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-20 lg:py-28">
+          <div className="absolute inset-0 opacity-40 pointer-events-none">
+            <div className="absolute top-0 -right-16 w-72 h-72 rounded-full bg-primary-200 blur-3xl" />
+            <div className="absolute bottom-0 -left-16 w-64 h-64 rounded-full bg-secondary-200 blur-3xl" />
+          </div>
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 text-primary-600 text-sm font-medium">
+                  <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
+                  부산 수영구 형상의학 전문
+                </p>
+                <h1 className="text-4xl lg:text-5xl font-bold text-primary-900 leading-tight">
+                  세봉한의원
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
+                    몸의 형상에서 건강을 읽다
+                  </span>
+                </h1>
+                <p className="text-lg text-text-600 max-w-2xl leading-relaxed">
+                  김형규 원장 (한의학박사)이 전통 지식을 현대적으로 재정의하여 환자 한 분에게 맞춘 진료를 제공합니다.
+                  최신 형상의학 진단과 정밀한 한방 치료 계획으로 회복을 이끌어냅니다.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/#treatment" className="btn-primary text-center">
+                    치료 안내 보기
+                  </Link>
+                  <a href="tel:051-623-7227" className="btn-secondary text-center">
+                    전화 예약하기
+                  </a>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-secondary-100 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                <div className="flex flex-wrap gap-6 text-sm text-text-500">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-primary-600" />
+                    한의학박사 직접 진료
                   </div>
-                  <span>형상의학 전문</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-secondary-500" />
+                    형상의학 기반 진단 기법
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="relative animate-slide-up lg:block hidden">
-              <div className="relative bg-white rounded-3xl shadow-floating p-8 overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-full -translate-y-1/2 translate-x-1/2" />
-                
-                <div className="text-center mb-8">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-glow">
-                    <span className="text-5xl">👨‍⚕️</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-primary-800">김형규</h3>
-                  <p className="text-primary-600 font-medium">원장 / 한의학박사</p>
+              <div className="rounded-[2.5rem] bg-white shadow-floating p-8 relative">
+                <div className="bg-primary-900 text-white text-center rounded-3xl p-8">
+                  <p className="uppercase tracking-[0.2em] text-xs font-semibold text-primary-100/80">대표 원장</p>
+                  <p className="text-5xl my-3">👨‍⚕️</p>
+                  <h2 className="text-2xl font-bold">김형규</h2>
+                  <p className="text-sm text-primary-100">형상의학 전문 한의사</p>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-4 rounded-xl bg-primary-50">
-                    <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center text-xl">🎓</div>
-                    <div>
-                      <p className="text-sm text-text-500">전문 분야</p>
-                      <p className="font-semibold text-primary-800">형상의학 (形象醫學)</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary-50">
-                    <div className="w-10 h-10 rounded-lg bg-secondary-100 flex items-center justify-center text-xl">📚</div>
-                    <div>
-                      <p className="text-sm text-text-500">학회 활동</p>
-                      <p className="font-semibold text-secondary-800">대한전통한의학회 회원</p>
-                    </div>
-                  </div>
+                <div className="mt-8 space-y-4 text-sm text-text-600">
+                  <p>대한전통한의학회 형상학회 정회원</p>
+                  <p>내상병에 대한 형상의학적 치료 임상 사례 다수</p>
+                  <p>부산 지역 맞춤형 진료 시스템 운영</p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="py-20 lg:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-primary-900 mb-4">
-              세봉한의원의 진료 철학
-            </h2>
-            <p className="text-lg text-text-600 max-w-2xl mx-auto">
-              전통 한의학의 깊은 지혜를 현대적 방법으로 해석하여<br className="hidden lg:block" />
-              환자분들에게 최상의 치료 결과를 드리겠습니다.
+        <section id="philosophy" className="py-20 lg:py-28 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p className="text-sm uppercase tracking-[0.5em] text-primary-500 font-semibold mb-4">세봉한의원 철학</p>
+            <h2 className="text-3xl lg:text-4xl font-bold text-primary-900 mb-4">형상의학 + 현대적 감각</h2>
+            <p className="text-lg text-text-600 max-w-3xl mx-auto leading-relaxed">
+              몸의 외형은 곧 내부 장기의 메시지입니다. 세봉한의원은 얼굴, 체형, 피부의 미세한 흐름을 분석하여
+              통합적인 진단을 내리고, 통증을 넘어 체질 개선까지 이어지는 맞춤형 코스를 설계합니다.
             </p>
           </div>
+        </section>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={feature.title}
-                className="card p-8 group animate-slide-up"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center text-3xl mb-6 shadow-medium group-hover:scale-110 transition-transform duration-300`}>
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-primary-800 mb-3 group-hover:text-primary-600 transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-text-600 leading-relaxed">
-                  {feature.description}
+        <section id="treatment" className="py-20 lg:py-28 bg-gradient-to-b from-accent-50 to-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col lg:flex-row items-start justify-between gap-6 mb-12">
+              <div>
+                <h2 className="text-3xl lg:text-4xl font-bold text-primary-900">주요 진료 과목</h2>
+                <p className="text-text-600 max-w-2xl leading-relaxed">
+                  세봉한의원은 침, 뜸, 부항, 추나, 한약을 통합하여 체형의 변화와 내부 기능을 동시에 개선합니다.
                 </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 lg:py-28 bg-gradient-to-b from-accent-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 gap-6">
-            <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-primary-900 mb-3">
-                주요 진료 과목
-              </h2>
-              <p className="text-text-600">
-                다양한 한방 치료법으로 환자분의 건강을 회복시켜 드립니다.
-              </p>
-            </div>
-            <Link
-              href="/treatment"
-              className="inline-flex items-center text-primary-600 font-semibold hover:text-primary-700 transition-colors group"
-            >
-              모든 진료 보기
-              <svg className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            {treatments.map((treatment) => (
-              <div
-                key={treatment.title}
-                className="card p-6 hover:-translate-y-1 cursor-pointer"
-              >
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center text-2xl mb-4">
-                  {treatment.icon}
-                </div>
-                <h3 className="text-lg font-bold text-primary-800 mb-2">
-                  {treatment.title}
-                </h3>
-                <p className="text-sm text-text-500">
-                  {treatment.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 lg:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8">
-            <div className="card p-8">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-2xl shadow-medium">
-                  🕐
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-primary-800">진료 시간</h3>
-                  <p className="text-text-500 text-sm">Reservation hours</p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-3 border-b border-accent-100">
-                  <span className="text-text-600">평일 (월 ~ 금)</span>
-                  <span className="font-semibold text-primary-800">09:00 - 18:00</span>
-                </div>
-                <div className="flex justify-between items-center py-3 border-b border-accent-100">
-                  <span className="text-text-600">토요일</span>
-                  <span className="font-semibold text-primary-800">09:00 - 13:00</span>
-                </div>
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-text-500">일요일 / 공휴일</span>
-                  <span className="text-text-400">휴진</span>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-text-500">
-                점심시간: 12:00 - 13:00
-              </p>
-            </div>
-
-            <div className="card p-8">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary-500 to-secondary-600 flex items-center justify-center text-2xl shadow-medium">
-                  📍
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-primary-800">오시는 길</h3>
-                  <p className="text-text-500 text-sm">Location</p>
-                </div>
-              </div>
-              <p className="text-text-700 mb-4 leading-relaxed">
-                부산광역시 수영구 수영로 394, 4층<br />
-                <span className="text-text-500">(남천동)</span>
-              </p>
-              <p className="text-text-600 mb-6 flex items-center gap-2">
-                <svg className="w-5 h-5 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                지하철 2호선 남천역 도보 5분
-              </p>
-              <Link
-                href="/location"
-                className="btn-primary w-full justify-center"
-              >
-                자세히 보기
+              <Link href="/treatment" className="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                모든 진료 보기 →
               </Link>
             </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {treatments.map((item) => (
+                <article key={item.title} className="card group hover:-translate-y-1">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center text-2xl mb-4">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-primary-800 mb-2">{item.title}</h3>
+                  <p className="text-sm text-text-600 mb-4">{item.detail}</p>
+                  <p className="text-sm text-accent-900 font-semibold">{item.duration}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="py-20 lg:py-28 bg-gradient-to-br from-primary-700 to-primary-900 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-            건강한 내일을 위해 지금 시작하세요
-          </h2>
-          <p className="text-lg text-primary-100 mb-10 max-w-2xl mx-auto">
-            세봉한의원에서는 환자 한 분 한 분의 건강을 진심으로 생각합니다.<br />
-            전문적인 한방 치료로 여러분의 건강한 삶을 응원합니다.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="tel:051-623-7227"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-white text-primary-700 font-bold text-lg shadow-strong hover:shadow-glow hover:-translate-y-0.5 transition-all duration-300"
-            >
-              <svg className="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              전화 예약하기
-            </a>
-            <Link
-              href="/doctors"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-xl border-2 border-white/30 text-white font-bold text-lg hover:bg-white/10 transition-all duration-300"
-            >
-              의료진 소개
-            </Link>
+        <section id="doctors" className="py-20 lg:py-28 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-3 gap-6">
+              {doctors.map((doctor) => (
+                <article key={doctor.name} className="card p-8 border-0 bg-gradient-to-br from-primary-50 to-secondary-50">
+                  <p className="text-sm text-primary-500 mb-2">전문 의료진</p>
+                  <h3 className="text-2xl font-bold text-primary-800 mb-1">{doctor.name}</h3>
+                  <p className="text-sm text-text-500 mb-4">{doctor.title}</p>
+                  <p className="text-text-600 leading-relaxed">{doctor.bio}</p>
+                </article>
+              ))}
+              <article className="card p-8 relative">
+                <div className="mb-4">
+                  <span className="px-3 py-1 rounded-full bg-primary-100 text-primary-700 text-xs font-semibold">진료 철학</span>
+                </div>
+                <h4 className="text-lg font-bold text-primary-900 mb-3">형상의학적 접근</h4>
+                <p className="text-text-600 leading-relaxed">
+                  세봉한의원은 형상의학을 통해 오장의 상태를 면밀히 분석하고, 몸의 외형에 드러난 징후를 치료로 연결합니다.
+                </p>
+              </article>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <section id="location" className="py-20 lg:py-28 bg-gradient-to-b from-primary-950 via-primary-900 to-primary-800 text-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <p className="text-sm uppercase tracking-[0.5em] text-primary-200">세봉한의원</p>
+                <h2 className="text-3xl lg:text-4xl font-bold">오시는 길</h2>
+                <p className="text-text-200 leading-relaxed">
+                  부산광역시 수영구 수영로 394, 4층 (남천동). 지하철 2호선 남천역 3번 출구에서 도보 5분, 건물 내 주차장 운영.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a href="https://naver.me/FvQYmg3r" target="_blank" rel="noreferrer" className="btn-primary w-full justify-center">
+                    지도 보기
+                  </a>
+                  <a href="tel:051-623-7227" className="btn-secondary w-full justify-center">
+                    전화 문의
+                  </a>
+                </div>
+              </div>
+              <div className="rounded-3xl bg-white/10 p-6 backdrop-blur-xl">
+                <div className="w-full h-80 bg-white/20 rounded-3xl flex items-center justify-center text-2xl">
+                  지도 영역 (추가 예정)
+                </div>
+                <div className="mt-6 space-y-3 text-sm">
+                  <p>대중교통: 남천역 3번 출구 → 도보 5분</p>
+                  <p>버스: 남천동 정류장 하차 후 3분 거리</p>
+                  <p>주차: 건물 내 주차장, 진료 중 무료</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="notices" className="py-20 lg:py-28 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col lg:flex-row items-start justify-between mb-10 gap-4">
+              <div>
+                <p className="text-sm uppercase tracking-[0.5em] text-primary-500 font-semibold">공지사항</p>
+                <h2 className="text-3xl lg:text-4xl font-bold text-primary-900">
+                  세봉한의원의 안내 사항
+                </h2>
+              </div>
+              <Link href="/notices" className="text-primary-600 font-semibold hover:text-primary-700">
+                공지사항 전체 보기 →
+              </Link>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              {notices.map((notice) => (
+                <article key={notice.id} className="card p-6 bg-gradient-to-br from-primary-50 to-secondary-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs uppercase tracking-[0.3em] text-primary-500">공지</span>
+                    <span className="text-sm text-text-500">{notice.date}</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-primary-800 mb-3">{notice.title}</h3>
+                  <p className="text-text-600 mb-4 leading-relaxed">{notice.snippet}</p>
+                  <Link href={`/notices/${notice.id}`} className="text-primary-600 font-semibold hover:text-secondary-600">
+                    자세히 보기 →
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
-  );
+  )
 }
