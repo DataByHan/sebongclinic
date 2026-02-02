@@ -195,13 +195,11 @@ export default function HomePage() {
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <Reveal>
                 <div className="space-y-4">
-                  <div className="flat-chip">관련 뉴스 · 블로그 · 저서</div>
+                  <div className="flat-chip">공지 · 블로그</div>
                   <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세봉을 더 알아보기</h2>
                   <p className="text-[color:var(--muted)] leading-relaxed">
-                    언론/저서/후기 링크를 모았습니다.
-                    처음 방문하시는 분이라면 분위기부터 확인해 보세요.
+                    처음 방문하시는 분이라면 이곳에서 정보를 확인해 보세요.
                   </p>
-                  <a href="/notices" className="cta-ghost">공지사항 보기</a>
                 </div>
               </Reveal>
 
