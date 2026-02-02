@@ -42,15 +42,15 @@ export const site = {
   ] satisfies Specialty[],
   externalLinks: [
     {
-      label: '부산일보 기사',
+      label: '기사',
       href: 'https://www.busan.com/view/busan/view.php?code=20050308000083',
     },
     {
-      label: '저자/저서 소개 (알라딘)',
+      label: '저서',
       href: 'https://www.aladin.co.kr/author/wauthor_overview.aspx?authorsearch=@106533&srsltid=afmboopoqe6ghm1g3qt4xdp0qzl38s60mzi3wmkqi3r1mrvjv9vrmimb',
     },
     {
-      label: '네이버 블로그 후기',
+      label: '블로그 후기',
       href: 'https://blog.naver.com/zxchhi/223858411549',
     },
   ] satisfies ExternalLink[],

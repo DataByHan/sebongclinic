@@ -45,7 +45,7 @@ export default function HomePage() {
       </header>
 
       <main id="top" className="mesh">
-        <section className="scroll-mt-24 py-16 md:py-24">
+        <section className="scroll-mt-24 py-20 md:py-32">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
               <Reveal>
@@ -78,10 +78,6 @@ export default function HomePage() {
                     <a href="#visit" className="cta">오시는 길</a>
                     <a href={`tel:${site.phone}`} className="cta-ghost">전화 {site.phone}</a>
                   </div>
-
-                  <p className="text-xs text-[color:var(--muted)]">
-                    스크롤로 이어지는 한 장의 안내서.
-                  </p>
                 </div>
               </Reveal>
 
@@ -114,7 +110,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="doctor" className="scroll-mt-24 py-16 md:py-24">
+        <section id="doctor" className="scroll-mt-24 py-20 md:py-32">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
@@ -168,7 +164,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="specialties" className="scroll-mt-24 py-16 md:py-24">
+        <section id="specialties" className="scroll-mt-24 py-20 md:py-32">
           <div className="frame">
             <Reveal>
               <div className="space-y-3">
@@ -196,7 +192,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="links" className="scroll-mt-24 py-16 md:py-24">
+        <section id="links" className="scroll-mt-24 py-20 md:py-32">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <Reveal>
@@ -228,9 +224,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="visit" className="scroll-mt-24 py-16 md:py-24">
+        <section id="visit" className="scroll-mt-24 py-20 md:py-32">
           <div className="frame">
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
+            <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
                 <div className="space-y-6">
                   <div className="flat-chip">오시는 길 · 연락처 · 진료시간</div>
