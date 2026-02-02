@@ -45,7 +45,7 @@ export default function HomePage() {
       </header>
 
       <main id="top" className="mesh">
-        <section className="min-h-[80svh] py-12 md:py-16">
+        <section className="min-h-[80svh] py-16 md:py-24">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
               <Reveal>
@@ -114,7 +114,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="doctor" className="scroll-mt-24 py-12 md:py-16">
+        <section id="doctor" className="scroll-mt-24 py-16 md:py-24">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
@@ -168,7 +168,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="specialties" className="scroll-mt-24 py-12 md:py-16">
+        <section id="specialties" className="scroll-mt-24 py-16 md:py-24">
           <div className="frame">
             <Reveal>
               <div className="space-y-3">
@@ -196,7 +196,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="links" className="scroll-mt-24 py-12 md:py-16">
+        <section id="links" className="scroll-mt-24 py-16 md:py-24">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <Reveal>
@@ -228,7 +228,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="visit" className="scroll-mt-24 py-12 md:py-16">
+        <section id="visit" className="scroll-mt-24 py-16 md:py-24">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
               <Reveal>
