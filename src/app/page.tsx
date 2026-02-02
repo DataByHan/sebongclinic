@@ -3,11 +3,11 @@ import Link from 'next/link'
 const heroHighlights = [
   '형상의학 전문 클리닉',
   '한의학박사 직접 진료',
-  '침·뜸·부항·추나·한약 통합 케어',
+  '침 · 뜸 · 부항 · 추나 · 한약 통합 케어',
 ]
 
 const serviceCards = [
-  { icon: '🪡', title: '침 치료', desc: '신경·근육 통증 완화와 기혈 순환 개선' },
+  { icon: '🪡', title: '침 치료', desc: '신경·근육 통증 완화, 기혈 순환 개선' },
   { icon: '🔥', title: '뜸 치료', desc: '체온 상승, 면역 강화, 냉증 개선' },
   { icon: '🥛', title: '부항 치료', desc: '혈액 순환 촉진, 노폐물 배출' },
   { icon: '🤲', title: '추나 요법', desc: '척추·관절 정렬, 자세 교정' },
@@ -16,15 +16,15 @@ const serviceCards = [
 ]
 
 const approachSteps = [
-  { title: '정밀 형상 진단', detail: '얼굴·체형·피부 신호를 통해 장기 상태를 읽습니다.' },
-  { title: '맞춤 치료 설계', detail: '침·뜸·부항·추나·한약을 개인별로 조합합니다.' },
-  { title: '회복 & 관리', detail: '생활습관 코칭과 예방 케어로 재발을 줄입니다.' },
+  { title: '정밀 형상 진단', detail: '얼굴·체형·피부 신호를 섬세하게 읽어 장기 상태를 파악합니다.' },
+  { title: '맞춤 통합 처방', detail: '침·뜸·부항·추나·한약을 개인별로 조합한 치료 계획을 설계합니다.' },
+  { title: '회복 & 관리', detail: '생활 코칭과 예방 케어로 재발을 줄이고 체질을 관리합니다.' },
 ]
 
 const doctor = {
   name: '김형규',
   role: '원장 / 한의학박사',
-  bio: '대한전통한의학회 형상학회 정회원. 형상의학을 임상에 적용해 체계적 진단과 처방을 제공합니다.',
+  bio: '대한전통한의학회 형상학회 정회원. 형상의학 기반 진단과 맞춤 처방으로 체계적 케어를 제공합니다.',
 }
 
 const notices = [
@@ -37,23 +37,27 @@ export default function HomePage() {
   return (
     <div className="bg-white text-text-900">
       <main>
-        <section id="hero" className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white py-20 lg:py-28">
+        {/* Hero */}
+        <section
+          id="hero"
+          className="relative overflow-hidden bg-white text-primary-900 py-16 lg:py-24"
+        >
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-32 -left-24 w-80 h-80 bg-primary-500/30 blur-3xl" />
-            <div className="absolute top-16 right-10 w-64 h-64 bg-secondary-400/20 blur-3xl" />
+            <div className="absolute -top-28 -left-24 w-80 h-80 bg-primary-100/70 blur-3xl" />
+            <div className="absolute top-12 right-0 w-72 h-72 bg-secondary-100/50 blur-3xl" />
           </div>
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
+
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur text-sm font-semibold">
-                부산 수영구 · 형상의학 전문
+              <p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 text-primary-700 text-sm font-semibold">
+                형상의학 전문 한의원 · 부산 수영구
               </p>
-              <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
+              <h1 className="text-4xl lg:text-5xl font-bold leading-tight text-primary-900">
                 세봉한의원
-                <span className="block text-primary-100">몸의 형상에서 건강을 읽다</span>
+                <span className="block text-text-600 text-lg mt-3 font-normal">
+                  몸의 형상에서 건강을 읽고, 맞춤 치료로 회복을 설계합니다.
+                </span>
               </h1>
-              <p className="text-lg text-primary-50/90 leading-relaxed">
-                형상의학 기반 정밀 진단으로 통증 완화부터 체질 개선, 예방 케어까지 한 번에 설계합니다.
-              </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/#services" className="btn-primary text-center">
                   진료 과목 보기
@@ -62,34 +66,41 @@ export default function HomePage() {
                   전화 예약
                 </a>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-primary-50/80">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-primary-800">
                 {heroHighlights.map((item) => (
-                  <div key={item} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div
+                    key={item}
+                    className="rounded-xl border border-accent-200 bg-white px-4 py-3 shadow-soft"
+                  >
                     {item}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="bg-white text-primary-900 rounded-3xl shadow-floating p-8 space-y-6">
-              <div className="text-center space-y-2">
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-400 flex items-center justify-center text-4xl text-white shadow-glow">
+
+            <div className="bg-white/85 backdrop-blur rounded-3xl shadow-strong p-8 border border-accent-200 space-y-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-primary-50 text-primary-800 flex items-center justify-center text-3xl shadow-soft">
                   👨‍⚕️
                 </div>
-                <h3 className="text-2xl font-bold">{doctor.name}</h3>
-                <p className="text-text-500">{doctor.role}</p>
+                <div>
+                  <h3 className="text-2xl font-bold text-primary-900">{doctor.name}</h3>
+                  <p className="text-text-600">{doctor.role}</p>
+                </div>
               </div>
               <p className="text-text-600 leading-relaxed">{doctor.bio}</p>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-xl bg-primary-50 p-3 font-semibold text-primary-800">형상의학 진단</div>
-                <div className="rounded-xl bg-secondary-50 p-3 font-semibold text-secondary-800">체질 맞춤 처방</div>
-                <div className="rounded-xl bg-accent-100 p-3 font-semibold text-primary-800">예방 케어</div>
-                <div className="rounded-xl bg-primary-100 p-3 font-semibold text-primary-800">생활 코칭</div>
+              <div className="grid grid-cols-2 gap-3 text-sm text-primary-800">
+                <div className="rounded-xl bg-primary-50 p-3">형상의학 진단</div>
+                <div className="rounded-xl bg-primary-50 p-3">체질 맞춤 처방</div>
+                <div className="rounded-xl bg-primary-50 p-3">예방 중심 케어</div>
+                <div className="rounded-xl bg-primary-50 p-3">생활 코칭</div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="services" className="py-20 lg:py-24 bg-white">
+        {/* Services */}
+        <section id="services" className="py-18 lg:py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
               <div>
@@ -97,12 +108,14 @@ export default function HomePage() {
                 <h2 className="text-3xl lg:text-4xl font-bold text-primary-900">주요 진료 과목</h2>
                 <p className="text-text-600 mt-3 max-w-2xl">통증 완화, 체질 개선, 예방을 잇는 통합 한방 치료.</p>
               </div>
-              <Link href="/treatment" className="text-primary-600 font-semibold hover:text-primary-700">전체 보기 →</Link>
+              <Link href="/treatment" className="text-primary-600 font-semibold hover:text-primary-700">
+                전체 보기 →
+              </Link>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {serviceCards.map((item) => (
-                <article key={item.title} className="card p-7 hover:-translate-y-1">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 flex items-center justify-center text-xl mb-4">
+                <article key={item.title} className="card p-7 bg-white hover:-translate-y-1">
+                  <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-xl mb-4 text-primary-800">
                     {item.icon}
                   </div>
                   <h3 className="text-xl font-bold text-primary-800 mb-2">{item.title}</h3>
@@ -113,7 +126,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="approach" className="py-20 lg:py-24 bg-gradient-to-b from-primary-50 to-white">
+        {/* Approach */}
+        <section id="approach" className="py-18 lg:py-20 bg-gradient-to-b from-primary-50 to-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12 space-y-3">
               <p className="text-sm font-semibold text-primary-600">APPROACH</p>
@@ -122,8 +136,8 @@ export default function HomePage() {
             </div>
             <div className="grid gap-6 lg:grid-cols-3">
               {approachSteps.map((step, idx) => (
-                <article key={step.title} className="card p-7 border-0 bg-white shadow-card-hover">
-                  <div className="w-10 h-10 rounded-lg bg-primary-100 text-primary-700 flex items-center justify-center font-bold mb-4">
+                <article key={step.title} className="card p-7 bg-white shadow-card">
+                  <div className="w-10 h-10 rounded-lg bg-primary-50 text-primary-700 flex items-center justify-center font-bold mb-4">
                     {idx + 1}
                   </div>
                   <h3 className="text-xl font-bold text-primary-800 mb-2">{step.title}</h3>
@@ -134,7 +148,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="doctors" className="py-20 lg:py-24 bg-white">
+        {/* Doctors */}
+        <section id="doctors" className="py-18 lg:py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
             <div className="space-y-4">
               <p className="text-sm font-semibold text-primary-600">DOCTOR</p>
@@ -142,63 +157,73 @@ export default function HomePage() {
               <p className="text-text-600 leading-relaxed">형상의학 전문 한의학박사가 직접 진료하여 증상별·체질별 치료를 설계합니다.</p>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="rounded-xl bg-primary-50 p-3">형상의학 진단</div>
-                <div className="rounded-xl bg-secondary-50 p-3">근골격 통증 관리</div>
-                <div className="rounded-xl bg-accent-100 p-3">생활 코칭</div>
-                <div className="rounded-xl bg-primary-100 p-3">예방 중심 케어</div>
+                <div className="rounded-xl bg-primary-50 p-3">근골격 통증 관리</div>
+                <div className="rounded-xl bg-primary-50 p-3">생활 코칭</div>
+                <div className="rounded-xl bg-primary-50 p-3">예방 중심 케어</div>
               </div>
             </div>
-            <div className="card p-8 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white border-0 shadow-strong">
+            <div className="card p-8 bg-white border border-accent-200 shadow-strong">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center text-3xl">👨‍⚕️</div>
+                <div className="w-16 h-16 rounded-2xl bg-primary-50 flex items-center justify-center text-3xl text-primary-800">👨‍⚕️</div>
                 <div>
-                  <h3 className="text-2xl font-bold">{doctor.name}</h3>
-                  <p className="text-primary-100">{doctor.role}</p>
+                  <h3 className="text-2xl font-bold text-primary-900">{doctor.name}</h3>
+                  <p className="text-text-600">{doctor.role}</p>
                 </div>
               </div>
-              <p className="text-primary-50 leading-relaxed mb-6">{doctor.bio}</p>
-              <div className="grid grid-cols-2 gap-3 text-sm text-primary-50">
-                <div className="rounded-xl bg-white/10 p-3">형상학회 정회원</div>
-                <div className="rounded-xl bg-white/10 p-3">체질 맞춤 처방</div>
-                <div className="rounded-xl bg-white/10 p-3">침·뜸·부항 통합</div>
-                <div className="rounded-xl bg-white/10 p-3">사전 예방 중심</div>
+              <p className="text-text-600 leading-relaxed mb-6">{doctor.bio}</p>
+              <div className="grid grid-cols-2 gap-3 text-sm text-primary-800">
+                <div className="rounded-xl bg-primary-50 p-3">형상학회 정회원</div>
+                <div className="rounded-xl bg-primary-50 p-3">체질 맞춤 처방</div>
+                <div className="rounded-xl bg-primary-50 p-3">침·뜸·부항 통합</div>
+                <div className="rounded-xl bg-primary-50 p-3">사전 예방 중심</div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="location" className="py-20 lg:py-24 bg-gradient-to-br from-primary-950 via-primary-900 to-primary-800 text-white">
+        {/* Location */}
+        <section id="location" className="py-18 lg:py-20 bg-gradient-to-r from-primary-50 via-white to-secondary-50 text-primary-900">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-start">
             <div className="space-y-4">
-              <p className="text-sm font-semibold text-primary-200">LOCATION</p>
+              <p className="text-sm font-semibold text-primary-600">LOCATION</p>
               <h2 className="text-3xl lg:text-4xl font-bold">오시는 길</h2>
-              <p className="text-primary-100 leading-relaxed">
+              <p className="text-text-600 leading-relaxed">
                 부산광역시 수영구 수영로 394, 4층 (남천동)
                 <br />지하철 2호선 남천역 3번 출구 도보 5분
                 <br />건물 내 주차 가능
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <a href="https://naver.me/FvQYmg3r" target="_blank" rel="noreferrer" className="btn-primary w-full justify-center bg-white text-primary-800 hover:bg-primary-50">
+                <a
+                  href="https://naver.me/FvQYmg3r"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-primary w-full justify-center bg-white text-primary-800 hover:bg-primary-50"
+                >
                   네이버 지도
                 </a>
-                <a href="tel:051-623-7227" className="btn-secondary w-full justify-center border border-white/30 bg-white/10 text-white hover:bg-white/20">
+                <a
+                  href="tel:051-623-7227"
+                  className="btn-secondary w-full justify-center border border-primary-200 text-primary-800 hover:bg-primary-50"
+                >
                   전화 문의
                 </a>
               </div>
             </div>
-            <div className="bg-white/10 rounded-3xl p-6 backdrop-blur-xl shadow-floating w-full">
-              <div className="w-full h-80 rounded-2xl bg-white/15 flex items-center justify-center text-primary-100 text-lg">
+            <div className="bg-white rounded-3xl p-6 shadow-strong border border-accent-200 w-full">
+              <div className="w-full h-80 rounded-2xl bg-accent-50 flex items-center justify-center text-text-500 text-lg">
                 지도 영역
               </div>
-              <div className="mt-6 grid sm:grid-cols-3 gap-3 text-sm text-primary-100">
-                <div className="rounded-xl bg-white/10 p-3">남천역 3번 출구</div>
-                <div className="rounded-xl bg-white/10 p-3">버스 남천동 정류장</div>
-                <div className="rounded-xl bg-white/10 p-3">주차 지원</div>
+              <div className="mt-6 grid sm:grid-cols-3 gap-3 text-sm text-primary-800">
+                <div className="rounded-xl bg-primary-50 p-3">남천역 3번 출구</div>
+                <div className="rounded-xl bg-primary-50 p-3">버스 남천동 정류장</div>
+                <div className="rounded-xl bg-primary-50 p-3">주차 지원</div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="notices" className="py-20 lg:py-24 bg-white">
+        {/* Notices */}
+        <section id="notices" className="py-18 lg:py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
               <div>
@@ -206,11 +231,13 @@ export default function HomePage() {
                 <h2 className="text-3xl lg:text-4xl font-bold text-primary-900">공지사항</h2>
                 <p className="text-text-600 mt-2">진료 일정과 이벤트 소식을 확인하세요.</p>
               </div>
-              <Link href="/notices" className="text-primary-600 font-semibold hover:text-primary-700">전체 보기 →</Link>
+              <Link href="/notices" className="text-primary-600 font-semibold hover:text-primary-700">
+                전체 보기 →
+              </Link>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               {notices.map((notice) => (
-                <article key={notice.id} className="card p-6 bg-gradient-to-br from-primary-50 to-secondary-50">
+                <article key={notice.id} className="card p-6 bg-white border border-accent-200">
                   <div className="flex items-center justify-between text-sm text-text-500 mb-2">
                     <span>공지</span>
                     <span>{notice.date}</span>
