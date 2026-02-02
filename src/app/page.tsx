@@ -87,15 +87,9 @@ export default function HomePage() {
 
               <Reveal delayMs={120}>
                 <div className="flat-card p-6 sm:p-8">
-                  <div className="flex items-start justify-between gap-6">
-                    <div>
-                      <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">SEBONG</div>
-                      <div className="mt-3 type-serif text-2xl">진료 포인트</div>
-                    </div>
-                    <div className="text-right text-xs text-[color:var(--muted)]">
-                      <div>flat · modern</div>
-                      <div>scrollytelling</div>
-                    </div>
+                  <div>
+                    <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">SEBONG</div>
+                    <div className="mt-3 type-serif text-2xl">진료 포인트</div>
                   </div>
 
                   <div className="mt-8 space-y-4">
@@ -176,37 +170,26 @@ export default function HomePage() {
 
         <section id="specialties" className="scroll-mt-24 py-12 md:py-16">
           <div className="frame">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <Reveal>
-                <div className="space-y-3">
-                  <div className="flat-chip">전문영역</div>
-                  <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세 가지 집중 진료</h2>
-                  <p className="max-w-2xl text-[color:var(--muted)] leading-relaxed">
-                    공진단 · 척추치료 · 총명탕. 자주 찾는 핵심 영역을 중심으로 상담과 치료를 설계합니다.
-                  </p>
-                </div>
-              </Reveal>
-              <Reveal delayMs={100}>
-                <div className="text-sm text-[color:var(--muted)]">
-                  참고 링크는 외부 사이트로 이동합니다.
-                </div>
-              </Reveal>
-            </div>
+            <Reveal>
+              <div className="space-y-3">
+                <div className="flat-chip">전문영역</div>
+                <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세 가지 집중 진료</h2>
+                <p className="max-w-2xl text-[color:var(--muted)] leading-relaxed">
+                  공진단 · 척추치료 · 총명탕. 자주 찾는 핵심 영역을 중심으로 상담과 치료를 설계합니다.
+                </p>
+              </div>
+            </Reveal>
 
             <div className="mt-10 grid gap-4 lg:grid-cols-3">
               {site.specialties.map((s, idx) => (
                 <Reveal key={s.title} delayMs={idx * 90}>
-                  <ExternalAnchor href={s.href} className="group flat-card block p-7 transition-colors hover:bg-[color:var(--paper-2)]">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="type-serif text-2xl tracking-tight">{s.title}</div>
-                        <div className="mt-2 text-sm text-[color:var(--muted)]">{s.subtitle}</div>
-                      </div>
-                      <div className="mt-1 text-sm text-[color:var(--muted)] group-hover:text-[color:var(--ink)]">↗</div>
+                  <div className="flat-card p-7">
+                    <div>
+                      <div className="type-serif text-2xl tracking-tight">{s.title}</div>
+                      <div className="mt-2 text-sm text-[color:var(--muted)]">{s.subtitle}</div>
                     </div>
                     <p className="mt-6 text-sm leading-relaxed text-[color:var(--muted)]">{s.description}</p>
-                    <div className="mt-7 text-sm font-semibold text-[color:var(--jade)]">효능/정보 보기</div>
-                  </ExternalAnchor>
+                  </div>
                 </Reveal>
               ))}
             </div>

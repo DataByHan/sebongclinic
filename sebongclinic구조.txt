@@ -1,0 +1,175 @@
+📋 세봉한의원 웹사이트 - 완전한 구조 설명
+🎯 핵심 설계 특징
+1. 단일 페이지 스크롤 디자인
+   - 메인 페이지가 5개 섹션으로 구성된 긴 스크롤 페이지
+   - 앵커 해시 네비게이션 (#doctor, #specialties, #visit)
+   - 이전 버전은 /doctors, /treatment, /location 등 별도 페이지였으나 → 현재는 단일 페이지로 통합
+2. Scrollytelling + Flat Design
+   - <Reveal> 컴포넌트: 스크롤 시 섹션이 fade-in
+   - Flat 디자인: 최소한의 그림자, 깔끔한 선, 여백 강조
+   - 한국적 미학: 종이 같은 배경(--paper), 먹물 같은 텍스트(--ink)
+3. 중앙화된 콘텐츠 관리
+   - 모든 텍스트/데이터가 src/lib/site.ts 한 곳에 집중
+   - 수정 시 이 파일만 변경하면 전체 사이트 업데이트
+4. 정적 사이트 생성 (Static Export)
+   - Cloudflare Pages 배포 최적화
+   - out/ 디렉토리에 정적 HTML/CSS/JS 생성
+   - 빠른 로딩, 저렴한 호스팅
+---
+🗂️ 디렉토리 구조 (간결판)
+src/
+├── app/                          # 페이지
+│   ├── layout.tsx               # 폰트, 메타데이터 (43줄)
+│   ├── page.tsx                 # 메인 홈페이지 (314줄)
+│   ├── globals.css              # 스타일 + CSS 변수
+│   └── notices/page.tsx         # 공지사항 (52줄)
+│
+├── components/                   # 컴포넌트 (2개만!)
+│   ├── Reveal.tsx               # 스크롤 애니메이션 (53줄)
+│   └── KakaoMap.tsx             # 카카오맵 통합 (115줄)
+│
+├── lib/                          # 데이터
+│   └── site.ts                  # 전체 콘텐츠 (63줄)
+│
+└── types/                        # 타입 정의
+    └── kakao-maps.d.ts          # Kakao API 타입
+총 라인 수: 약 640줄 (매우 간결!)
+---
+📄 페이지별 상세
+메인 페이지 (/) - 314줄
+Header (Sticky)
+  ↓
+Hero Section
+  - 세봉한의원 소개
+  - "몸의 흐름을 다시 정렬합니다"
+  - CTA: 오시는 길 / 전화
+  ↓
+Doctor Section (#doctor)
+  - 김형규 원장 소개
+  - 4단계 진료 프로세스
+  ↓
+Specialties (#specialties)
+  - 공진단 (기력·회복·컨디션)
+  - 척추치료 (자세·통증·균형)
+  - 총명탕 (집중·기억·학습)
+  + 각 외부 참고 링크
+  ↓
+External Links (#links)
+  - 부산일보 기사
+  - 알라딘 저자 소개
+  - 네이버 블로그 후기
+  ↓
+Location & Contact (#visit)
+  - Kakao Map (실시간 지도)
+  - 주소, 전화번호, 영업시간
+  - 카카오맵 앱 링크
+공지사항 페이지 (/notices) - 52줄
+Header
+  - 타이틀
+  - 메인으로 / 전화 버튼
+  ↓
+Notice Cards (Demo)
+  - 2개 데모 공지
+  - 향후 실제 공지 추가 예정
+---
+🧩 컴포넌트 상세
+| 컴포넌트 | 라인 | 역할 |
+|---------|-----|------|
+| Reveal.tsx | 53 | IntersectionObserver로 스크롤 시 fade-in<br/>threshold: 12%, delay 옵션 지원 |
+| KakaoMap.tsx | 115 | Kakao Maps SDK 동적 로드<br/>주소 → 좌표 변환 (Geocoder)<br/>마커 자동 표시, 로딩/에러 상태 |
+---
+📊 데이터 아키텍처 (site.ts)
+// 모든 콘텐츠가 여기 한 곳에!
+export const site = {
+  // 기본 정보
+  name: '세봉(世奉)한의원',
+  doctorName: '김형규',
+  tagline: '조용히, 정확히. 몸의 흐름을 다시 세웁니다.',
+  
+  // 연락처
+  address: '부산광역시 수영구 수영로 394, 4층 (남천동)',
+  phone: '051-623-7227',
+  kakaoMapLink: 'https://kko.to/WLKRNS3gmy',
+  
+  // 전문영역 (3개)
+  specialties: [
+    { title: '공진단', subtitle, href, description },
+    { title: '척추치료', ... },
+    { title: '총명탕', ... }
+  ],
+  
+  // 외부 링크 (3개)
+  externalLinks: [
+    { label: '부산일보 기사', href },
+    { label: '저자/저서 소개', href },
+    { label: '네이버 블로그 후기', href }
+  ],
+  
+  // 영업시간
+  hours: [
+    { label: '평일', value: '09:00 - 18:00' },
+    { label: '토요일', value: '09:00 - 13:00' },
+    { label: '일요일', value: '휴진' }
+  ]
+}
+수정이 쉽다: 전화번호를 바꾸려면? site.ts의 phone 한 줄만 수정!
+---
+🎨 스타일 시스템
+CSS 변수 (한국적 네이밍)
+--paper: #f6f5f1        /* 한지 같은 배경 */
+--ink: #0f172a          /* 먹물 같은 텍스트 */
+--jade: #1f6f5b         /* 비취색 강조 */
+--tangerine: #e0563a    /* 귤색 강조 */
+--muted: #475569        /* 회색 보조 텍스트 */
+--line: rgba(...)       /* 얇은 테두리 */
+커스텀 Tailwind 클래스
+| 클래스 | 용도 |
+|-------|------|
+| .flat-card | 테두리 있는 카드 (그림자 없음) |
+| .flat-chip | 인라인 태그/칩 |
+| .cta | 검은색 CTA 버튼 |
+| .cta-ghost | 흰색 아웃라인 버튼 |
+| .mesh | 그라데이션 배경 효과 |
+| .grain | 종이 질감 노이즈 |
+---
+🔌 외부 통합
+1. Kakao Maps API
+API Key: ef4c54335f7dd8f28f18000e6fcdd0f4
+SDK: dapi.kakao.com/v2/maps/sdk.js
+기능: 주소 검색, 마커 표시, 지도 컨트롤
+2. Google Fonts
+Noto Sans KR (400, 500, 700) - 본문
+Nanum Myeongjo (400, 700, 800) - 제목
+3. 외부 참고 링크
+- 공진단 효능: seoulgongmyung.com
+- 척추치료 효능: jangdeuk.com
+- 총명탕 효능: 한의원 사이트
+---
+🚀 빌드 & 배포
+npm run build
+# → out/ 디렉토리에 정적 파일 생성
+# Cloudflare Pages 배포 (수동)
+npx wrangler pages deploy out --project-name=sebongclinic
+# 또는 자동 배포 (GitHub 연결)
+git push → Cloudflare가 자동 감지 → 빌드 & 배포
+---
+📈 다음 단계
+콘텐츠 수정하려면:
+// src/lib/site.ts 수정
+export const site = {
+  phone: '051-NEW-NUMBER',  // 전화번호 변경
+  hours: [/* 영업시간 수정 */]
+}
+새 섹션 추가하려면:
+// src/app/page.tsx에 추가
+<section id="new-section" className="...">
+  <Reveal>
+    <h2>새로운 섹션</h2>
+  </Reveal>
+</section>
+공지사항 추가하려면:
+// src/app/notices/page.tsx 수정
+const notices = [
+  { title: '새 공지', date: '2026-02-03', body: '내용...' }
+]
+---
