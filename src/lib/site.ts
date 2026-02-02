@@ -42,16 +42,16 @@ export const site = {
   ] satisfies Specialty[],
   externalLinks: [
     {
-      label: '기사',
-      href: 'https://www.busan.com/view/busan/view.php?code=20050308000083',
+      label: '공지사항',
+      href: '/notices',
     },
     {
       label: '저서',
-      href: 'https://www.aladin.co.kr/author/wauthor_overview.aspx?authorsearch=@106533&srsltid=afmboopoqe6ghm1g3qt4xdp0qzl38s60mzi3wmkqi3r1mrvjv9vrmimb',
+      href: 'https://www.aladin.co.kr/author/wauthor_product.aspx?AuthorSearch=@106533',
     },
     {
       label: '블로그 후기',
-      href: 'https://blog.naver.com/zxchhi/223858411549',
+      href: 'https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%EB%B6%80%EC%82%B0+%EC%84%B8%EB%B4%89%ED%95%9C%EC%9D%98%EC%9B%90&ackey=s7tzthdw',
     },
   ] satisfies ExternalLink[],
   hours: [

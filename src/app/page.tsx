@@ -45,7 +45,7 @@ export default function HomePage() {
       </header>
 
       <main id="top" className="mesh">
-        <section className="scroll-mt-24 py-20 md:py-32">
+        <section className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
               <Reveal>
@@ -110,7 +110,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="doctor" className="scroll-mt-24 py-20 md:py-32">
+        <section id="doctor" className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
@@ -164,7 +164,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="specialties" className="scroll-mt-24 py-20 md:py-32">
+        <section id="specialties" className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
             <Reveal>
               <div className="space-y-3">
@@ -192,7 +192,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="links" className="scroll-mt-24 py-20 md:py-32">
+        <section id="links" className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <Reveal>
@@ -208,23 +208,27 @@ export default function HomePage() {
               </Reveal>
 
               <div className="grid gap-4">
-                {site.externalLinks.map((l, idx) => (
-                  <Reveal key={l.href} delayMs={idx * 80}>
-                    <ExternalAnchor href={l.href} className="flat-card block p-6 transition-colors hover:bg-[color:var(--paper-2)]">
-                      <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">LINK</div>
-                      <div className="mt-2 flex items-center justify-between gap-4">
-                        <div className="text-base font-semibold">{l.label}</div>
-                        <div className="text-sm text-[color:var(--muted)]">↗</div>
-                      </div>
-                    </ExternalAnchor>
-                  </Reveal>
-                ))}
+                {site.externalLinks.map((l, idx) => {
+                  const isExternal = l.href.startsWith('http')
+                  const LinkComponent = isExternal ? ExternalAnchor : 'a'
+                  return (
+                    <Reveal key={l.href} delayMs={idx * 80}>
+                      <LinkComponent href={l.href} className="flat-card block p-6 transition-colors hover:bg-[color:var(--paper-2)]">
+                        <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">LINK</div>
+                        <div className="mt-2 flex items-center justify-between gap-4">
+                          <div className="text-base font-semibold">{l.label}</div>
+                          <div className="text-sm text-[color:var(--muted)]">{isExternal ? '↗' : '→'}</div>
+                        </div>
+                      </LinkComponent>
+                    </Reveal>
+                  )
+                })}
               </div>
             </div>
           </div>
         </section>
 
-        <section id="visit" className="scroll-mt-24 py-20 md:py-32">
+        <section id="visit" className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
@@ -259,17 +263,11 @@ export default function HomePage() {
               </Reveal>
 
               <Reveal delayMs={120}>
-                <div className="space-y-4">
-                  <KakaoMap
-                    appKey={KAKAO_MAPS_APP_KEY}
-                    address={site.address}
-                    className="h-[22rem] sm:h-[28rem]"
-                  />
-                  <div className="flat-card p-5 text-sm text-[color:var(--muted)]">
-                    지도에서 위치가 다르게 표시되면 <ExternalAnchor href={site.kakaoMapLink} className="flat-link text-[color:var(--ink)]">카카오 지도 링크</ExternalAnchor>
-                    를 기준으로 확인해 주세요.
-                  </div>
-                </div>
+                <KakaoMap
+                  appKey={KAKAO_MAPS_APP_KEY}
+                  address={site.address}
+                  className="h-[22rem] sm:h-[28rem]"
+                />
               </Reveal>
             </div>
           </div>
