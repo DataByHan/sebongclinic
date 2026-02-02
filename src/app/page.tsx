@@ -45,7 +45,7 @@ export default function HomePage() {
       </header>
 
       <main id="top" className="mesh">
-        <section className="min-h-[80svh] py-16 md:py-24">
+        <section className="scroll-mt-24 py-16 md:py-24">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
               <Reveal>
