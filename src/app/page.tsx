@@ -2,7 +2,7 @@ import Reveal from '@/components/Reveal'
 import KakaoMap from '@/components/KakaoMap'
 import { site } from '@/lib/site'
 
-const KAKAO_MAPS_APP_KEY = 'ef4c54335f7dd8f28f18000e6fcdd0f4'
+const KAKAO_MAPS_APP_KEY = 'cec618c22684394ca4fda5495d2afe36'
 
 function ExternalAnchor({
   href,
