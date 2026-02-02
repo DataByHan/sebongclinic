@@ -258,11 +258,11 @@ export default function HomePage() {
                 </div>
               </Reveal>
 
-              <Reveal delayMs={120}>
+              <Reveal delayMs={120} className="h-full min-h-[24rem]">
                 <KakaoMap
                   appKey={KAKAO_MAPS_APP_KEY}
                   address={site.address}
-                  className="h-[22rem] sm:h-[28rem]"
+                  className="h-full"
                 />
               </Reveal>
             </div>
