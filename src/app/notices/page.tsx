@@ -87,30 +87,48 @@ const notices = [
 
 export default function NoticesPage() {
   return (
-    <div className="min-h-screen py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-primary mb-4">공지사항</h1>
-          <p className="text-lg text-text/70">세봉한의원의 소식과 안내</p>
+    <div className="min-h-screen bg-gradient-to-b from-primary-50/50 to-white">
+      <div className="bg-gradient-to-br from-primary-700 to-primary-900 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+            공지사항
+          </h1>
+          <p className="text-lg text-primary-100 max-w-2xl mx-auto">
+            세봉한의원의 최신 소리와 안내사항을<br className="hidden lg:block" /> 확인하세요.
+          </p>
         </div>
+      </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-          <div className="divide-y divide-gray-100">
-            {notices.map((notice) => (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="card overflow-hidden">
+          <div className="divide-y divide-accent-100">
+            {notices.map((notice, index) => (
               <Link
                 key={notice.id}
                 href={`/notices/${notice.id}`}
-                className="block p-6 hover:bg-accent/20 transition-colors"
+                className="block p-6 hover:bg-primary-50/50 transition-all duration-300 group animate-slide-in"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-primary mb-2">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="px-3 py-1 rounded-full bg-primary-100 text-primary-700 text-xs font-medium">
+                        공지
+                      </span>
+                      <span className="text-sm text-text-500">{notice.date}</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-primary-800 group-hover:text-primary-600 transition-colors mb-2">
                       {notice.title}
                     </h3>
-                    <p className="text-text/70 text-sm">{notice.preview}</p>
+                    <p className="text-text-600 text-sm line-clamp-2">
+                      {notice.preview}
+                    </p>
                   </div>
-                  <div className="mt-2 md:mt-0 md:ml-6">
-                    <span className="text-sm text-text/50">{notice.date}</span>
+                  <div className="flex items-center gap-2 text-primary-500 group-hover:translate-x-1 transition-transform duration-300">
+                    <span className="hidden md:inline text-sm font-medium">더보기</span>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
                 </div>
               </Link>
@@ -119,17 +137,17 @@ export default function NoticesPage() {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <div className="flex space-x-2">
-            <button className="px-4 py-2 bg-primary text-white rounded-lg">
+          <nav className="flex items-center space-x-2">
+            <button className="px-4 py-2 rounded-xl bg-primary-600 text-white font-medium shadow-medium">
               1
             </button>
-            <button className="px-4 py-2 bg-gray-100 text-text/70 rounded-lg hover:bg-gray-200 transition-colors">
+            <button className="px-4 py-2 rounded-xl bg-accent-100 text-text-600 font-medium hover:bg-accent-200 transition-colors">
               2
             </button>
-            <button className="px-4 py-2 bg-gray-100 text-text/70 rounded-lg hover:bg-gray-200 transition-colors">
+            <button className="px-4 py-2 rounded-xl bg-accent-100 text-text-600 font-medium hover:bg-accent-200 transition-colors">
               다음 →
             </button>
-          </div>
+          </nav>
         </div>
       </div>
     </div>

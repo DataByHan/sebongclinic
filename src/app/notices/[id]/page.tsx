@@ -90,54 +90,93 @@ export default function NoticeDetailPage({ params }: { params: { id: string } })
 
   if (!notice) {
     return (
-      <div className="min-h-screen py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-2xl font-bold text-primary mb-4">공지사항을 찾을 수 없습니다</h1>
-          <a href="/notices" className="text-primary hover:underline">
-            ← 공지사항 목록으로 돌아가기
-          </a>
+      <div className="min-h-screen bg-gradient-to-b from-primary-50/50 to-white py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="card p-12">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary-100 flex items-center justify-center">
+              <span className="text-4xl">🔍</span>
+            </div>
+            <h1 className="text-2xl font-bold text-primary-800 mb-4">공지사항을 찾을 수 없습니다</h1>
+            <a href="/notices" className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors">
+              <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              공지사항 목록으로 돌아가기
+            </a>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-12 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-primary-50/50 to-white">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="mb-8">
           <a
             href="/notices"
-            className="text-primary hover:underline inline-flex items-center"
+            className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors group"
           >
-            ← 공지사항 목록
+            <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            공지사항 목록
           </a>
         </div>
 
-        <article className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-8">
-            <div className="mb-6">
-              <span className="text-sm text-text/50">{notice.date}</span>
-              <h1 className="text-2xl md:text-3xl font-bold text-primary mt-2">
-                {notice.title}
-              </h1>
+        <article className="card overflow-hidden">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-8 text-white">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium">
+                공지사항
+              </span>
+              <span className="text-primary-100">{notice.date}</span>
             </div>
+            <h1 className="text-2xl md:text-3xl font-bold leading-tight">
+              {notice.title}
+            </h1>
+          </div>
 
+          <div className="p-8">
             <div className="prose max-w-none">
-              <div className="text-text/80 whitespace-pre-line leading-relaxed">
+              <div className="text-text-700 whitespace-pre-line leading-loose text-lg">
                 {notice.content}
               </div>
             </div>
           </div>
 
-          <div className="bg-accent/20 px-8 py-4 border-t border-gray-100">
+          <div className="bg-accent-50 px-8 py-6 border-t border-accent-100">
             <a
               href="/notices"
-              className="text-primary hover:underline inline-flex items-center"
+              className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors group"
             >
-              ← 목록으로 돌아가기
+              <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              목록으로 돌아가기
             </a>
           </div>
         </article>
+
+        <div className="mt-12 p-8 rounded-2xl bg-gradient-to-r from-primary-50 to-secondary-50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-xl shadow-medium">
+                📞
+              </div>
+              <div>
+                <p className="font-semibold text-primary-800">전화로 문의하기</p>
+                <p className="text-text-600">진료 예약 및 궁금한 사항</p>
+              </div>
+            </div>
+            <a
+              href="tel:051-623-7227"
+              className="btn-primary whitespace-nowrap"
+            >
+              051-623-7227
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
