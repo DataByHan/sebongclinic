@@ -1,23 +1,27 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-
-const navItems = [
-  { href: '/', label: '메인' },
-  { href: '/treatment', label: '진료안내' },
-  { href: '/doctors', label: '의료진' },
-  { href: '/location', label: '오시는길' },
-  { href: '/notices', label: '공지사항' },
-];
+import { useEffect, useState } from 'react';
+import { navSections } from '@/lib/nav';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState(navSections[0].id);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
+      const scrollPosition = window.scrollY + window.innerHeight * 0.4;
+      let current = navSections[0].id;
+
+      for (const section of navSections) {
+        const el = document.getElementById(section.id);
+        if (el && scrollPosition >= el.offsetTop) {
+          current = section.id;
+        }
+      }
+      setActiveSection(current);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -49,15 +53,19 @@ export default function Header() {
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center space-x-1">
-            {navItems.map((item, index) => (
+          <nav className="hidden lg:flex items-center space-x-2">
+            {navSections.map((item) => (
               <Link
-                key={item.href}
+                key={item.id}
                 href={item.href}
-                className="relative px-4 py-2 rounded-lg text-text-600 hover:text-primary-700 font-medium transition-all duration-300 hover:bg-primary-50 group"
+                className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  activeSection === item.id
+                    ? 'text-primary-700 bg-white shadow-soft'
+                    : 'text-text-500 hover:text-primary-700'
+                }`}
+                aria-current={activeSection === item.id ? 'page' : undefined}
               >
                 {item.label}
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-full transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
           </nav>
@@ -109,13 +117,16 @@ export default function Header() {
           }`}
         >
           <nav className="py-4 space-y-1 border-t border-accent-200/50">
-            {navItems.map((item) => (
+            {navSections.map((item, index) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="block px-4 py-3 rounded-xl text-text-700 hover:text-primary-700 hover:bg-primary-50 font-medium transition-all duration-300 animate-slide-in"
-                style={{ animationDelay: `${navItems.indexOf(item) * 50}ms` }}
+                className={`block px-4 py-3 rounded-xl font-medium transition-all duration-300 animate-slide-in ${
+                  activeSection === item.id ? 'text-primary-700 bg-primary-50' : 'text-text-700 hover:text-primary-700 hover:bg-primary-50'
+                }`}
+                style={{ animationDelay: `${index * 50}ms` }}
+                aria-current={activeSection === item.id ? 'page' : undefined}
               >
                 {item.label}
               </Link>
