@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 type KakaoMapProps = {
   appKey: string
@@ -10,23 +10,33 @@ type KakaoMapProps = {
 
 type LoadState = 'idle' | 'loading' | 'ready' | 'error'
 
-function ensureKakaoScript(appKey: string) {
-  const existing = document.querySelector<HTMLScriptElement>('script[src*="dapi.kakao.com"]')
-  if (existing) return
+function loadKakaoScript(appKey: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (window.kakao?.maps) {
+      resolve()
+      return
+    }
 
-  const script = document.createElement('script')
-  script.type = 'text/javascript'
-  script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&libraries=services`
-  document.head.appendChild(script)
+    const existing = document.querySelector<HTMLScriptElement>('script[src*="dapi.kakao.com"]')
+    if (existing) {
+      existing.addEventListener('load', () => resolve())
+      existing.addEventListener('error', () => reject(new Error('Failed to load Kakao SDK')))
+      return
+    }
+
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&libraries=services`
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error('Failed to load Kakao SDK'))
+    document.head.appendChild(script)
+  })
 }
 
 export default function KakaoMap({ appKey, address, className }: KakaoMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [state, setState] = useState<LoadState>('idle')
-
-  const containerId = useMemo(() => {
-    return `kakao-map-${Math.random().toString(16).slice(2)}`
-  }, [])
+  const containerId = useId()
 
   useEffect(() => {
     let cancelled = false
@@ -37,21 +47,21 @@ export default function KakaoMap({ appKey, address, className }: KakaoMapProps) 
 
       try {
         setState('loading')
-        ensureKakaoScript(appKey)
+        await loadKakaoScript(appKey)
 
-        const waitForSdk = () =>
+        const waitForInitialization = () =>
           new Promise<void>((resolve, reject) => {
             const startedAt = Date.now()
             const tick = () => {
               if (cancelled) return
               if (window.kakao?.maps?.LatLng) return resolve()
-              if (Date.now() - startedAt > 15000) return reject(new Error('Kakao Maps SDK load timeout'))
+              if (Date.now() - startedAt > 15000) return reject(new Error('Kakao Maps SDK initialization timeout'))
               window.setTimeout(tick, 100)
             }
             tick()
           })
 
-        await waitForSdk()
+        await waitForInitialization()
         if (cancelled) return
         if (!window.kakao?.maps) {
           setState('error')
