@@ -11,13 +11,12 @@ type KakaoMapProps = {
 type LoadState = 'idle' | 'loading' | 'ready' | 'error'
 
 function ensureKakaoScript(appKey: string) {
-  const existing = document.querySelector<HTMLScriptElement>('script[data-kakao-maps-sdk="true"]')
+  const existing = document.querySelector<HTMLScriptElement>('script[src*="dapi.kakao.com"]')
   if (existing) return
 
   const script = document.createElement('script')
-  script.dataset.kakaoMapsSdk = 'true'
-  script.async = true
-  script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(appKey)}&autoload=false&libraries=services`
+  script.type = 'text/javascript'
+  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false&libraries=services`
   document.head.appendChild(script)
 }
 
@@ -45,17 +44,21 @@ export default function KakaoMap({ appKey, address, className }: KakaoMapProps) 
             const startedAt = Date.now()
             const tick = () => {
               if (cancelled) return
-              if (window.kakao?.maps?.load) return resolve()
-              if (Date.now() - startedAt > 12000) return reject(new Error('Kakao Maps SDK load timeout'))
-              window.setTimeout(tick, 50)
+              if (window.kakao?.maps) return resolve()
+              if (Date.now() - startedAt > 15000) return reject(new Error('Kakao Maps SDK load timeout'))
+              window.setTimeout(tick, 100)
             }
             tick()
           })
 
         await waitForSdk()
         if (cancelled) return
+        if (!window.kakao?.maps) {
+          setState('error')
+          return
+        }
 
-        window.kakao!.maps.load(() => {
+        window.kakao.maps.load(() => {
           if (cancelled) return
           const container = containerRef.current
           if (!container) return
