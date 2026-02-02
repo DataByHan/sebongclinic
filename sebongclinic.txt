@@ -4,6 +4,18 @@
   3-1. https://www.busan.com/view/busan/view.php?code=20050308000083
   3-2. https://www.aladin.co.kr/author/wauthor_overview.aspx?authorsearch=@106533&srsltid=afmboopoqe6ghm1g3qt4xdp0qzl38s60mzi3wmkqi3r1mrvjv9vrmimb
   3-3. https://blog.naver.com/zxchhi/223858411549
-4. 홈페이지 디자인 참고 : https://www.xrysitomi.gr/
-5. 네이버 지도 : https://map.naver.com/p/entry/place/13250997?placePath=/home?from=map&fromPanelNum=1&additionalHeight=76&timestamp=202602021619&locale=ko&svcName=map_pcv5&c=15.00,0,0,0,dh
-6. 심플하고 전문적인 스타일의 디자인
+4. 한의원의 전문영역
+  4-1. 공진단
+    4-1-1. (참고 정보) 공진단의 효능 : https://seoulgongmyung.com/product02
+  4-2. 척추치료
+    4-2-1. (참고 정보) 척추치료의 효능 : https://jangdeuk.com/menu02/menu02_04_01.php
+  4-3. 총명탕
+    4-3-1. (참고 정보) 총명탕의 효능 : https://www.xn--299at5mi2e3rootax68d.com/kr/index.php?pCode=MN1000108
+5. 카카오 지도로 한의원 위치를 보여줌
+  5-1. kakao API : ef4c54335f7dd8f28f18000e6fcdd0f4
+  5-2. kakao 지도 링크 : https://kko.to/WLKRNS3gmy
+  5-3. kakao 지도 연결 가이드 : https://apis.map.kakao.com/web/guide/
+6. Scrollytelling 디자인, Flat한 느낌
+7. Page 구조
+  7-1. Main Scroll Page : 한의원 제목 및 한줄 소개, 한의사 소개, 전문영역 소개 ,한의원 위치 및 전화번호 및 영업시간
+  7-2. Notice Page

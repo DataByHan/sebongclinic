@@ -1,45 +1,52 @@
-import Link from 'next/link';
+import { site } from '@/lib/site'
 
-const notices = [
-  { id: 1, title: '추석 연휴 진료 안내', date: '2024.09.10', preview: '9/16~18 휴진, 19일부터 정상 진료' },
-  { id: 2, title: '형상의학 건강강좌 개최', date: '2024.08.15', preview: '형상의학 자가 진단법 무료 강좌 진행' },
-  { id: 3, title: '가을철 건강관리 수칙', date: '2024.08.01', preview: '수분 섭취와 스트레칭으로 기혈 순환 유지' },
-  { id: 4, title: '진료 시간 변경 안내', date: '2024.07.01', preview: '평일 09:00-18:00 / 토요일 09:00-13:00' },
-];
+const demoNotices = [
+  {
+    title: '공지사항 페이지 구조',
+    date: '—',
+    body: '향후 휴진/이벤트/진료 안내를 이곳에 게시합니다.',
+  },
+  {
+    title: '진료 시간 변동',
+    date: '—',
+    body: '변동이 있을 경우 본 페이지에 업데이트됩니다.',
+  },
+] as const
 
 export default function NoticesPage() {
   return (
-    <div className="min-h-screen bg-white text-text-900">
-      <div className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <p className="text-sm font-semibold text-primary-100/90">NOTICE</p>
-          <h1 className="text-4xl lg:text-5xl font-bold">공지사항</h1>
-          <p className="text-primary-100/80 text-lg">진료 일정, 이벤트, 휴진 안내를 확인하세요.</p>
+    <div className="min-h-screen">
+      <header className="border-b border-[color:var(--line)] bg-[color:var(--paper)]">
+        <div className="frame py-14">
+          <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">NOTICE</div>
+          <h1 className="mt-3 type-serif text-4xl tracking-tight">공지사항</h1>
+          <p className="mt-4 max-w-2xl text-[color:var(--muted)]">
+            진료 일정/휴진/이벤트 안내를 게시합니다.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="/" className="cta-ghost">메인으로</a>
+            <a href={`tel:${site.phone}`} className="cta">전화 {site.phone}</a>
+          </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-8">
-        <div className="grid gap-4 sm:grid-cols-2">
-          {notices.map((notice, idx) => (
-            <Link
-              key={notice.id}
-              href={`/notices/${notice.id}`}
-              className="card p-6 hover:-translate-y-1 transition-transform duration-300 bg-gradient-to-br from-primary-50 to-secondary-50"
-              style={{ animationDelay: `${idx * 80}ms` }}
-            >
-              <div className="flex items-center justify-between text-sm text-text-500 mb-2">
-                <span>공지</span>
-                <span>{notice.date}</span>
+      <main className="frame py-12">
+        <div className="grid gap-4">
+          {demoNotices.map((n) => (
+            <article key={n.title} className="flat-card p-7">
+              <div className="flex items-center justify-between gap-6">
+                <div className="text-base font-semibold">{n.title}</div>
+                <div className="text-sm text-[color:var(--muted)]">{n.date}</div>
               </div>
-              <h2 className="text-lg font-bold text-primary-800 mb-2">{notice.title}</h2>
-              <p className="text-text-600 leading-relaxed">{notice.preview}</p>
-              <span className="inline-flex items-center text-primary-600 font-semibold mt-4">
-                자세히 보기 →
-              </span>
-            </Link>
+              <p className="mt-4 text-sm leading-relaxed text-[color:var(--muted)]">{n.body}</p>
+            </article>
           ))}
         </div>
-      </div>
+
+        <div className="mt-10 flat-card p-7 text-sm text-[color:var(--muted)]">
+          방문 안내는 메인 페이지의 <a className="flat-link text-[color:var(--ink)]" href="/#visit">오시는 길</a> 섹션에서 확인할 수 있습니다.
+        </div>
+      </main>
     </div>
-  );
+  )
 }

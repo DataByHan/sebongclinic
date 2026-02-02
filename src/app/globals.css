@@ -3,51 +3,92 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --paper: #f6f5f1;
+    --paper-2: #f2f1ec;
+    --ink: #0f172a;
+    --ink-line: rgba(15, 23, 42, 0.2);
+    --muted: #475569;
+    --line: rgba(15, 23, 42, 0.14);
+    --jade: #1f6f5b;
+    --jade-2: #155246;
+    --tangerine: #e0563a;
+  }
+
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-white text-text-800 antialiased;
+    background: var(--paper);
+    color: var(--ink);
+    text-rendering: geometricPrecision;
+  }
+
+  ::selection {
+    background: rgba(31, 111, 91, 0.2);
   }
 }
 
 @layer components {
-  .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-white bg-primary-700 hover:bg-primary-800 transition-all duration-300 shadow-medium hover:shadow-strong hover:-translate-y-0.5 active:translate-y-0;
+  .type-sans {
+    font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-semibold text-white bg-secondary-600 hover:bg-secondary-700 transition-all duration-300 shadow-medium hover:shadow-strong hover:-translate-y-0.5 active:translate-y-0;
+  .type-serif {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
   }
 
-  .card {
-    @apply bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-accent-200/30;
+  .frame {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-10;
   }
 
-  .section {
-    @apply py-16 px-4 md:py-24;
+  .flat-card {
+    @apply rounded-2xl border border-[color:var(--line)] bg-white;
+  }
+
+  .flat-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/70 px-4 py-2 text-sm;
+  }
+
+  .flat-link {
+    @apply underline underline-offset-4 decoration-[color:var(--line)] hover:decoration-[color:var(--ink)];
+  }
+
+  .cta {
+    @apply inline-flex items-center justify-center rounded-full border border-[color:var(--ink-line)] bg-[color:var(--ink)] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[color:var(--jade)];
+  }
+
+  .cta-ghost {
+    @apply inline-flex items-center justify-center rounded-full border border-[color:var(--line)] bg-white px-5 py-3 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:bg-[color:var(--paper-2)];
   }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .mesh {
+    background-image:
+      radial-gradient(900px 600px at 10% 10%, rgba(31, 111, 91, 0.16), transparent 55%),
+      radial-gradient(800px 520px at 85% 20%, rgba(224, 86, 58, 0.12), transparent 60%),
+      radial-gradient(720px 520px at 50% 90%, rgba(15, 23, 42, 0.08), transparent 60%);
   }
 
-  .animate-delay-100 {
-    animation-delay: 100ms;
+  .grain {
+    position: relative;
   }
-
-  .animate-delay-200 {
-    animation-delay: 200ms;
-  }
-
-  .animate-delay-300 {
-    animation-delay: 300ms;
-  }
-
-  .animate-delay-400 {
-    animation-delay: 400ms;
+  .grain::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(15, 23, 42, 0.03),
+        rgba(15, 23, 42, 0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+    opacity: 0.55;
+    mix-blend-mode: multiply;
   }
 }

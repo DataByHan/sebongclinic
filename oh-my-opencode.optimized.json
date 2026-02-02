@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "sisyphus": {
+      "model": "opencode/claude-sonnet-4-5",
+      "comment": "메인 orchestrator - 중간 티어 적합"
+    },
+    "oracle": {
+      "model": "anthropic/claude-opus-4-5",
+      "comment": "고난이도 추론/디버깅 - 최고 티어 유지 ✅"
+    },
+    "librarian": {
+      "model": "opencode/claude-sonnet-4-5",
+      "comment": "변경: gpt-5.2 → sonnet (문서 검색은 고급 추론 불필요)"
+    },
+    "explore": {
+      "model": "opencode/kimi-k2.5-free",
+      "comment": "코드베이스 탐색 - 무료 모델 적합 ✅"
+    },
+    "multimodal-looker": {
+      "model": "openai/gpt-5.2",
+      "comment": "멀티모달 분석 - GPT가 강점 ✅"
+    },
+    "prometheus": {
+      "model": "openai/gpt-5.2",
+      "comment": "복잡한 계획 수립 - 고급 모델 필요 ✅"
+    },
+    "metis": {
+      "model": "opencode/claude-sonnet-4-5",
+      "comment": "변경: gpt-5.2 → sonnet (의도 파악은 중간 모델로 충분)"
+    },
+    "momus": {
+      "model": "opencode/claude-sonnet-4-5",
+      "comment": "변경: gpt-5.2 → sonnet (계획 검토는 중간 모델로 충분)"
+    },
+    "atlas": {
+      "model": "opencode/kimi-k2.5-free",
+      "comment": "역할 불명확, 무료 모델 유지"
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "opencode/claude-sonnet-4-5",
+      "comment": "변경: gpt-5.2 → sonnet (Claude가 코드 생성에 강함)"
+    },
+    "ultrabrain": {
+      "model": "openai/gpt-5.2-codex",
+      "comment": "논리 집약적 작업 - 최고 티어 유지 ✅"
+    },
+    "deep": {
+      "model": "openai/gpt-5.2",
+      "comment": "심층 문제 해결 - 고급 모델 필요 ✅"
+    },
+    "artistry": {
+      "model": "openai/gpt-5.2",
+      "comment": "창의적 접근 - 고급 모델 필요 ✅"
+    },
+    "quick": {
+      "model": "opencode/kimi-k2.5-free",
+      "comment": "간단 작업 - 무료 모델 적합 ✅"
+    },
+    "unspecified-low": {
+      "model": "opencode/kimi-k2.5-free",
+      "comment": "저난이도 - 무료 모델 적합 ✅"
+    },
+    "unspecified-high": {
+      "model": "openai/gpt-5.2",
+      "comment": "고난이도 - 고급 모델 필요 ✅"
+    },
+    "writing": {
+      "model": "opencode/claude-sonnet-4-5",
+      "comment": "변경: kimi-free → sonnet (문서 품질 중요)"
+    }
+  }
+}
