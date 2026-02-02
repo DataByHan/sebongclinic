@@ -62,7 +62,7 @@ export default function HomePage() {
                   </div>
 
                   <h1 className="type-serif text-4xl leading-[1.12] tracking-tight sm:text-5xl lg:text-6xl">
-                    세봉은
+                    세봉(世奉)은
                     <br />
                     몸의 흐름을
                     <br />
