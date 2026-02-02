@@ -16,7 +16,7 @@ function ensureKakaoScript(appKey: string) {
 
   const script = document.createElement('script')
   script.type = 'text/javascript'
-  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false&libraries=services`
+  script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&libraries=services`
   document.head.appendChild(script)
 }
 
@@ -44,7 +44,7 @@ export default function KakaoMap({ appKey, address, className }: KakaoMapProps) 
             const startedAt = Date.now()
             const tick = () => {
               if (cancelled) return
-              if (window.kakao?.maps) return resolve()
+              if (window.kakao?.maps?.LatLng) return resolve()
               if (Date.now() - startedAt > 15000) return reject(new Error('Kakao Maps SDK load timeout'))
               window.setTimeout(tick, 100)
             }
@@ -58,37 +58,35 @@ export default function KakaoMap({ appKey, address, className }: KakaoMapProps) 
           return
         }
 
-        window.kakao.maps.load(() => {
+        const kakao = window.kakao
+        const container = containerRef.current
+        if (!container) return
+
+        const defaultCenter = new kakao.maps.LatLng(35.153, 129.118)
+        const map = new kakao.maps.Map(container, { center: defaultCenter, level: 3 })
+        const geocoder = new kakao.maps.services.Geocoder()
+
+        geocoder.addressSearch(address, (result, status) => {
           if (cancelled) return
-          const container = containerRef.current
-          if (!container) return
+          if (status !== kakao.maps.services.Status.OK) {
+            setState('error')
+            return
+          }
+          const first = result[0]
+          if (!first) {
+            setState('error')
+            return
+          }
 
-          const defaultCenter = new window.kakao!.maps.LatLng(35.153, 129.118)
-          const map = new window.kakao!.maps.Map(container, { center: defaultCenter, level: 3 })
-          const geocoder = new window.kakao!.maps.services.Geocoder()
+          const lat = Number(first.y)
+          const lng = Number(first.x)
+          const center = new kakao.maps.LatLng(lat, lng)
+          map.setCenter(center)
 
-          geocoder.addressSearch(address, (result, status) => {
-            if (cancelled) return
-            if (status !== window.kakao!.maps.services.Status.OK) {
-              setState('error')
-              return
-            }
-            const first = result[0]
-            if (!first) {
-              setState('error')
-              return
-            }
+          const marker = new kakao.maps.Marker({ position: center })
+          marker.setMap(map)
 
-            const lat = Number(first.y)
-            const lng = Number(first.x)
-            const center = new window.kakao!.maps.LatLng(lat, lng)
-            map.setCenter(center)
-
-            const marker = new window.kakao!.maps.Marker({ position: center })
-            marker.setMap(map)
-
-            setState('ready')
-          })
+          setState('ready')
         })
       } catch {
         if (cancelled) return
