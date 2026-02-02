@@ -101,11 +101,11 @@ export default function KakaoMap({ appKey, address, className }: KakaoMapProps) 
 
   return (
     <div className={['relative overflow-hidden rounded-2xl border border-[color:var(--line)] bg-white', className ?? ''].join(' ')}>
-      <div ref={containerRef} id={containerId} className="h-full w-full" />
+      <div ref={containerRef} id={containerId} className="absolute inset-0" />
       {state !== 'ready' ? (
-        <div className="pointer-events-none absolute inset-0 grid place-items-center bg-[color:var(--paper)]/70">
+        <div className="pointer-events-none absolute inset-0 grid place-items-center bg-[color:var(--paper)]/70 backdrop-blur-sm">
           <div className="text-sm text-[color:var(--muted)]">
-            {state === 'error' ? '지도를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' : '지도를 불러오는 중…'}
+            {state === 'error' ? '지도를 불러오지 못했습니다.' : '지도를 불러오는 중…'}
           </div>
         </div>
       ) : null}
