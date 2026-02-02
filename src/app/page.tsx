@@ -230,7 +230,7 @@ export default function HomePage() {
 
         <section id="visit" className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div className="grid gap-10 lg:grid-cols-2 lg:items-end">
               <Reveal>
                 <div className="space-y-6">
                   <div className="flat-chip">오시는 길 · 연락처 · 진료시간</div>
