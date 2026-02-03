@@ -12,7 +12,7 @@ export type ExternalLink = {
 }
 
 export const site = {
-  name: '세봉(世奉)한의원',
+  name: '세봉한의원',
   url: 'https://www.sebongclinic.co.kr',
   doctorName: '김형규',
   tagline: '조용히, 정확히. 몸의 흐름을 다시 세웁니다.',

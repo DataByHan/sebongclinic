@@ -1,3 +1,4 @@
+import { getRequestContext } from '@cloudflare/next-on-pages'
 import { NextRequest, NextResponse } from 'next/server'
 import type { Notice } from '@/types/cloudflare'
 
@@ -6,8 +7,15 @@ export const runtime = 'edge'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'sebong2025'
 
 function getDB(request: NextRequest): D1Database {
-  const env = (request as any).env as { DB: D1Database }
-  return env.DB
+  try {
+    return getRequestContext().env.DB
+  } catch {
+    const env = (request as any).env as { DB?: D1Database }
+    if (!env?.DB) {
+      throw new Error('D1 database binding not found')
+    }
+    return env.DB
+  }
 }
 
 export async function GET(
