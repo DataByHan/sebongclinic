@@ -124,7 +124,7 @@ Critical Path: Task 3 -> Task 4 -> Task 5
 
 > Implementation + Verification are combined per task.
 
-- [ ] 1. Add CSS rules for notice image sizing (public + admin preview)
+- [x] 1. Add CSS rules for notice image sizing (public + admin preview)
 
   **What to do**:
   - Add scoped CSS to `src/app/globals.css` for:
@@ -186,7 +186,7 @@ Critical Path: Task 3 -> Task 4 -> Task 5
     Evidence: .sisyphus/evidence/task-1-notice-img-mobile.png
   ```
 
-- [ ] 2. Update homepage doctor section: inline "한의학박사" badge + right column Profile-only
+- [x] 2. Update homepage doctor section: inline "한의학박사" badge + right column Profile-only
 
   **What to do**:
   - In `src/app/page.tsx` `section#doctor`:
@@ -242,7 +242,7 @@ Critical Path: Task 3 -> Task 4 -> Task 5
     Evidence: .sisyphus/evidence/task-2-doctor-section.png
   ```
 
-- [ ] 3. Add Toast UI editor control: image size presets (S/M/L/Full) persisted via `data-notice-size`
+- [x] 3. Add Toast UI editor control: image size presets (S/M/L/Full) persisted via `data-notice-size`
 
   **What to do**:
   - In `src/app/admin-8f3a9c2d4b1e/page.tsx` after editor creation:
@@ -308,7 +308,7 @@ Critical Path: Task 3 -> Task 4 -> Task 5
     Evidence: .sisyphus/evidence/task-3-image-size-md.png
   ```
 
-- [ ] 4. Extend Playwright e2e coverage for image sizing + doctor section
+- [x] 4. Extend Playwright e2e coverage for image sizing + doctor section
 
   **What to do**:
   - Extend `e2e/task-9-admin-notice.e2e.spec.mjs`:
@@ -340,7 +340,7 @@ Critical Path: Task 3 -> Task 4 -> Task 5
   - [ ] `npx playwright test` passes locally against preview server.
   - [ ] Evidence screenshots are written under `.sisyphus/evidence/` for the new scenarios.
 
-- [ ] 5. Full verification run (CI-like)
+- [x] 5. Full verification run (CI-like)
 
   **What to do**:
   - Run:
@@ -374,7 +374,7 @@ npx playwright test
 ```
 
 ### Final Checklist
-- [ ] Notice admin editor: image size presets apply to selected image
-- [ ] Notice public page: sized images render correctly and remain responsive on mobile
-- [ ] Doctor section: inline "한의학박사" badge + right column is Profile-only
-- [ ] Playwright evidence captured under `.sisyphus/evidence/`
+- [x] Notice admin editor: image size presets apply to selected image
+- [x] Notice public page: sized images render correctly and remain responsive on mobile
+- [x] Doctor section: inline "한의학박사" badge + right column is Profile-only
+- [x] Playwright evidence captured under `.sisyphus/evidence/`
