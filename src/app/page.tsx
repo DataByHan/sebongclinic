@@ -88,15 +88,30 @@ export default function HomePage() {
                     <div className="mt-3 type-serif text-2xl">진료 포인트</div>
                   </div>
 
-                  <div className="mt-8 space-y-4">
+                  <div className="mt-8 space-y-5">
                     {[
-                      { k: '진단', v: '증상만 보지 않고, 패턴을 봅니다.' },
-                      { k: '처방', v: '단기 완화와 장기 유지의 균형.' },
-                      { k: '관리', v: '리듬을 망치는 습관부터 정리.' },
-                    ].map((row) => (
-                      <div key={row.k} className="flex items-center justify-between gap-6 rounded-xl bg-[color:var(--paper-2)] px-4 py-4">
-                        <div className="text-sm font-semibold">{row.k}</div>
-                        <div className="text-sm text-[color:var(--muted)]">{row.v}</div>
+                      { 
+                        title: 'MFT 진료', 
+                        desc: '경동맥의 24경락 파동 측정을 통한 정확한 진료.',
+                        accent: 'jade'
+                      },
+                      { 
+                        title: '형상의학', 
+                        desc: '개인별 형상적 특징을 분석하여 임상부터 치료까지.',
+                        accent: 'tangerine'
+                      },
+                    ].map((item) => (
+                      <div key={item.title} className="group rounded-xl border border-[color:var(--line)] bg-white p-5 transition-all hover:border-[color:var(--ink-line)]">
+                        <div className="flex items-baseline gap-3">
+                          <div className={[
+                            'h-1.5 w-1.5 shrink-0 rounded-full',
+                            item.accent === 'jade' ? 'bg-[color:var(--jade)]' : 'bg-[color:var(--tangerine)]'
+                          ].join(' ')} />
+                          <div className="type-serif text-lg font-semibold leading-tight">{item.title}</div>
+                        </div>
+                        <div className="mt-3 pl-5 text-[15px] leading-relaxed text-[color:var(--muted)]">
+                          {item.desc}
+                        </div>
                       </div>
                     ))}
                   </div>
