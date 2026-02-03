@@ -150,7 +150,7 @@ export default function HomePage() {
                   className="flat-card p-7 sm:p-9"
                 >
                   <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">Doctor&apos;s Profile</div>
-                  <div className="mt-4 text-sm leading-relaxed text-[color:var(--muted)]">
+                  <div className="mt-4 text-sm leading-relaxed text-[color:var(--muted)] whitespace-pre-line">
                     - 진주 고등학교 졸업
                     - 경희대학교 한의학과 졸업
                     - 경희대학교 대학원 한의학 박사 취득
