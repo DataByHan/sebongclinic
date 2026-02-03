@@ -37,7 +37,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as { title: string; content: string; password: string }
+    let body: { title: string; content: string; password: string }
+    try {
+      body = await request.json() as { title: string; content: string; password: string }
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON body' },
+        { status: 400 }
+      )
+    }
     const { title, content, password } = body
 
     if (password !== ADMIN_PASSWORD) {
@@ -56,13 +64,15 @@ export async function POST(request: NextRequest) {
 
     const db = getDB(request)
     const result = await db
-      .prepare('INSERT INTO notices (title, content) VALUES (?, ?)')
+      .prepare(
+        'INSERT INTO notices (title, content, created_at, updated_at) VALUES (?, ?, datetime("now", "localtime"), datetime("now", "localtime"))'
+      )
       .bind(title, content)
       .run()
 
     return NextResponse.json(
       {
-        id: result.meta.last_row_id,
+        id: result.meta?.last_row_id ?? 0,
         title,
         content,
       },
