@@ -4,4 +4,4 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "sebongclinic-db"
-database_id = "placeholder"
+database_id = "de61fb37-3f20-403e-a6dd-72dccf964fe1"
