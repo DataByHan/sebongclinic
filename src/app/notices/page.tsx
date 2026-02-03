@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { site } from '@/lib/site'
 import type { Notice } from '@/types/cloudflare'
+import { sanitizeNoticeHtml } from '@/lib/sanitize'
 
 export default function NoticesPage() {
   const [notices, setNotices] = useState<Notice[]>([])
@@ -58,7 +59,7 @@ export default function NoticesPage() {
                 </div>
                 <div
                   className="mt-4 text-sm leading-relaxed text-[color:var(--muted)] prose max-w-none"
-                  dangerouslySetInnerHTML={{ __html: notice.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
                 />
               </article>
             ))}

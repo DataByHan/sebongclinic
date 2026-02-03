@@ -17,6 +17,11 @@ export async function GET(
     const { key } = params
     const objectKey = key.join('/')
 
+    // Restrict reads to the notices/ prefix and block path traversal attempts.
+    if (!objectKey.startsWith('notices/') || objectKey.includes('..')) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+
      const r2 = getR2()
     const object = await r2.get(objectKey)
 

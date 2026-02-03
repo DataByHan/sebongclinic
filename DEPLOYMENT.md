@@ -1,4 +1,4 @@
-# Cloudflare Pages + D1 배포 가이드
+# Cloudflare Workers(OpenNext) + D1 배포 가이드
 
 ## 1. Cloudflare D1 데이터베이스 생성
 
@@ -6,7 +6,7 @@
 # D1 데이터베이스 생성
 wrangler d1 create sebongclinic-db
 
-# 출력된 database_id를 복사하여 wrangler.toml의 database_id에 입력
+# 출력된 database_id를 복사하여 `wrangler.jsonc`의 `d1_databases[].database_id`에 입력
 ```
 
 ## 2. 데이터베이스 스키마 적용
@@ -34,37 +34,40 @@ wrangler d1 execute sebongclinic-db --file=./db/schema.sql
 3. **Public access** 섹션에서 **Allow Access** 클릭
 4. **R2.dev subdomain** 활성화 또는 Custom domain 연결
 
-### wrangler.toml 확인
-`wrangler.toml` 파일에 R2 바인딩이 있는지 확인:
-```toml
-[[r2_buckets]]
-binding = "IMAGES"
-bucket_name = "sebongclinic-images"
+### wrangler.jsonc 확인
+`wrangler.jsonc` 파일에 R2 바인딩이 있는지 확인:
+```jsonc
+{
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "sebongclinic-images"
+    }
+  ]
+}
 ```
 
-## 4. 환경 변수 설정 (선택사항)
+## 4. 비밀값(Secrets) 설정
 
-Cloudflare Pages 대시보드에서 환경 변수 추가:
-- `ADMIN_PASSWORD`: Admin 페이지 비밀번호 (기본값: sebong2025)
+Wrangler로 Workers Secret을 설정합니다:
+```bash
+wrangler secret put ADMIN_PASSWORD
+```
 
 이미지는 `/api/images/*` 경로로 서빙되므로, 별도의 R2 공개 도메인 설정은 필수는 아닙니다.
 
-## 5. Cloudflare Pages 프로젝트 설정
+## 5. Cloudflare Workers 배포 설정
 
-### 빌드 설정
-- **Build command**: `npm run build`
-- **Build output directory**: `.next`
-- **Root directory**: `/`
+### Wrangler 설정
+- `wrangler.jsonc`의 `main`은 `.open-next/worker.js` 입니다.
+- 이 파일은 **배포 시점에 생성되는 산출물**이라 Git에 커밋하지 않습니다 (`.gitignore`에 `.open-next` 포함).
+- 배포 전에 반드시 OpenNext 빌드를 수행해야 합니다:
+  - `npm run deploy` (권장) = `opennextjs-cloudflare build` + `wrangler deploy`
 
-### D1 바인딩 추가
-Settings > Functions > D1 database bindings에서:
-- **Variable name**: `DB`
-- **D1 database**: `sebongclinic-db` 선택
-
-### R2 바인딩 추가
-Settings > Functions > R2 bucket bindings에서:
-- **Variable name**: `IMAGES`
-- **R2 bucket**: `sebongclinic-images` 선택
+### 바인딩
+`wrangler.jsonc`에서 확인/수정:
+- D1: `DB`
+- R2: `IMAGES`
 
 ## 6. 로컬 개발
 
@@ -72,37 +75,35 @@ Settings > Functions > R2 bucket bindings에서:
 # 개발 서버 실행
 npm run dev
 
-# Cloudflare Pages 로컬 프리뷰 (D1 + R2 바인딩 포함)
-npm run pages:build
+# Cloudflare Workers 로컬 프리뷰 (D1 + R2 바인딩 포함)
 npm run preview
 ```
 
 ## 7. 배포
 
-### GitHub 연동 (권장)
-1. GitHub에 push하면 자동 배포됩니다
-2. Cloudflare Pages 대시보드에서 배포 상태 확인
-
-### 수동 배포
+### 수동 배포 (권장)
 ```bash
-npm run pages:build
+# Cloudflare API Token 필요 (wrangler)
+# export CLOUDFLARE_API_TOKEN="..."
+
 npm run deploy
 ```
 
 ## Admin 페이지 접속
 
 - **URL**: `https://yourdomain.com/admin-8f3a9c2d4b1e`
-- **비밀번호**: `sebong2025` (또는 설정한 ADMIN_PASSWORD)
+- **비밀번호**: Cloudflare Workers Secret `ADMIN_PASSWORD`로 설정한 값
 
 ⚠️ **보안 주의사항**:
 - Admin URL은 외부에 공유하지 마세요
 - 비밀번호를 정기적으로 변경하세요
-- 프로덕션에서는 반드시 환경 변수로 비밀번호를 설정하세요
+- 프로덕션에서는 반드시 **Secret**으로 비밀번호를 설정하세요:
+  - `wrangler secret put ADMIN_PASSWORD`
 
 ## 문제 해결
 
 ### D1 바인딩 오류
-- Cloudflare Pages 설정에서 D1 바인딩이 올바르게 설정되어 있는지 확인
+- `wrangler.jsonc`에서 D1 바인딩이 올바르게 설정되어 있는지 확인
 - Variable name이 정확히 `DB`인지 확인
 
 ### 빌드 실패
@@ -112,10 +113,10 @@ npm run deploy
 
 ### API 호출 실패
 - 브라우저 콘솔에서 에러 메시지 확인
-- Cloudflare Pages Functions 로그 확인
+- Cloudflare Workers 로그 확인 (`wrangler tail`)
 
 ### R2 바인딩 오류
-- Cloudflare Pages 설정에서 R2 바인딩이 올바르게 설정되어 있는지 확인
+- `wrangler.jsonc`에서 R2 바인딩이 올바르게 설정되어 있는지 확인
 - Variable name이 정확히 `IMAGES`인지 확인
 - R2 버킷 이름이 `sebongclinic-images`인지 확인
 

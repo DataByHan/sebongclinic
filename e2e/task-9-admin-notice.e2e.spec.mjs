@@ -7,7 +7,10 @@ const noticesPath = '/notices'
 const baseUrl = process.env.E2E_BASE_URL ?? 'http://localhost:3000'
 const password = process.env.SEBONGCLINIC_ADMIN_PASSWORD_STAGING
   ?? process.env.ADMIN_PASSWORD
-  ?? 'sebong2025'
+
+if (!password) {
+  throw new Error('Missing admin password env: set SEBONGCLINIC_ADMIN_PASSWORD_STAGING or ADMIN_PASSWORD')
+}
 
 const evidenceDir = path.join(process.cwd(), '.sisyphus', 'evidence')
 const evidence = {

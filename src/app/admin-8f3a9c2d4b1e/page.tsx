@@ -5,6 +5,7 @@ import '@toast-ui/editor/dist/toastui-editor.css'
 import type { EditorState, Selection } from 'prosemirror-state'
 import type { Node as ProseMirrorNode } from 'prosemirror-model'
 import type { Notice } from '@/types/cloudflare'
+import { sanitizeNoticeHtml } from '@/lib/sanitize'
 
 type ToastEditorInstance = import('@toast-ui/editor').default
 
@@ -386,7 +387,7 @@ export default function AdminPage() {
               <h3 className="text-lg font-semibold mb-2">{notice.title}</h3>
               <div
                 className="prose max-w-none mb-4"
-                dangerouslySetInnerHTML={{ __html: notice.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
               />
               <div className="text-sm text-[color:var(--muted)] mb-4">
                 {new Date(notice.created_at).toLocaleDateString('ko-KR')}
