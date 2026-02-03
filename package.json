@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "postbuild:opennext": "sed -i 's/process\\.chdir(\"\");/\\/\\/ process.chdir(\"\"); \\/\\/ Disabled for Cloudflare Workers/' .open-next/server-functions/default/handler.mjs 2>/dev/null || true",
+    "preview": "opennextjs-cloudflare build && npm run postbuild:opennext && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && npm run postbuild:opennext && opennextjs-cloudflare deploy",
     "start": "next start",
     "lint": "next lint"
   },
@@ -29,6 +30,6 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
-    "wrangler": "^3.114.1"
+    "wrangler": "^4.61.1"
   }
 }

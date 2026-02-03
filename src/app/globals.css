@@ -62,6 +62,36 @@
   .cta-ghost {
     @apply inline-flex items-center justify-center rounded-full border border-[color:var(--line)] bg-white px-5 py-3 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:bg-[color:var(--paper-2)];
   }
+
+  /* Notice image sizing - public pages (.prose) and admin editor preview */
+  .prose img,
+  .toastui-editor-contents img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .prose img[data-notice-size="sm"],
+  .toastui-editor-contents img[data-notice-size="sm"] {
+    width: 320px;
+  }
+
+  .prose img[data-notice-size="md"],
+  .toastui-editor-contents img[data-notice-size="md"] {
+    width: 480px;
+  }
+
+  .prose img[data-notice-size="lg"],
+  .toastui-editor-contents img[data-notice-size="lg"] {
+    width: 640px;
+  }
+
+  .prose img[data-notice-size="full"],
+  .toastui-editor-contents img[data-notice-size="full"] {
+    width: 100%;
+  }
 }
 
 @layer utilities {

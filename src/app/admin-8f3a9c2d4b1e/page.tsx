@@ -2,9 +2,100 @@
 
 import { useState, useEffect, useRef } from 'react'
 import '@toast-ui/editor/dist/toastui-editor.css'
+import type { EditorState, Selection } from 'prosemirror-state'
+import type { Node as ProseMirrorNode } from 'prosemirror-model'
 import type { Notice } from '@/types/cloudflare'
 
 type ToastEditorInstance = import('@toast-ui/editor').default
+
+type NoticeImageSize = 'sm' | 'md' | 'lg' | 'full'
+
+const parseNoticeImageSizePayload = (payload: unknown): NoticeImageSize | null => {
+  if (!payload || typeof payload !== 'object') return null
+  if (!('size' in payload)) return null
+  const size = (payload as { size?: unknown }).size
+  if (size === 'sm' || size === 'md' || size === 'lg' || size === 'full') return size
+  return null
+}
+
+const selectionToImageNode = (selection: Selection): ProseMirrorNode | null => {
+  const maybe = selection as unknown as { node?: ProseMirrorNode }
+  if (maybe.node?.type?.name === 'image') return maybe.node
+  return null
+}
+
+const findSelectedImage = (state: EditorState): { pos: number, node: ProseMirrorNode } | null => {
+  const directNode = selectionToImageNode(state.selection)
+  if (directNode) return { pos: state.selection.from, node: directNode }
+
+  const { doc, selection } = state
+  const candidates = [selection.from, selection.from - 1, selection.to, selection.to - 1]
+    .filter((pos) => Number.isFinite(pos) && pos >= 0)
+
+  for (const pos of candidates) {
+    const nodeAt = doc.nodeAt(pos)
+    if (nodeAt?.type?.name === 'image') return { pos, node: nodeAt }
+  }
+
+  let found: { pos: number, node: ProseMirrorNode } | null = null
+  const scanFrom = Math.max(0, Math.min(selection.from, selection.to) - 2)
+  const scanTo = Math.max(selection.from, selection.to) + 2
+
+  doc.nodesBetween(scanFrom, scanTo, (node, pos) => {
+    if (found) return false
+    if (node.type.name === 'image') {
+      found = { pos, node }
+      return false
+    }
+    return undefined
+  })
+
+  return found
+}
+
+const createNoticeImageSizePopupBody = (editor: ToastEditorInstance): HTMLElement => {
+  const root = document.createElement('div')
+  root.className = 'tui-notice-image-size-popup'
+  root.style.padding = '10px'
+
+  const label = document.createElement('div')
+  label.textContent = 'Image Size'
+  label.style.fontSize = '12px'
+  label.style.marginBottom = '8px'
+  label.style.opacity = '0.8'
+  root.appendChild(label)
+
+  const row = document.createElement('div')
+  row.style.display = 'flex'
+  row.style.gap = '6px'
+  root.appendChild(row)
+
+  const presets: Array<{ text: string, size: NoticeImageSize }> = [
+    { text: 'S', size: 'sm' },
+    { text: 'M', size: 'md' },
+    { text: 'L', size: 'lg' },
+    { text: 'Full', size: 'full' },
+  ]
+
+  for (const preset of presets) {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.textContent = preset.text
+    button.setAttribute('aria-label', `Image Size ${preset.text}`)
+    button.style.padding = '6px 10px'
+    button.style.border = '1px solid var(--line)'
+    button.style.borderRadius = '10px'
+    button.style.background = 'var(--paper)'
+    button.style.color = 'var(--ink)'
+    button.style.cursor = 'pointer'
+    button.addEventListener('click', () => {
+      editor.exec('setNoticeImageSize', { size: preset.size })
+    })
+    row.appendChild(button)
+  }
+
+  return root
+}
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -29,15 +120,15 @@ export default function AdminPage() {
        const { default: ToastEditor } = await import('@toast-ui/editor')
        if (cancelled || !editorRootRef.current) return
 
-       instance = new ToastEditor({
-         el: editorRootRef.current,
-         height: '300px',
-         initialEditType: 'wysiwyg',
-         previewStyle: 'vertical',
-         usageStatistics: false,
-         toolbarItems: [['heading', 'bold', 'italic', 'ul', 'ol', 'link', 'image']],
-         hooks: {
-           addImageBlobHook: (blob: Blob | File, callback: (url: string, text?: string) => void) => {
+        instance = new ToastEditor({
+          el: editorRootRef.current,
+          height: '300px',
+          initialEditType: 'wysiwyg',
+          previewStyle: 'vertical',
+          usageStatistics: false,
+          toolbarItems: [['heading', 'bold', 'italic', 'ul', 'ol', 'link', 'image']],
+          hooks: {
+            addImageBlobHook: (blob: Blob | File, callback: (url: string, text?: string) => void) => {
              const formData = new FormData()
              formData.append('file', blob)
              formData.append('password', passwordRef.current)
@@ -65,12 +156,44 @@ export default function AdminPage() {
                .catch(() => {
                  alert('이미지 업로드 중 오류가 발생했습니다')
                })
-           },
-         },
-       })
+            },
+          },
+        })
 
-       editorRef.current = instance
-     }
+        instance.addCommand('wysiwyg', 'setNoticeImageSize', (payload, state, dispatch) => {
+          const size = parseNoticeImageSizePayload(payload)
+          if (!size) return false
+
+          const found = findSelectedImage(state)
+          if (!found) {
+            alert('이미지를 선택해 주세요.')
+            return false
+          }
+
+          const nextAttrs: Record<string, unknown> = {
+            ...found.node.attrs,
+            'data-notice-size': size,
+          }
+
+          dispatch(state.tr.setNodeMarkup(found.pos, null, nextAttrs))
+          return true
+        })
+
+        instance.insertToolbarItem(
+          { groupIndex: 0, itemIndex: 999 },
+          {
+            name: 'noticeImageSize',
+            tooltip: 'Image Size',
+            text: 'Size',
+            className: 'tui-notice-image-size',
+            popup: {
+              body: createNoticeImageSizePopupBody(instance),
+            },
+          },
+        )
+
+        editorRef.current = instance
+      }
 
      void initEditor()
 
