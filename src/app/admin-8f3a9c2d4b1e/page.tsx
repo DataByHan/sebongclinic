@@ -245,7 +245,11 @@ export default function AdminPage() {
 
     setImageWidthError(null)
     suppressPopoverForKeyRef.current = null
-    editorInstance.exec('setNoticeImageWidth', { width: widthText, unit: imageWidthUnit })
+    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { width: widthText, unit: imageWidthUnit })
+    if (!success) {
+      alert('이미지를 선택해 주세요.')
+      return
+    }
 
     requestAnimationFrame(() => {
       syncImagePopoverFromSelection({ forceOpen: true })
@@ -259,7 +263,11 @@ export default function AdminPage() {
     setImageWidthInput('')
     setImageWidthError(null)
     suppressPopoverForKeyRef.current = null
-    editorInstance.exec('setNoticeImageWidth', { action: 'clear' })
+    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { action: 'clear' })
+    if (!success) {
+      alert('이미지를 선택해 주세요.')
+      return
+    }
 
     requestAnimationFrame(() => {
       syncImagePopoverFromSelection({ forceOpen: true })
