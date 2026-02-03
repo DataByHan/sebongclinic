@@ -1,4 +1,3 @@
-import { getRequestContext } from '@cloudflare/next-on-pages'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'edge'
@@ -7,16 +6,14 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'sebong2025'
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
+type RequestWithEnv = NextRequest & { env?: CloudflareEnv }
+
 function getR2(request: NextRequest): R2Bucket {
-  try {
-    return getRequestContext().env.IMAGES
-  } catch {
-    const env = (request as any).env as { IMAGES?: R2Bucket }
-    if (!env?.IMAGES) {
-      throw new Error('R2 bucket binding not found')
-    }
-    return env.IMAGES
+  const env = (request as RequestWithEnv).env
+  if (!env?.IMAGES) {
+    throw new Error('R2 bucket binding not found')
   }
+  return env.IMAGES
 }
 
 export async function POST(request: NextRequest) {
