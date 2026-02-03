@@ -15,8 +15,8 @@ type NoticeImageSize = 'sm' | 'md' | 'lg' | 'full'
 type NoticeImageWidthUnit = 'px' | '%'
 
 type NoticeImageWidthPayloadParsed =
-  | { kind: 'set', width: string, unit: NoticeImageWidthUnit }
-  | { kind: 'clear' }
+  | { kind: 'set', width: string, unit: NoticeImageWidthUnit, pos?: number }
+  | { kind: 'clear', pos?: number }
 
 const parseNoticeImageSizePayload = (payload: unknown): NoticeImageSize | null => {
   if (!payload || typeof payload !== 'object') return null
@@ -64,8 +64,10 @@ const findSelectedImage = (state: EditorState): { pos: number, node: ProseMirror
 const parseNoticeImageWidthPayload = (payload: unknown): NoticeImageWidthPayloadParsed | null => {
   if (!payload || typeof payload !== 'object') return null
 
-  const { width, unit, action } = payload as { width?: unknown, unit?: unknown, action?: unknown }
-  if (action === 'clear') return { kind: 'clear' }
+  const { width, unit, action, pos } = payload as { width?: unknown, unit?: unknown, action?: unknown, pos?: unknown }
+  const posNum = typeof pos === 'number' ? pos : undefined
+
+  if (action === 'clear') return { kind: 'clear', pos: posNum }
 
   const widthText = typeof width === 'number'
     ? String(width)
@@ -78,7 +80,7 @@ const parseNoticeImageWidthPayload = (payload: unknown): NoticeImageWidthPayload
     : null
   if (!unitText) return null
 
-  return { kind: 'set', width: widthText, unit: unitText }
+  return { kind: 'set', width: widthText, unit: unitText, pos: posNum }
 }
 
 const parseNoticeWidthText = (value: unknown): { width: string, unit: NoticeImageWidthUnit } | null => {
@@ -109,6 +111,7 @@ export default function AdminPage() {
   const [imagePopoverTop, setImagePopoverTop] = useState(0)
   const [imagePopoverLeft, setImagePopoverLeft] = useState(0)
   const [imagePopoverSelectedKey, setImagePopoverSelectedKey] = useState<string | null>(null)
+  const [imagePopoverSelectedPos, setImagePopoverSelectedPos] = useState<number | null>(null)
   const [imageWidthInput, setImageWidthInput] = useState('')
   const [imageWidthUnit, setImageWidthUnit] = useState<NoticeImageWidthUnit>('px')
   const [imageWidthError, setImageWidthError] = useState<string | null>(null)
@@ -194,6 +197,7 @@ export default function AdminPage() {
         suppressPopoverForKeyRef.current = null
         setImagePopoverOpen(false)
         setImagePopoverSelectedKey(null)
+        setImagePopoverSelectedPos(null)
         setImageWidthError(null)
         return
       }
@@ -207,6 +211,7 @@ export default function AdminPage() {
       suppressPopoverForKeyRef.current = null
       setImagePopoverOpen(false)
       setImagePopoverSelectedKey(null)
+      setImagePopoverSelectedPos(null)
       setImageWidthError(null)
       return
     }
@@ -215,6 +220,7 @@ export default function AdminPage() {
     const isSuppressed = suppressPopoverForKeyRef.current === key
 
     setImagePopoverSelectedKey(key)
+    setImagePopoverSelectedPos(found.pos)
 
     const canOpen = forceOpen || !isSuppressed
     if (!canOpen) return
@@ -245,7 +251,11 @@ export default function AdminPage() {
 
     setImageWidthError(null)
     suppressPopoverForKeyRef.current = null
-    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { width: widthText, unit: imageWidthUnit })
+    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { 
+      width: widthText, 
+      unit: imageWidthUnit,
+      pos: imagePopoverSelectedPos ?? undefined
+    })
     if (!success) {
       alert('이미지를 선택해 주세요.')
       return
@@ -263,7 +273,10 @@ export default function AdminPage() {
     setImageWidthInput('')
     setImageWidthError(null)
     suppressPopoverForKeyRef.current = null
-    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { action: 'clear' })
+    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { 
+      action: 'clear',
+      pos: imagePopoverSelectedPos ?? undefined
+    })
     if (!success) {
       alert('이미지를 선택해 주세요.')
       return
@@ -405,7 +418,19 @@ export default function AdminPage() {
            const parsed = parseNoticeImageWidthPayload(payload)
            if (!parsed) return false
 
-           const found = findSelectedImage(state)
+           let found: { pos: number, node: ProseMirrorNode } | null = null
+
+           if (parsed.pos !== undefined) {
+             const nodeAt = state.doc.nodeAt(parsed.pos)
+             if (nodeAt?.type?.name === 'image') {
+               found = { pos: parsed.pos, node: nodeAt }
+             }
+           }
+
+           if (!found) {
+             found = findSelectedImage(state)
+           }
+
            if (!found) return false
 
            const nextAttrs: Record<string, unknown> = { ...found.node.attrs }
