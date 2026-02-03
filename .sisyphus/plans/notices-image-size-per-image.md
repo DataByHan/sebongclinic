@@ -94,7 +94,7 @@ Critical Path: 1 → 2 → 3
 
 ## TODOs
 
-- [ ] 1. Define `data-notice-width` attribute + sanitize it safely
+- [x] 1. Define `data-notice-width` attribute + sanitize it safely
 
   **What to do**:
   - Add `data-notice-width` to `<img>` whitelist in `src/lib/sanitize.ts`.
@@ -128,10 +128,10 @@ Critical Path: 1 → 2 → 3
   - `src/lib/sanitize.ts` - Current whitelist + URL validation; add `data-notice-width` and sanitize it in `onTagAttr`.
   - `src/app/globals.css` - Existing `data-notice-size` sizing rules that must remain.
 
-  **Acceptance Criteria**:
-  - [ ] `npm run lint` passes.
-  - [ ] `npx tsc --noEmit` passes.
-  - [ ] Running this ad-hoc sanitizer check produces safe output (no `javascript:` and no injected CSS):
+   **Acceptance Criteria**:
+   - [x] `npm run lint` passes.
+   - [x] `npx tsc --noEmit` passes.
+   - [x] Running this ad-hoc sanitizer check produces safe output (no `javascript:` and no injected CSS):
 
     ```bash
     rm -rf .sisyphus/tmp-sanitize-test
@@ -155,7 +155,7 @@ Critical Path: 1 → 2 → 3
     Evidence: .sisyphus/evidence/task-1-sanitize-width.txt (capture stdout)
   ```
 
-- [ ] 2. Add admin popover UI for per-image width (px/%)
+- [x] 2. Add admin popover UI for per-image width (px/%)
 
   **What to do**:
   - In `src/app/admin-8f3a9c2d4b1e/page.tsx`:
@@ -199,12 +199,12 @@ Critical Path: 1 → 2 → 3
   - `src/app/admin-8f3a9c2d4b1e/page.tsx:164` - Existing `addCommand` pattern to follow.
   - `src/app/admin-8f3a9c2d4b1e/page.tsx:183` - Current `insertToolbarItem` to remove.
 
-  **Acceptance Criteria**:
-  - [ ] Clicking an image inside the Toast UI editor shows a popover within viewport.
-  - [ ] Setting width `50%` results in the selected image node having `data-notice-width="50%"`.
-  - [ ] Setting width `300px` results in `data-notice-width="300px"`.
-  - [ ] Clear removes `data-notice-width` from the selected image.
-  - [ ] Esc closes popover; clicking outside closes popover.
+   **Acceptance Criteria**:
+   - [x] Clicking an image inside the Toast UI editor shows a popover within viewport.
+   - [x] Setting width `50%` results in the selected image node having `data-notice-width="50%"`.
+   - [x] Setting width `300px` results in `data-notice-width="300px"`.
+   - [x] Clear removes `data-notice-width` from the selected image.
+   - [x] Esc closes popover; clicking outside closes popover.
 
   **Agent-Executed QA Scenarios**:
 
@@ -235,7 +235,7 @@ Critical Path: 1 → 2 → 3
     Evidence: .sisyphus/evidence/task-2-popover-clear.png
   ```
 
-- [ ] 3. Apply `data-notice-width` at render-time (admin + public)
+- [x] 3. Apply `data-notice-width` at render-time (admin + public)
 
   **What to do**:
   - Add a small shared helper (new or existing `src/lib/*`) that:
@@ -263,9 +263,9 @@ Critical Path: 1 → 2 → 3
   - `src/app/globals.css:66` - baseline image rules (`max-width: 100%`, etc.).
   - `src/lib/sanitize.ts` - reuse the exact same validation rules.
 
-  **Acceptance Criteria**:
-  - [ ] In admin “게시 미리보기”, an image with `data-notice-width="50%"` has computed width ~50% of the preview container (Playwright assertion).
-  - [ ] On `/notices`, runtime applier code path exists (verified by code reference + successful build).
+   **Acceptance Criteria**:
+   - [x] In admin "게시 미리보기", an image with `data-notice-width="50%"` has computed width ~50% of the preview container (Playwright assertion).
+   - [x] On `/notices`, runtime applier code path exists (verified by code reference + successful build).
 
   **Agent-Executed QA Scenarios**:
 
@@ -284,7 +284,7 @@ Critical Path: 1 → 2 → 3
     Evidence: .sisyphus/evidence/task-3-preview-width.png
   ```
 
-- [ ] 4. Final integration + regression checks
+- [x] 4. Final integration + regression checks
 
   **What to do**:
   - Ensure legacy `data-notice-size` still works (CSS unchanged).
@@ -305,11 +305,11 @@ Critical Path: 1 → 2 → 3
   - `src/app/globals.css` - keep `data-notice-size` styles.
   - `src/app/admin-8f3a9c2d4b1e/page.tsx` - verify toolbarItems remain.
 
-  **Acceptance Criteria**:
-  - [ ] `npm run lint` passes
-  - [ ] `npx tsc --noEmit` passes
-  - [ ] `npm run build` passes
-  - [ ] Playwright QA scenarios from Tasks 2-3 pass (screenshots captured)
+   **Acceptance Criteria**:
+   - [x] `npm run lint` passes
+   - [x] `npx tsc --noEmit` passes
+   - [x] `npm run build` passes
+   - [x] Playwright QA scenarios from Tasks 2-3 pass (screenshots captured)
 
 ---
 
@@ -331,8 +331,8 @@ npm run build
 ```
 
 ### Final Checklist
-- [ ] Toolbar “Size” popup removed from admin
-- [ ] Image-click popover supports numeric px/% and persists as `data-notice-width`
-- [ ] Sanitizer strips invalid/malicious `data-notice-width` values
-- [ ] Public notices render applies `data-notice-width` safely
-- [ ] Legacy `data-notice-size` continues to render as before
+- [x] Toolbar "Size" popup removed from admin
+- [x] Image-click popover supports numeric px/% and persists as `data-notice-width`
+- [x] Sanitizer strips invalid/malicious `data-notice-width` values
+- [x] Public notices render applies `data-notice-width` safely
+- [x] Legacy `data-notice-size` continues to render as before
