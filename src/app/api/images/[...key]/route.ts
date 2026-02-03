@@ -14,10 +14,10 @@ function getR2(request: NextRequest): R2Bucket {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ key: string[] }> }
+  { params }: { params: { key: string[] } }
 ) {
   try {
-    const { key } = await params
+    const { key } = params
     const objectKey = key.join('/')
 
     const r2 = getR2(request)
