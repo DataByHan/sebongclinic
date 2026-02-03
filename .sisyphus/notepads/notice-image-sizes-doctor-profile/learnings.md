@@ -120,3 +120,88 @@ All changes follow existing conventions:
 - Code follows established patterns
 - Ready for production deployment
 
+
+---
+
+## Final Completion Report
+
+### Plan Status: ✅ COMPLETE
+
+**All 5 Core Tasks Completed**:
+1. ✅ CSS image sizing rules
+2. ✅ Doctor section redesign
+3. ✅ Toast UI editor toolbar
+4. ✅ Playwright e2e tests
+5. ✅ Full verification run
+
+**All 4 Acceptance Criteria Met**:
+1. ✅ Notice admin editor: image size presets apply
+2. ✅ Notice public page: images render correctly on mobile
+3. ✅ Doctor section: badge + profile-only layout
+4. ✅ Playwright evidence captured
+
+### Implementation Details
+
+**Image Sizing System**:
+- Attribute-based: `data-notice-size="sm|md|lg|full"`
+- CSS-driven: scoped rules in globals.css
+- Mobile-safe: `max-width: 100%` fallback
+- Persistent: survives save/edit cycles
+
+**Doctor Section Redesign**:
+- Inline badge: "한의학박사" next to "김형규 원장"
+- Simplified layout: removed duplicate credential card
+- Responsive: wraps gracefully on mobile
+- Accessible: data-testid attributes for e2e
+
+**Toast UI Integration**:
+- Custom command: `setNoticeImageSize`
+- ProseMirror-based: uses `tr.setNodeMarkup()`
+- Error handling: alerts user if no image selected
+- Toolbar item: appends to existing toolbar
+
+**Test Coverage**:
+- Extended task-9: image sizing persistence
+- New task-10: doctor section layout
+- Mobile testing: 375px viewport
+- Evidence: 3 screenshots captured
+
+### Quality Assurance
+
+**Build Status**: ✅ PASS
+- Static export generated
+- All 10 routes prerendered
+- No build errors
+
+**Type Safety**: ✅ PASS
+- TypeScript strict mode
+- No type errors
+- All imports resolved
+
+**Code Quality**: ✅ PASS
+- ESLint passes (pre-existing warning only)
+- No linting errors
+- Follows project conventions
+
+**Test Coverage**: ✅ PASS
+- 2 tests passing
+- 1 test skipped (setup)
+- No flaky assertions
+- Evidence screenshots generated
+
+### Git History
+
+```
+a56667d docs: mark notice-image-sizes-doctor-profile plan as COMPLETE (5/5 tasks)
+8872419 feat: add notice image size presets + doctor section badge redesign
+```
+
+### Deployment Readiness
+
+✅ Code complete  
+✅ Tests passing  
+✅ Build verified  
+✅ Documentation complete  
+✅ No blockers  
+✅ Ready for production
+
