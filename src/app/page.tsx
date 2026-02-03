@@ -115,7 +115,7 @@ export default function HomePage() {
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
                 <div className="space-y-6">
-                  <div className="flat-chip">의료진 소개</div>
+                  <div className="flat-chip">한의사 소개</div>
                   <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">{site.doctorName} 원장</h2>
                   <div className="space-y-4 text-[color:var(--muted)] leading-relaxed">
                     <p>
@@ -138,21 +138,27 @@ export default function HomePage() {
 
               <Reveal delayMs={120}>
                 <div className="flat-card p-7 sm:p-9">
-                  <div className="flex items-center justify-between">
-                    <div className="type-serif text-2xl">{site.name}</div>
-                    <div className="text-xs text-[color:var(--muted)]">Doctor</div>
-                  </div>
                   <div className="mt-8 grid gap-4">
                     <div className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--paper-2)] p-6">
-                      <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">NAME</div>
+                      <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">한의학박사</div>
                       <div className="mt-2 text-2xl font-semibold">{site.doctorName}</div>
-                      <div className="mt-2 text-sm text-[color:var(--muted)]">한의사</div>
                     </div>
                     <div className="rounded-2xl border border-[color:var(--line)] bg-white p-6">
-                      <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">FOCUS</div>
+                      <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">Doctor’s Profile</div>
                       <div className="mt-2 text-sm leading-relaxed text-[color:var(--muted)]">
-                        환자에게 필요한 만큼만 복잡하게. 핵심만 남겨
-                        치료가 “내 이야기”로 이해되게 만듭니다.
+                        - 진주 고등학교 졸업
+                        - 경희대학교 한의학과 졸업
+                        - 경희대학교 대학원 한의학 박사 취득
+                        - 경희대학교 한의학과 외래교수
+                        - MFT학회 교수
+                        - 형상의학회 교수
+                        - 「학원사」숨어있는 명의50인에 선정
+                        [저서] 
+                        - 우주와 인체의 생성원리 공저 
+                        - 간장.심장 공역
+                        - 비장.폐장.신장 공역
+                        [논문]
+                        - 소사,백강잠,잠사 및 원잠아의 항당뇨작욕에 관한 연구 외 15편
                       </div>
                     </div>
                   </div>
