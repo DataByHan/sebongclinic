@@ -91,16 +91,12 @@ export default function HomePage() {
                   <div className="mt-8 space-y-6">
                     {[
                       { 
-                        label: '진단', 
-                        desc: '증상만 보지 않고, 패턴을 봅니다.'
+                        label: 'MFT(Meridian Finger Test) 진료', 
+                        desc: '경동맥의 24경락 파동 측정을 통한 정확한 진료.'
                       },
                       { 
-                        label: '처방', 
-                        desc: '단기 완화와 장기 유지의 균형.'
-                      },
-                      { 
-                        label: '관리', 
-                        desc: '리듬을 망치는 습관부터 정리.'
+                        label: '형상의학(形象醫學)', 
+                        desc: '개인별 형상적 특징을 분석하여 임상부터 치료까지.'
                       },
                     ].map((item, idx) => (
                       <div key={item.label} className="flex items-start gap-4">
@@ -166,7 +162,7 @@ export default function HomePage() {
                   <div className="mt-6 space-y-6">
                     {/* 학력 및 경력 */}
                     <div className="space-y-3">
-                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">學歷 및 經歷</div>
+                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">학력(學歷), 경력(經歷)</div>
                       <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
                         <li className="flex items-start gap-2">
                           <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
@@ -201,7 +197,7 @@ export default function HomePage() {
 
                     {/* 저서 */}
                     <div className="border-t border-[color:var(--line)] pt-6 space-y-3">
-                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">著書</div>
+                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">저서(著書)</div>
                       <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
                         <li className="flex items-start gap-2">
                           <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
@@ -220,7 +216,7 @@ export default function HomePage() {
 
                     {/* 논문 */}
                     <div className="border-t border-[color:var(--line)] pt-6 space-y-3">
-                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">論文</div>
+                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">논문(論文)</div>
                       <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
                         <li className="flex items-start gap-2">
                           <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
