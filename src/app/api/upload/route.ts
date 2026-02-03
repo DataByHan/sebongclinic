@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
-export const runtime = 'edge'
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'sebong2025'
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
-type RequestWithEnv = NextRequest & { env?: CloudflareEnv }
-
-function getR2(request: NextRequest): R2Bucket {
-  const env = (request as RequestWithEnv).env
+function getR2(): R2Bucket {
+  const { env } = getCloudflareContext()
   if (!env?.IMAGES) {
     throw new Error('R2 bucket binding not found')
   }
@@ -22,7 +18,8 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File | null
     const password = formData.get('password') as string | null
 
-    if (password !== ADMIN_PASSWORD) {
+    const { env } = getCloudflareContext()
+    if (password !== env.ADMIN_PASSWORD) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -70,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     const filename = `notices/${timestamp}-${randomStr}.${mimeExt}`
 
-    const r2 = getR2(request)
+    const r2 = getR2()
     const arrayBuffer = await file.arrayBuffer()
     
     await r2.put(filename, arrayBuffer, {

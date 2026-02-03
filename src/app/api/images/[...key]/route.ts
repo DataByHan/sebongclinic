@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
-export const runtime = 'edge'
-
-type RequestWithEnv = NextRequest & { env?: CloudflareEnv }
-
-function getR2(request: NextRequest): R2Bucket {
-  const env = (request as RequestWithEnv).env
+function getR2(): R2Bucket {
+  const { env } = getCloudflareContext()
   if (!env?.IMAGES) {
     throw new Error('R2 bucket binding not found')
   }
@@ -20,7 +17,7 @@ export async function GET(
     const { key } = params
     const objectKey = key.join('/')
 
-    const r2 = getR2(request)
+     const r2 = getR2()
     const object = await r2.get(objectKey)
 
     if (!object) {

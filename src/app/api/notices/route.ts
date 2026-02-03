@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { Notice } from '@/types/cloudflare'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
-export const runtime = 'edge'
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'sebong2025'
-
-type RequestWithEnv = NextRequest & { env?: CloudflareEnv }
-
-function getDB(request: NextRequest): D1Database {
-  const env = (request as RequestWithEnv).env
+function getDB(): D1Database {
+  const { env } = getCloudflareContext()
   if (!env?.DB) {
     throw new Error('D1 database binding not found')
   }
@@ -17,7 +12,7 @@ function getDB(request: NextRequest): D1Database {
 
 export async function GET(request: NextRequest) {
   try {
-    const db = getDB(request)
+    const db = getDB()
     const { results } = await db
       .prepare('SELECT * FROM notices ORDER BY created_at DESC')
       .all<Notice>()
@@ -45,7 +40,8 @@ export async function POST(request: NextRequest) {
     }
     const { title, content, password } = body
 
-    if (password !== ADMIN_PASSWORD) {
+    const { env } = getCloudflareContext()
+    if (password !== env.ADMIN_PASSWORD) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -59,7 +55,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const db = getDB(request)
+    const db = getDB()
     const result = await db
       .prepare(
         'INSERT INTO notices (title, content, created_at, updated_at) VALUES (?, ?, datetime("now", "localtime"), datetime("now", "localtime"))'

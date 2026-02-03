@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { Notice } from '@/types/cloudflare'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 
-export const runtime = 'edge'
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'sebong2025'
-
-type RequestWithEnv = NextRequest & { env?: CloudflareEnv }
-
-function getDB(request: NextRequest): D1Database {
-  const env = (request as RequestWithEnv).env
+function getDB(): D1Database {
+  const { env } = getCloudflareContext()
   if (!env?.DB) {
     throw new Error('D1 database binding not found')
   }
@@ -21,7 +16,7 @@ export async function GET(
 ) {
   try {
     const { id } = params
-    const db = getDB(request)
+     const db = getDB()
     const notice = await db
       .prepare('SELECT * FROM notices WHERE id = ?')
       .bind(id)
@@ -53,7 +48,8 @@ export async function PUT(
     const body = await request.json() as { title: string; content: string; password: string }
     const { title, content, password } = body
 
-    if (password !== ADMIN_PASSWORD) {
+    const { env } = getCloudflareContext()
+    if (password !== env.ADMIN_PASSWORD) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -67,7 +63,7 @@ export async function PUT(
       )
     }
 
-    const db = getDB(request)
+    const db = getDB()
     await db
       .prepare(
         'UPDATE notices SET title = ?, content = ?, updated_at = datetime("now", "localtime") WHERE id = ?'
@@ -94,14 +90,15 @@ export async function DELETE(
     const body = await request.json() as { password: string }
     const { password } = body
 
-    if (password !== ADMIN_PASSWORD) {
+    const { env } = getCloudflareContext()
+    if (password !== env.ADMIN_PASSWORD) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    const db = getDB(request)
+    const db = getDB()
     await db
       .prepare('DELETE FROM notices WHERE id = ?')
       .bind(id)

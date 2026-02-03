@@ -14,8 +14,8 @@
       "comment": "변경: gpt-5.2 → sonnet (문서 검색은 고급 추론 불필요)"
     },
     "explore": {
-      "model": "opencode/kimi-k2.5-free",
-      "comment": "코드베이스 탐색 - 무료 모델 적합 ✅"
+      "model": "opencode/claude-haiku-4-5",
+      "comment": "코드베이스 탐색 - 빠르고 안정적 ✅"
     },
     "multimodal-looker": {
       "model": "openai/gpt-5.2",
@@ -34,8 +34,8 @@
       "comment": "변경: gpt-5.2 → sonnet (계획 검토는 중간 모델로 충분)"
     },
     "atlas": {
-      "model": "opencode/kimi-k2.5-free",
-      "comment": "역할 불명확, 무료 모델 유지"
+      "model": "opencode/claude-haiku-4-5",
+      "comment": "작업 시작 orchestrator - 빠르고 안정적"
     }
   },
   "categories": {
@@ -56,12 +56,12 @@
       "comment": "창의적 접근 - 고급 모델 필요 ✅"
     },
     "quick": {
-      "model": "opencode/kimi-k2.5-free",
-      "comment": "간단 작업 - 무료 모델 적합 ✅"
+      "model": "opencode/claude-haiku-4-5",
+      "comment": "간단 작업 - 빠르고 안정적 ✅"
     },
     "unspecified-low": {
-      "model": "opencode/kimi-k2.5-free",
-      "comment": "저난이도 - 무료 모델 적합 ✅"
+      "model": "opencode/claude-haiku-4-5",
+      "comment": "저난이도 - 빠르고 안정적 ✅"
     },
     "unspecified-high": {
       "model": "openai/gpt-5.2",

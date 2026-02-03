@@ -1,0 +1,48 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sebongclinic",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-02-03",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sebongclinic-db",
+      "database_id": "de61fb37-3f20-403e-a6dd-72dccf964fe1"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "sebongclinic-images"
+    }
+  ],
+
+  // Secrets:
+  // - ADMIN_PASSWORD: wrangler secret put ADMIN_PASSWORD
+
+  "env": {
+    "staging": {
+      "name": "sebongclinic-staging",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "sebongclinic-db-staging",
+          "database_id": "PLACEHOLDER_STAGING_DB_ID"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "IMAGES",
+          "bucket_name": "sebongclinic-images-staging"
+        }
+      ]
+    }
+  }
+}

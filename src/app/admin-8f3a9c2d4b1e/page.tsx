@@ -14,38 +14,74 @@ export default function AdminPage() {
   const [title, setTitle] = useState('')
   const editorRef = useRef<ToastEditorInstance | null>(null)
   const editorRootRef = useRef<HTMLDivElement>(null)
+  const passwordRef = useRef(password)
 
   useEffect(() => {
-    let cancelled = false
-    let instance: ToastEditorInstance | null = null
+    passwordRef.current = password
+  }, [password])
 
-    const initEditor = async () => {
-      if (!editorRootRef.current) return
-      const { default: ToastEditor } = await import('@toast-ui/editor')
-      if (cancelled || !editorRootRef.current) return
+   useEffect(() => {
+     let cancelled = false
+     let instance: ToastEditorInstance | null = null
 
-      instance = new ToastEditor({
-        el: editorRootRef.current,
-        height: '300px',
-        initialEditType: 'wysiwyg',
-        previewStyle: 'vertical',
-        usageStatistics: false,
-        toolbarItems: [],
-      })
+     const initEditor = async () => {
+       if (!isAuthenticated || !editorRootRef.current) return
+       const { default: ToastEditor } = await import('@toast-ui/editor')
+       if (cancelled || !editorRootRef.current) return
 
-      editorRef.current = instance
-    }
+       instance = new ToastEditor({
+         el: editorRootRef.current,
+         height: '300px',
+         initialEditType: 'wysiwyg',
+         previewStyle: 'vertical',
+         usageStatistics: false,
+         toolbarItems: [['heading', 'bold', 'italic', 'ul', 'ol', 'link', 'image']],
+         hooks: {
+           addImageBlobHook: (blob: Blob | File, callback: (url: string, text?: string) => void) => {
+             const formData = new FormData()
+             formData.append('file', blob)
+             formData.append('password', passwordRef.current)
 
-    void initEditor()
+             fetch('/api/upload', {
+               method: 'POST',
+               body: formData,
+             })
+               .then(res => {
+                 if (res.status === 401) {
+                   alert('비밀번호가 올바르지 않습니다')
+                   return null
+                 }
+                 if (!res.ok) {
+                   alert('이미지 업로드에 실패했습니다')
+                   return null
+                 }
+                 return res.json() as Promise<{ url: string }>
+               })
+               .then((data) => {
+                 if (data?.url) {
+                   callback(data.url)
+                 }
+               })
+               .catch(() => {
+                 alert('이미지 업로드 중 오류가 발생했습니다')
+               })
+           },
+         },
+       })
 
-    return () => {
-      cancelled = true
-      if (instance) {
-        instance.destroy()
-      }
-      editorRef.current = null
-    }
-  }, [])
+       editorRef.current = instance
+     }
+
+     void initEditor()
+
+     return () => {
+       cancelled = true
+       if (instance) {
+         instance.destroy()
+       }
+       editorRef.current = null
+     }
+   }, [isAuthenticated])
 
   useEffect(() => {
     if (isAuthenticated) {
