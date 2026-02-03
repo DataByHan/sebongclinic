@@ -8,8 +8,9 @@ Agent guidelines for the Sebong Clinic website codebase.
 
 **Type:** Korean medicine clinic website  
 **Stack:** Next.js 14 (App Router) + TypeScript + Tailwind CSS  
-**Deployment:** Static export (`output: 'export'`) → Cloudflare Pages  
+**Deployment:** Cloudflare Workers (via @opennextjs/cloudflare) with D1 Database + R2 Storage  
 **Domain:** www.sebongclinic.co.kr  
+**Worker URL:** sebongclinic.hanms-data.workers.dev  
 **Design Philosophy:** Flat, minimal, scrollytelling with Korean aesthetic
 
 ---
@@ -20,21 +21,35 @@ Agent guidelines for the Sebong Clinic website codebase.
 # Development
 npm run dev              # Start dev server at localhost:3000
 
-# Production
+# Production Build (Static Export)
 npm run build            # Build static export to ./out/
 npm run start            # Serve production build locally
 
+# Cloudflare Workers Deployment
+npm run preview          # Build and preview Workers deployment locally
+npm run deploy           # Deploy to Cloudflare Workers (requires CLOUDFLARE_API_TOKEN)
+
 # Quality
 npm run lint             # ESLint (next/core-web-vitals)
+npx tsc --noEmit         # TypeScript type checking
+
+# E2E Tests (Playwright)
+npx playwright install   # Install browsers (one-time setup)
+npx playwright test      # Run all E2E tests
+npx playwright test e2e/task-9-admin-notice.e2e.spec.mjs  # Run specific test
+npx playwright test --headed     # Run with visible browser
+npx playwright test --debug      # Run in debug mode
+npx playwright show-report       # View test report
 ```
 
-**No test suite configured.** Manual verification required.
+**Test Infrastructure:** Playwright E2E tests configured in `/e2e/` directory.
 
 ### Pre-deployment Checklist
 1. `npm run build` succeeds without errors
-2. Check `./out/` directory contains expected files
-3. Images in `public/img/` copied to `out/img/`
-4. No TypeScript errors (`npx tsc --noEmit`)
+2. `npx tsc --noEmit` passes without TypeScript errors
+3. `npm run lint` passes without ESLint errors
+4. `npx playwright test` passes (E2E tests)
+5. For Workers deployment: Check D1 database and R2 bucket bindings in `wrangler.jsonc`
 
 ---
 
@@ -43,17 +58,28 @@ npm run lint             # ESLint (next/core-web-vitals)
 ```
 src/
 ├── app/
-│   ├── layout.tsx          # Root layout (fonts, metadata, <html>/<body>)
-│   ├── page.tsx            # Homepage (main single-page scroll)
-│   ├── globals.css         # CSS vars, custom Tailwind components
-│   └── notices/page.tsx    # Static notices page
+│   ├── layout.tsx              # Root layout (fonts, metadata, <html>/<body>)
+│   ├── page.tsx                # Homepage (main single-page scroll)
+│   ├── globals.css             # CSS vars, custom Tailwind components
+│   ├── notices/page.tsx        # Notices listing page (client component)
+│   ├── admin-*/page.tsx        # Admin dashboard for notice management
+│   └── api/
+│       ├── notices/route.ts    # D1 Database API for notices CRUD
+│       ├── upload/route.ts     # R2 Bucket API for image uploads
+│       └── images/[...key]/route.ts  # Image serving from R2
 ├── components/
-│   ├── Reveal.tsx          # Intersection Observer scroll animation
-│   └── KakaoMap.tsx        # Kakao Maps SDK integration
+│   ├── Reveal.tsx              # Intersection Observer scroll animation
+│   └── KakaoMap.tsx            # Kakao Maps SDK integration
 ├── lib/
-│   └── site.ts             # Centralized site config & data
-└── types/
-    └── kakao-maps.d.ts     # Global type definitions
+│   ├── site.ts                 # Centralized site config & data
+│   └── sanitize.ts             # XSS sanitization for user content
+├── types/
+│   ├── kakao-maps.d.ts         # Global type definitions for Kakao SDK
+│   └── cloudflare.d.ts         # Cloudflare Workers types (D1, R2, env)
+└── middleware.ts               # Security headers (CSP, X-Frame-Options)
+e2e/
+├── task-9-admin-notice.e2e.spec.mjs   # Admin notice editor E2E tests
+└── task-10-doctor-section.e2e.spec.mjs # Doctor section E2E tests
 ```
 
 **Key principle:** Centralize data in `src/lib/site.ts`. Components consume, don't define.
@@ -238,7 +264,49 @@ const [state, setState] = useState<LoadState>('idle')
 <section className="py-16">
 ```
 
-### 5. Naming Conventions
+### 5. API Routes & Database
+
+**D1 Database:** SQLite database for notices
+
+```typescript
+// ✅ API route pattern (from src/app/api/notices/route.ts)
+import type { NextRequest } from 'next/server'
+import type { Notice } from '@/types/cloudflare'
+
+export const runtime = 'edge'  // Required for Cloudflare Workers
+
+export async function GET(request: NextRequest) {
+  const env = process.env as unknown as CloudflareEnv
+  const results = await env.DB.prepare('SELECT * FROM notices ORDER BY date DESC').all<Notice>()
+  return Response.json(results.results)
+}
+```
+
+**R2 Bucket:** Object storage for uploaded images
+
+```typescript
+// ✅ Image upload pattern (from src/app/api/upload/route.ts)
+export async function POST(request: NextRequest) {
+  const env = process.env as unknown as CloudflareEnv
+  const key = `notices/${Date.now()}-${file.name}`
+  await env.IMAGES.put(key, file)
+  return Response.json({ url: `/api/images/${key}`, key })
+}
+```
+
+**Environment Types:** Defined in `src/types/cloudflare.d.ts`
+
+```typescript
+declare global {
+  interface CloudflareEnv {
+    DB: D1Database           // Notices database
+    IMAGES: R2Bucket         // Image storage
+    ADMIN_PASSWORD: string   // Admin auth secret
+  }
+}
+```
+
+### 6. Naming Conventions
 
 | Type | Convention | Example |
 |------|-----------|---------|
@@ -249,7 +317,53 @@ const [state, setState] = useState<LoadState>('idle')
 | CSS Classes | kebab-case | `.flat-card`, `.cta-ghost` |
 | CSS Variables | kebab-case | `--paper`, `--ink` |
 
-### 6. Error Handling
+### 6. Security & Content Sanitization
+
+**XSS Prevention:** All user-generated HTML must be sanitized
+
+```typescript
+// ✅ Correct (from src/lib/sanitize.ts)
+import xss from 'xss'
+
+export function sanitizeNoticeHtml(html: string): string {
+  return xss(html, {
+    whiteList: {
+      p: ['style'],
+      strong: [],
+      em: [],
+      u: [],
+      h1: ['style'], h2: ['style'], h3: ['style'],
+      ul: [], ol: [], li: [],
+      img: ['src', 'alt', 'style', 'width', 'height', 'data-image-size'],
+      a: ['href', 'target', 'rel'],
+    },
+    stripIgnoreTag: true,
+    stripIgnoreTagBody: ['script', 'style'],
+  })
+}
+
+// Usage in component
+import { sanitizeNoticeHtml } from '@/lib/sanitize'
+<div dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }} />
+```
+
+**CSP Configuration:** Set in `src/middleware.ts` for all routes
+
+```typescript
+// Required CSP directives:
+"script-src 'self' 'unsafe-inline' https://dapi.kakao.com https://t1.daumcdn.net"
+"connect-src 'self' https://dapi.kakao.com https://t1.daumcdn.net"
+"img-src 'self' data: blob: https:"
+```
+
+**Admin Authentication:** Password-based admin access (secret stored in Cloudflare)
+
+```typescript
+// Set secret: wrangler secret put ADMIN_PASSWORD
+// Access in API: const password = env.ADMIN_PASSWORD
+```
+
+### 7. Error Handling
 
 **User-facing errors:** Show friendly Korean messages
 
@@ -374,7 +488,9 @@ git commit -m "fix: correct Kakao Maps API key"
 git commit -m "refactor: extract site config to lib/site.ts"
 ```
 
-**Push Behavior:** Auto-deploys to Cloudflare Pages on push to `master`.
+**Deployment:** Run `npm run deploy` to deploy to Cloudflare Workers.  
+**Environments:** Production (`sebongclinic`) and Staging (`sebongclinic-staging`) configured in `wrangler.jsonc`.  
+**Required:** `CLOUDFLARE_API_TOKEN` environment variable must be set.
 
 ---
 
@@ -404,27 +520,35 @@ git commit -m "refactor: extract site config to lib/site.ts"
 | Build fails | TypeScript errors? ESLint errors? |
 | Images missing | Files in `public/img/`? Correct path `/img/...`? |
 | Styles broken | Using CSS vars? Custom classes imported? |
-| Kakao Map not loading | API key correct? Domain registered in Kakao console? |
+| Kakao Map not loading | API key correct? CSP allows `t1.daumcdn.net`? Domain registered? |
 | Layout broken on mobile | Using responsive classes (`md:`, `lg:`)? |
+| API routes fail | Runtime set to `'edge'`? Env types correct? |
+| Tests fail | Browsers installed? `E2E_BASE_URL` set? Admin password configured? |
 
 ---
 
 ## FAQ
 
 **Q: Can I use Next.js `<Image>` component?**  
-A: No. Static export requires `images.unoptimized = true`, so use plain `<img>` tags.
+A: Yes, but only with `images.unoptimized = true`. Prefer `<img>` for static assets.
 
 **Q: Where should I add new pages?**  
 A: Create in `src/app/{route}/page.tsx`. Follow App Router conventions.
 
 **Q: Can I use `useState` in page.tsx?**  
-A: No, it's a Server Component. Extract client logic to separate component with `'use client'`.
+A: Only if marked with `'use client'`. Server components don't support hooks.
 
 **Q: How do I change colors?**  
 A: Edit CSS variables in `src/app/globals.css` `:root` block. Never hardcode colors.
 
-**Q: Why no .env file?**  
-A: Static export means no server. All config must be build-time constants.
+**Q: How do I access D1/R2 in API routes?**  
+A: `const env = process.env as unknown as CloudflareEnv` then use `env.DB` or `env.IMAGES`.
+
+**Q: How do I run tests locally?**  
+A: `npx playwright install` (first time), then `npx playwright test`. Set `E2E_BASE_URL` if testing deployed site.
+
+**Q: Where are secrets stored?**  
+A: Use `wrangler secret put SECRET_NAME`. Access via `env.SECRET_NAME` in Workers.
 
 ---
 
