@@ -10,11 +10,11 @@ function buildCsp(): string {
     "object-src 'none'",
     "frame-ancestors 'none'",
     "form-action 'self'",
-    "script-src 'self' 'unsafe-inline' https://dapi.kakao.com",
+    "script-src 'self' 'unsafe-inline' https://dapi.kakao.com https://t1.daumcdn.net",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
-    "connect-src 'self' https://dapi.kakao.com",
+    "connect-src 'self' https://dapi.kakao.com https://t1.daumcdn.net",
     'upgrade-insecure-requests',
   ].join('; ')
 }
