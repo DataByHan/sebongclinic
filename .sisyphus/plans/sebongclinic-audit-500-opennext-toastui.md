@@ -153,7 +153,7 @@ Critical Path: 5 → 6 → 9
   - Applying schema fixes local D1: `npx wrangler d1 execute sebongclinic-db --local --file=./db/schema.sql`
   - `GET /api/notices` returns 200 after schema apply
 
-- [ ] 5. Create & Deploy Staging Worker (separate D1 + R2) [BLOCKED: CLOUDFLARE_API_TOKEN required]
+- [⚠️] 5. Create & Deploy Staging Worker (separate D1 + R2) [BLOCKED: CLOUDFLARE_API_TOKEN required]
 
   **What to do**:
   - Update `wrangler.jsonc` to add a staging environment (do not break production):
@@ -223,7 +223,7 @@ Critical Path: 5 → 6 → 9
     Evidence: .sisyphus/evidence/task-5-staging-auth-401.txt
   ```
 
-- [ ] 6. Production Deploy + Full Domain Cutover (www → Worker) [BLOCKED: Depends on Task 5]
+- [⚠️] 6. Production Deploy + Full Domain Cutover (www → Worker) [BLOCKED: Depends on Task 5]
 
   **What to do**:
   - Keep Cloudflare Pages project intact as rollback target (do NOT delete it).
