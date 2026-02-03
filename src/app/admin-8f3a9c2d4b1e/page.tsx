@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Image from '@tiptap/extension-image'
+import '@toast-ui/editor/dist/toastui-editor.css'
 import type { Notice } from '@/types/cloudflare'
+
+type ToastEditorInstance = import('@toast-ui/editor').default
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -12,24 +12,40 @@ export default function AdminPage() {
   const [notices, setNotices] = useState<Notice[]>([])
   const [editingId, setEditingId] = useState<number | null>(null)
   const [title, setTitle] = useState('')
-  const [uploading, setUploading] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const editorRef = useRef<ToastEditorInstance | null>(null)
+  const editorRootRef = useRef<HTMLDivElement>(null)
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Image.configure({
-        inline: false,
-        allowBase64: false,
-      }),
-    ],
-    content: '',
-    editorProps: {
-      attributes: {
-        class: 'prose max-w-none p-4 min-h-[240px] focus:outline-none border border-[color:var(--line)] rounded-lg prose-img:my-4 prose-img:rounded-xl prose-img:max-w-full',
-      },
-    },
-  })
+  useEffect(() => {
+    let cancelled = false
+    let instance: ToastEditorInstance | null = null
+
+    const initEditor = async () => {
+      if (!editorRootRef.current) return
+      const { default: ToastEditor } = await import('@toast-ui/editor')
+      if (cancelled || !editorRootRef.current) return
+
+      instance = new ToastEditor({
+        el: editorRootRef.current,
+        height: '300px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        usageStatistics: false,
+        toolbarItems: [],
+      })
+
+      editorRef.current = instance
+    }
+
+    void initEditor()
+
+    return () => {
+      cancelled = true
+      if (instance) {
+        instance.destroy()
+      }
+      editorRef.current = null
+    }
+  }, [])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -62,7 +78,8 @@ export default function AdminPage() {
   }
 
   const handleSubmit = async () => {
-    if (!editor) return
+    const editorInstance = editorRef.current
+    if (!editorInstance) return
     if (!title.trim()) {
       alert('제목을 입력해 주세요.')
       return
@@ -72,8 +89,8 @@ export default function AdminPage() {
       return
     }
 
-    const html = editor.getHTML()
-    const hasText = editor.getText().trim().length > 0
+    const html = editorInstance.getHTML()
+    const hasText = editorInstance.getMarkdown().trim().length > 0
     const hasImage = html.includes('<img')
     if (!hasText && !hasImage) {
       alert('내용을 입력해 주세요.')
@@ -93,7 +110,7 @@ export default function AdminPage() {
 
       if (res.ok) {
         setTitle('')
-        editor.commands.setContent('')
+        editorInstance.setHTML('')
         setEditingId(null)
         fetchNotices()
       } else {
@@ -114,7 +131,7 @@ export default function AdminPage() {
   const handleEdit = (notice: Notice) => {
     setEditingId(notice.id)
     setTitle(notice.title)
-    editor?.commands.setContent(notice.content)
+    editorRef.current?.setHTML(notice.content)
   }
 
   const handleDelete = async (id: number) => {
@@ -144,82 +161,6 @@ export default function AdminPage() {
     }
   }
 
-  const handleImageUpload = async (file: File) => {
-    if (!editor) return
-    if (!password.trim()) {
-      handleUnauthorized()
-      return
-    }
-
-    const maxSize = 5 * 1024 * 1024
-    if (file.size > maxSize) {
-      alert('파일 크기는 5MB를 초과할 수 없습니다.')
-      return
-    }
-
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
-    if (!allowedTypes.includes(file.type)) {
-      alert('지원하지 않는 파일 형식입니다. (JPEG, PNG, GIF, WebP만 가능)')
-      return
-    }
-
-    setUploading(true)
-
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('password', password)
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!res.ok) {
-        const error = await res.json() as { error?: string }
-        if (res.status === 401) {
-          handleUnauthorized()
-          return
-        }
-        alert(error.error || '업로드 실패')
-        return
-      }
-
-      const data = await res.json() as { url: string }
-      editor.chain().focus().setImage({ src: data.url, alt: '' }).run()
-    } catch (error) {
-      console.error('Upload error:', error)
-      alert('이미지 업로드 중 오류가 발생했습니다.')
-    } finally {
-      setUploading(false)
-    }
-  }
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    if (uploading) return
-    const file = e.dataTransfer.files?.[0]
-    if (!file) return
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드할 수 있습니다.')
-      return
-    }
-    handleImageUpload(file)
-  }
-
-  const handleFileSelect = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      handleImageUpload(file)
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }
 
   if (!isAuthenticated) {
     return (
@@ -257,118 +198,8 @@ export default function AdminPage() {
             placeholder="제목"
             className="w-full px-4 py-3 border border-[color:var(--line)] rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-[color:var(--jade)]"
           />
-          <div className="mb-4">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/gif,image/webp"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={handleFileSelect}
-              disabled={uploading}
-              className="cta-ghost text-sm"
-            >
-              {uploading ? '업로드 중...' : '이미지 추가'}
-            </button>
-          </div>
-
-          <div className="mb-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              className={[
-                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
-                editor?.isActive('bold') ? 'bg-[color:var(--paper-2)]' : '',
-              ].join(' ')}
-              onClick={() => editor?.chain().focus().toggleBold().run()}
-              disabled={!editor?.can().chain().focus().toggleBold().run()}
-            >
-              굵게
-            </button>
-            <button
-              type="button"
-              className={[
-                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
-                editor?.isActive('italic') ? 'bg-[color:var(--paper-2)]' : '',
-              ].join(' ')}
-              onClick={() => editor?.chain().focus().toggleItalic().run()}
-              disabled={!editor?.can().chain().focus().toggleItalic().run()}
-            >
-              기울임
-            </button>
-            <button
-              type="button"
-              className={[
-                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
-                editor?.isActive('strike') ? 'bg-[color:var(--paper-2)]' : '',
-              ].join(' ')}
-              onClick={() => editor?.chain().focus().toggleStrike().run()}
-              disabled={!editor?.can().chain().focus().toggleStrike().run()}
-            >
-              취소선
-            </button>
-            <button
-              type="button"
-              className={[
-                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
-                editor?.isActive('heading', { level: 2 }) ? 'bg-[color:var(--paper-2)]' : '',
-              ].join(' ')}
-              onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-            >
-              제목
-            </button>
-            <button
-              type="button"
-              className={[
-                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
-                editor?.isActive('bulletList') ? 'bg-[color:var(--paper-2)]' : '',
-              ].join(' ')}
-              onClick={() => editor?.chain().focus().toggleBulletList().run()}
-            >
-              글머리
-            </button>
-            <button
-              type="button"
-              className={[
-                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
-                editor?.isActive('orderedList') ? 'bg-[color:var(--paper-2)]' : '',
-              ].join(' ')}
-              onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-            >
-              번호
-            </button>
-            <button
-              type="button"
-              className={[
-                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
-                editor?.isActive('blockquote') ? 'bg-[color:var(--paper-2)]' : '',
-              ].join(' ')}
-              onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-            >
-              인용
-            </button>
-            <button
-              type="button"
-              className="rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]"
-              onClick={() => editor?.chain().focus().undo().run()}
-              disabled={!editor?.can().chain().focus().undo().run()}
-            >
-              되돌리기
-            </button>
-            <button
-              type="button"
-              className="rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]"
-              onClick={() => editor?.chain().focus().redo().run()}
-              disabled={!editor?.can().chain().focus().redo().run()}
-            >
-              다시하기
-            </button>
-          </div>
-
-          <div onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
-            <EditorContent editor={editor} />
+          <div className="rounded-lg border border-[color:var(--line)] bg-white">
+            <div ref={editorRootRef} />
           </div>
           <div className="flex gap-3 mt-4">
             <button onClick={handleSubmit} className="cta">
@@ -379,7 +210,7 @@ export default function AdminPage() {
                 onClick={() => {
                   setEditingId(null)
                   setTitle('')
-                  editor?.commands.setContent('')
+                  editorRef.current?.setHTML('')
                 }}
                 className="cta-ghost"
               >
