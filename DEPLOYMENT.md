@@ -46,7 +46,8 @@ bucket_name = "sebongclinic-images"
 
 Cloudflare Pages 대시보드에서 환경 변수 추가:
 - `ADMIN_PASSWORD`: Admin 페이지 비밀번호 (기본값: sebong2025)
-- `R2_PUBLIC_BUCKET_ID`: R2 버킷 Public URL ID (R2 Settings에서 확인)
+
+이미지는 `/api/images/*` 경로로 서빙되므로, 별도의 R2 공개 도메인 설정은 필수는 아닙니다.
 
 ## 5. Cloudflare Pages 프로젝트 설정
 

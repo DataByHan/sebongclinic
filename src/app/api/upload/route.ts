@@ -46,9 +46,24 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = Date.now()
-    const randomStr = Math.random().toString(36).substring(2, 15)
-    const extension = file.name.split('.').pop()
-    const filename = `${timestamp}-${randomStr}.${extension}`
+    const randomStr = Math.random().toString(36).slice(2)
+
+    const mimeExt = (() => {
+      switch (file.type) {
+        case 'image/jpeg':
+          return 'jpg'
+        case 'image/png':
+          return 'png'
+        case 'image/gif':
+          return 'gif'
+        case 'image/webp':
+          return 'webp'
+        default:
+          return 'bin'
+      }
+    })()
+
+    const filename = `notices/${timestamp}-${randomStr}.${mimeExt}`
 
     const r2 = getR2(request)
     const arrayBuffer = await file.arrayBuffer()
@@ -59,7 +74,7 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    const publicUrl = `https://pub-${process.env.R2_PUBLIC_BUCKET_ID || 'YOUR_BUCKET_ID'}.r2.dev/${filename}`
+    const publicUrl = `${request.nextUrl.origin}/api/images/${encodeURIComponent(filename)}`
 
     return NextResponse.json({
       url: publicUrl,

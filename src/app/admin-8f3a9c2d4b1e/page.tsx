@@ -19,14 +19,14 @@ export default function AdminPage() {
     extensions: [
       StarterKit,
       Image.configure({
-        inline: true,
+        inline: false,
         allowBase64: false,
       }),
     ],
     content: '',
     editorProps: {
       attributes: {
-        class: 'prose max-w-none p-4 min-h-[200px] focus:outline-none border border-[color:var(--line)] rounded-lg',
+        class: 'prose max-w-none p-4 min-h-[240px] focus:outline-none border border-[color:var(--line)] rounded-lg prose-img:my-4 prose-img:rounded-xl prose-img:max-w-full',
       },
     },
   })
@@ -49,17 +49,38 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    if (password === 'sebong2025') {
-      setIsAuthenticated(true)
-    } else {
-      alert('잘못된 비밀번호입니다.')
+    if (!password.trim()) {
+      alert('비밀번호를 입력해 주세요.')
+      return
     }
+    setIsAuthenticated(true)
+  }
+
+  const handleUnauthorized = () => {
+    alert('비밀번호가 올바르지 않습니다. 다시 로그인해 주세요.')
+    setIsAuthenticated(false)
   }
 
   const handleSubmit = async () => {
-    if (!title || !editor) return
+    if (!editor) return
+    if (!title.trim()) {
+      alert('제목을 입력해 주세요.')
+      return
+    }
+    if (!password.trim()) {
+      handleUnauthorized()
+      return
+    }
 
-    const content = editor.getHTML()
+    const html = editor.getHTML()
+    const hasText = editor.getText().trim().length > 0
+    const hasImage = html.includes('<img')
+    if (!hasText && !hasImage) {
+      alert('내용을 입력해 주세요.')
+      return
+    }
+
+    const content = html
     const url = editingId ? `/api/notices/${editingId}` : '/api/notices'
     const method = editingId ? 'PUT' : 'POST'
 
@@ -76,7 +97,13 @@ export default function AdminPage() {
         setEditingId(null)
         fetchNotices()
       } else {
-        alert('저장에 실패했습니다.')
+        if (res.status === 401) {
+          handleUnauthorized()
+          return
+        }
+
+        const data = await res.json().catch(() => ({})) as { error?: string }
+        alert(data.error || '저장에 실패했습니다.')
       }
     } catch (error) {
       console.error('Failed to save notice:', error)
@@ -103,7 +130,13 @@ export default function AdminPage() {
       if (res.ok) {
         fetchNotices()
       } else {
-        alert('삭제에 실패했습니다.')
+        if (res.status === 401) {
+          handleUnauthorized()
+          return
+        }
+
+        const data = await res.json().catch(() => ({})) as { error?: string }
+        alert(data.error || '삭제에 실패했습니다.')
       }
     } catch (error) {
       console.error('Failed to delete notice:', error)
@@ -113,6 +146,10 @@ export default function AdminPage() {
 
   const handleImageUpload = async (file: File) => {
     if (!editor) return
+    if (!password.trim()) {
+      handleUnauthorized()
+      return
+    }
 
     const maxSize = 5 * 1024 * 1024
     if (file.size > maxSize) {
@@ -140,18 +177,34 @@ export default function AdminPage() {
 
       if (!res.ok) {
         const error = await res.json() as { error?: string }
+        if (res.status === 401) {
+          handleUnauthorized()
+          return
+        }
         alert(error.error || '업로드 실패')
         return
       }
 
       const data = await res.json() as { url: string }
-      editor.chain().focus().setImage({ src: data.url }).run()
+      editor.chain().focus().setImage({ src: data.url, alt: '' }).run()
     } catch (error) {
       console.error('Upload error:', error)
       alert('이미지 업로드 중 오류가 발생했습니다.')
     } finally {
       setUploading(false)
     }
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    if (uploading) return
+    const file = e.dataTransfer.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드할 수 있습니다.')
+      return
+    }
+    handleImageUpload(file)
   }
 
   const handleFileSelect = () => {
@@ -218,10 +271,105 @@ export default function AdminPage() {
               disabled={uploading}
               className="cta-ghost text-sm"
             >
-              {uploading ? '업로드 중...' : '📷 이미지 추가'}
+              {uploading ? '업로드 중...' : '이미지 추가'}
             </button>
           </div>
-          <EditorContent editor={editor} />
+
+          <div className="mb-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className={[
+                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
+                editor?.isActive('bold') ? 'bg-[color:var(--paper-2)]' : '',
+              ].join(' ')}
+              onClick={() => editor?.chain().focus().toggleBold().run()}
+              disabled={!editor?.can().chain().focus().toggleBold().run()}
+            >
+              굵게
+            </button>
+            <button
+              type="button"
+              className={[
+                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
+                editor?.isActive('italic') ? 'bg-[color:var(--paper-2)]' : '',
+              ].join(' ')}
+              onClick={() => editor?.chain().focus().toggleItalic().run()}
+              disabled={!editor?.can().chain().focus().toggleItalic().run()}
+            >
+              기울임
+            </button>
+            <button
+              type="button"
+              className={[
+                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
+                editor?.isActive('strike') ? 'bg-[color:var(--paper-2)]' : '',
+              ].join(' ')}
+              onClick={() => editor?.chain().focus().toggleStrike().run()}
+              disabled={!editor?.can().chain().focus().toggleStrike().run()}
+            >
+              취소선
+            </button>
+            <button
+              type="button"
+              className={[
+                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
+                editor?.isActive('heading', { level: 2 }) ? 'bg-[color:var(--paper-2)]' : '',
+              ].join(' ')}
+              onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+            >
+              제목
+            </button>
+            <button
+              type="button"
+              className={[
+                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
+                editor?.isActive('bulletList') ? 'bg-[color:var(--paper-2)]' : '',
+              ].join(' ')}
+              onClick={() => editor?.chain().focus().toggleBulletList().run()}
+            >
+              글머리
+            </button>
+            <button
+              type="button"
+              className={[
+                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
+                editor?.isActive('orderedList') ? 'bg-[color:var(--paper-2)]' : '',
+              ].join(' ')}
+              onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+            >
+              번호
+            </button>
+            <button
+              type="button"
+              className={[
+                'rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]',
+                editor?.isActive('blockquote') ? 'bg-[color:var(--paper-2)]' : '',
+              ].join(' ')}
+              onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+            >
+              인용
+            </button>
+            <button
+              type="button"
+              className="rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]"
+              onClick={() => editor?.chain().focus().undo().run()}
+              disabled={!editor?.can().chain().focus().undo().run()}
+            >
+              되돌리기
+            </button>
+            <button
+              type="button"
+              className="rounded-full border border-[color:var(--line)] bg-white px-3 py-2 text-sm transition-colors hover:bg-[color:var(--paper-2)]"
+              onClick={() => editor?.chain().focus().redo().run()}
+              disabled={!editor?.can().chain().focus().redo().run()}
+            >
+              다시하기
+            </button>
+          </div>
+
+          <div onDragOver={(e) => e.preventDefault()} onDrop={handleDrop}>
+            <EditorContent editor={editor} />
+          </div>
           <div className="flex gap-3 mt-4">
             <button onClick={handleSubmit} className="cta">
               {editingId ? '수정 완료' : '작성 완료'}
