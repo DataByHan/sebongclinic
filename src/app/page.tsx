@@ -82,41 +82,38 @@ export default function HomePage() {
               </Reveal>
 
               <Reveal delayMs={120}>
-                <div className="flat-card p-6 sm:p-8">
+                <div className="flat-card bg-[color:var(--paper-2)] p-7 sm:p-9">
                   <div>
                     <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">SEBONG</div>
                     <div className="mt-3 type-serif text-2xl">진료 포인트</div>
                   </div>
 
-                  <div className="mt-8 space-y-5">
+                  <div className="mt-8 space-y-6">
                     {[
                       { 
-                        title: 'MFT 진료', 
-                        desc: '경동맥의 24경락 파동 측정을 통한 정확한 진료.',
-                        accent: 'jade'
+                        label: '진단', 
+                        desc: '증상만 보지 않고, 패턴을 봅니다.'
                       },
                       { 
-                        title: '형상의학', 
-                        desc: '개인별 형상적 특징을 분석하여 임상부터 치료까지.',
-                        accent: 'tangerine'
+                        label: '처방', 
+                        desc: '단기 완화와 장기 유지의 균형.'
                       },
-                    ].map((item) => (
-                      <div key={item.title} className="group rounded-xl border border-[color:var(--line)] bg-white p-5 transition-all hover:border-[color:var(--ink-line)]">
-                        <div className="flex items-baseline gap-3">
-                          <div className={[
-                            'h-1.5 w-1.5 shrink-0 rounded-full',
-                            item.accent === 'jade' ? 'bg-[color:var(--jade)]' : 'bg-[color:var(--tangerine)]'
-                          ].join(' ')} />
-                          <div className="type-serif text-lg font-semibold leading-tight">{item.title}</div>
-                        </div>
-                        <div className="mt-3 pl-5 text-[15px] leading-relaxed text-[color:var(--muted)]">
-                          {item.desc}
+                      { 
+                        label: '관리', 
+                        desc: '리듬을 망치는 습관부터 정리.'
+                      },
+                    ].map((item, idx) => (
+                      <div key={item.label} className="flex items-start gap-4">
+                        <div className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                        <div className="space-y-1.5">
+                          <div className="type-serif text-base font-semibold text-[color:var(--ink)]">{item.label}</div>
+                          <div className="text-[15px] leading-relaxed text-[color:var(--muted)]">{item.desc}</div>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <div className="mt-8 border-t border-[color:var(--line)] pt-5 text-sm text-[color:var(--muted)]">
+                  <div className="mt-8 border-t border-[color:var(--line)] pt-6 text-sm text-[color:var(--muted)]">
                     예약 및 문의: <a className="flat-link text-[color:var(--ink)]" href={`tel:${site.phone}`}>{site.phone}</a>
                   </div>
                 </div>
@@ -140,19 +137,19 @@ export default function HomePage() {
                       한의학박사
                     </span>
                   </h2>
-                  <div className="space-y-4 text-[color:var(--muted)] leading-relaxed">
+                  <div className="space-y-5 text-[15px] text-[color:var(--muted)] leading-[1.8]">
                     <p>
-                      빠른 결론보다 충분한 관찰을 우선합니다. 
+                      빠른 결론보다 충분한 관찰을 우선합니다.<br />
                       증상만 보는 것이 아니라, 그 증상이 생긴 흐름을 함께 봅니다.
                     </p>
                     <p>
-                      한의학은 몸 안의 리듬을 읽는 작업입니다. 
-                      무너진 균형을 다시 세우고, 일상으로 돌아갈 힘을 회복시키는 것.
+                      한의학은 몸 안의 리듬을 읽는 작업입니다.<br />
+                      무너진 균형을 다시 세우고, 일상으로 돌아갈 힘을 회복시키는 것.<br />
                       그것이 세봉이 집중하는 방향입니다.
                     </p>
                     <p>
-                      과장된 약속 대신, 환자가 스스로 이해할 수 있는 설명을 드립니다.
-                      기록으로 남는 치료, 재발을 줄이는 관리 계획까지.
+                      과장된 약속 대신, 환자가 스스로 이해할 수 있는 설명을 드립니다.<br />
+                      기록으로 남는 치료, 재발을 줄이는 관리 계획까지.<br />
                       단순한 처방이 아니라, &ldquo;회복의 과정&rdquo;을 함께 설계합니다.
                     </p>
                   </div>
@@ -162,23 +159,75 @@ export default function HomePage() {
               <Reveal delayMs={120}>
                 <div 
                   data-testid="doctor-profile-card"
-                  className="flat-card p-7 sm:p-9"
+                  className="flat-card bg-[color:var(--paper-2)] p-7 sm:p-9"
                 >
                   <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">Doctor&apos;s Profile</div>
-                  <div className="mt-4 text-sm leading-relaxed text-[color:var(--muted)] whitespace-pre-line">
-                    - 진주 고등학교 졸업
-                    - 경희대학교 한의학과 졸업
-                    - 경희대학교 대학원 한의학 박사 취득
-                    - 경희대학교 한의학과 외래교수
-                    - MFT학회 교수
-                    - 형상의학회 교수
-                    - 「학원사」숨어있는 명의50인에 선정
-                    [저서] 
-                    - 우주와 인체의 생성원리 공저 
-                    - 간장.심장 공역
-                    - 비장.폐장.신장 공역
-                    [논문]
-                    - 소사,백강잠,잠사 및 원잠아의 항당뇨작욕에 관한 연구 외 15편
+                  
+                  <div className="mt-6 space-y-6">
+                    {/* 학력 및 경력 */}
+                    <div className="space-y-3">
+                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">學歷 및 經歷</div>
+                      <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>진주 고등학교 졸업</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>경희대학교 한의학과 졸업</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>경희대학교 대학원 한의학 박사 취득</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>경희대학교 한의학과 외래교수</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>MFT학회 교수</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>형상의학회 교수</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>「학원사」숨어있는 명의50인에 선정</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* 저서 */}
+                    <div className="border-t border-[color:var(--line)] pt-6 space-y-3">
+                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">著書</div>
+                      <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>우주와 인체의 생성원리 공저</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>간장.심장 공역</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>비장.폐장.신장 공역</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* 논문 */}
+                    <div className="border-t border-[color:var(--line)] pt-6 space-y-3">
+                      <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">論文</div>
+                      <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
+                        <li className="flex items-start gap-2">
+                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                          <span>소사,백강잠,잠사 및 원잠아의 항당뇨작욕에 관한 연구 외 15편</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </Reveal>
