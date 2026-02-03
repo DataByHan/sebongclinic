@@ -159,11 +159,11 @@ export default function HomePage() {
                 >
                   <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">Doctor&apos;s Profile</div>
                   
-                  <div className="mt-6 space-y-6">
+                  <div className="mt-6 space-y-4">
                     {/* 학력 및 경력 */}
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                       <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">학력(學歷), 경력(經歷)</div>
-                      <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
+                      <ul className="space-y-1.5 text-sm leading-relaxed text-[color:var(--muted)]">
                         <li className="flex items-start gap-2">
                           <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
                           <span>진주 고등학교 졸업</span>
@@ -194,11 +194,10 @@ export default function HomePage() {
                         </li>
                       </ul>
                     </div>
-
                     {/* 저서 */}
-                    <div className="border-t border-[color:var(--line)] pt-6 space-y-3">
+                    <div className="border-t border-[color:var(--line)] pt-4 space-y-2.5">
                       <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">저서(著書)</div>
-                      <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
+                      <ul className="space-y-1.5 text-sm leading-relaxed text-[color:var(--muted)]">
                         <li className="flex items-start gap-2">
                           <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
                           <span>우주와 인체의 생성원리 공저</span>
@@ -213,14 +212,13 @@ export default function HomePage() {
                         </li>
                       </ul>
                     </div>
-
                     {/* 논문 */}
-                    <div className="border-t border-[color:var(--line)] pt-6 space-y-3">
+                    <div className="border-t border-[color:var(--line)] pt-4 space-y-2.5">
                       <div className="type-serif text-sm font-semibold text-[color:var(--ink)]">논문(論文)</div>
-                      <ul className="space-y-2 text-sm leading-relaxed text-[color:var(--muted)]">
+                      <ul className="space-y-1.5 text-sm leading-relaxed text-[color:var(--muted)]">
                         <li className="flex items-start gap-2">
                           <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
-                          <span>소사,백강잠,잠사 및 원잠아의 항당뇨작욕에 관한 연구 외 15편</span>
+                          <span>소사,백강잠,잠사 및 원잠아의 항당뇨작용에 관한 연구 외 15편</span>
                         </li>
                       </ul>
                     </div>
