@@ -153,7 +153,7 @@ Critical Path: 5 → 6 → 9
   - Applying schema fixes local D1: `npx wrangler d1 execute sebongclinic-db --local --file=./db/schema.sql`
   - `GET /api/notices` returns 200 after schema apply
 
-- [ ] 5. Create & Deploy Staging Worker (separate D1 + R2)
+- [ ] 5. Create & Deploy Staging Worker (separate D1 + R2) [BLOCKED: CLOUDFLARE_API_TOKEN required]
 
   **What to do**:
   - Update `wrangler.jsonc` to add a staging environment (do not break production):
@@ -223,7 +223,7 @@ Critical Path: 5 → 6 → 9
     Evidence: .sisyphus/evidence/task-5-staging-auth-401.txt
   ```
 
-- [ ] 6. Production Deploy + Full Domain Cutover (www → Worker)
+- [ ] 6. Production Deploy + Full Domain Cutover (www → Worker) [BLOCKED: Depends on Task 5]
 
   **What to do**:
   - Keep Cloudflare Pages project intact as rollback target (do NOT delete it).
@@ -272,7 +272,7 @@ Critical Path: 5 → 6 → 9
     Evidence: .sisyphus/evidence/task-6-prod-notices.txt
   ```
 
-- [ ] 7. Enable Toast UI Editor Toolbar (minimal set)
+- [x] 7. Enable Toast UI Editor Toolbar (minimal set)
 
   **What to do**:
   - Update the Toast UI Editor init in `src/app/admin-8f3a9c2d4b1e/page.tsx`:
@@ -292,7 +292,7 @@ Critical Path: 5 → 6 → 9
   - `npm run build` succeeds
   - Playwright: toolbar buttons are visible on `/admin-8f3a9c2d4b1e`
 
-- [ ] 8. Add Toast UI Image Upload Hook (POST /api/upload → insert URL)
+- [x] 8. Add Toast UI Image Upload Hook (POST /api/upload → insert URL)
 
   **What to do**:
   - Wire Toast UI editor image hook (e.g. `addImageBlobHook`) to:
@@ -316,7 +316,7 @@ Critical Path: 5 → 6 → 9
     - Uploading an image via editor results in an `<img src="/api/images/...">` (or returned URL) inserted into HTML
   - Wrong password surfaces Korean error (no insert)
 
-- [ ] 9. End-to-End Verification (Playwright)
+- [x] 9. End-to-End Verification (Playwright)
 
   **What to do**:
   - Run Playwright against staging first, then production:
