@@ -249,17 +249,43 @@ export default function AdminPage() {
       return
     }
 
-    setImageWidthError(null)
-    suppressPopoverForKeyRef.current = null
-    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { 
-      width: widthText, 
-      unit: imageWidthUnit,
-      pos: imagePopoverSelectedPos ?? undefined
-    })
-    if (!success) {
+    // Validate target image BEFORE calling exec()
+    const state = getWysiwygEditorState(editorInstance)
+    if (!state) {
       alert('이미지를 선택해 주세요.')
       return
     }
+
+    let found: { pos: number, node: ProseMirrorNode } | null = null
+
+    // Try stored position first
+    if (imagePopoverSelectedPos !== null) {
+      const nodeAt = state.doc.nodeAt(imagePopoverSelectedPos)
+      if (nodeAt?.type?.name === 'image') {
+        found = { pos: imagePopoverSelectedPos, node: nodeAt }
+      }
+    }
+
+    // Fall back to selection-based search if needed
+    if (!found) {
+      found = findSelectedImage(state)
+    }
+
+    // Only show alert if we truly have no target image
+    if (!found) {
+      alert('이미지를 선택해 주세요.')
+      return
+    }
+
+    setImageWidthError(null)
+    suppressPopoverForKeyRef.current = null
+    
+    // Safe to call exec() - we know the image exists
+    editorInstance.exec('setNoticeImageWidth', { 
+      width: widthText, 
+      unit: imageWidthUnit,
+      pos: found.pos
+    })
 
     requestAnimationFrame(() => {
       syncImagePopoverFromSelection({ forceOpen: true })
@@ -270,17 +296,43 @@ export default function AdminPage() {
     const editorInstance = editorRef.current
     if (!editorInstance) return
 
-    setImageWidthInput('')
-    setImageWidthError(null)
-    suppressPopoverForKeyRef.current = null
-    const success = (editorInstance.exec as (name: string, payload?: Record<string, unknown>) => boolean)('setNoticeImageWidth', { 
-      action: 'clear',
-      pos: imagePopoverSelectedPos ?? undefined
-    })
-    if (!success) {
+    // Validate target image BEFORE calling exec()
+    const state = getWysiwygEditorState(editorInstance)
+    if (!state) {
       alert('이미지를 선택해 주세요.')
       return
     }
+
+    let found: { pos: number, node: ProseMirrorNode } | null = null
+
+    // Try stored position first
+    if (imagePopoverSelectedPos !== null) {
+      const nodeAt = state.doc.nodeAt(imagePopoverSelectedPos)
+      if (nodeAt?.type?.name === 'image') {
+        found = { pos: imagePopoverSelectedPos, node: nodeAt }
+      }
+    }
+
+    // Fall back to selection-based search if needed
+    if (!found) {
+      found = findSelectedImage(state)
+    }
+
+    // Only show alert if we truly have no target image
+    if (!found) {
+      alert('이미지를 선택해 주세요.')
+      return
+    }
+
+    setImageWidthInput('')
+    setImageWidthError(null)
+    suppressPopoverForKeyRef.current = null
+    
+    // Safe to call exec() - we know the image exists
+    editorInstance.exec('setNoticeImageWidth', { 
+      action: 'clear',
+      pos: found.pos
+    })
 
     requestAnimationFrame(() => {
       syncImagePopoverFromSelection({ forceOpen: true })
