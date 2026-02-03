@@ -7,3 +7,7 @@ pages_build_output_dir = ".vercel/output/static"
 binding = "DB"
 database_name = "sebongclinic-db"
 database_id = "de61fb37-3f20-403e-a6dd-72dccf964fe1"
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "sebongclinic-images"

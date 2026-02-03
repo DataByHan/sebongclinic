@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Image from '@tiptap/extension-image'
 import type { Notice } from '@/types/cloudflare'
 
 export default function AdminPage() {
@@ -11,9 +12,17 @@ export default function AdminPage() {
   const [notices, setNotices] = useState<Notice[]>([])
   const [editingId, setEditingId] = useState<number | null>(null)
   const [title, setTitle] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Image.configure({
+        inline: true,
+        allowBase64: false,
+      }),
+    ],
     content: '',
     editorProps: {
       attributes: {
@@ -102,6 +111,63 @@ export default function AdminPage() {
     }
   }
 
+  const handleImageUpload = async (file: File) => {
+    if (!editor) return
+
+    const maxSize = 5 * 1024 * 1024
+    if (file.size > maxSize) {
+      alert('파일 크기는 5MB를 초과할 수 없습니다.')
+      return
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      alert('지원하지 않는 파일 형식입니다. (JPEG, PNG, GIF, WebP만 가능)')
+      return
+    }
+
+    setUploading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('password', password)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!res.ok) {
+        const error = await res.json() as { error?: string }
+        alert(error.error || '업로드 실패')
+        return
+      }
+
+      const data = await res.json() as { url: string }
+      editor.chain().focus().setImage({ src: data.url }).run()
+    } catch (error) {
+      console.error('Upload error:', error)
+      alert('이미지 업로드 중 오류가 발생했습니다.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      handleImageUpload(file)
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[color:var(--paper)]">
@@ -138,6 +204,23 @@ export default function AdminPage() {
             placeholder="제목"
             className="w-full px-4 py-3 border border-[color:var(--line)] rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-[color:var(--jade)]"
           />
+          <div className="mb-4">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={handleFileSelect}
+              disabled={uploading}
+              className="cta-ghost text-sm"
+            >
+              {uploading ? '업로드 중...' : '📷 이미지 추가'}
+            </button>
+          </div>
           <EditorContent editor={editor} />
           <div className="flex gap-3 mt-4">
             <button onClick={handleSubmit} className="cta">
