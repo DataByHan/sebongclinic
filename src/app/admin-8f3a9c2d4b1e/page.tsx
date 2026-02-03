@@ -116,10 +116,16 @@ export default function AdminPage() {
   const [imageWidthUnit, setImageWidthUnit] = useState<NoticeImageWidthUnit>('px')
   const [imageWidthError, setImageWidthError] = useState<string | null>(null)
 
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState<{ x: number, y: number, width: number, aspectRatio: number } | null>(null)
+  const [dragCurrentWidth, setDragCurrentWidth] = useState<number | null>(null)
+  const [resizeHandlePos, setResizeHandlePos] = useState<{ top: number, left: number } | null>(null)
+
   const editorRef = useRef<ToastEditorInstance | null>(null)
   const editorRootRef = useRef<HTMLDivElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const imagePopoverRef = useRef<HTMLDivElement>(null)
+  const resizeHandleRef = useRef<HTMLDivElement>(null)
 
   const passwordRef = useRef(password)
   const imagePopoverOpenRef = useRef(false)
@@ -186,6 +192,23 @@ export default function AdminPage() {
     setImagePopoverLeft(nextLeft)
   }, [])
 
+  const updateResizeHandlePosition = useCallback(() => {
+    const editorEl = editorRootRef.current
+    if (!editorEl) return
+
+    const selectedEl = editorEl.querySelector('.ProseMirror-selectednode') as HTMLElement | null
+    if (!selectedEl || selectedEl.tagName.toLowerCase() !== 'img') {
+      setResizeHandlePos(null)
+      return
+    }
+
+    const rect = selectedEl.getBoundingClientRect()
+    setResizeHandlePos({
+      top: rect.bottom - 8,
+      left: rect.right - 8,
+    })
+  }, [])
+
   const syncImagePopoverFromSelection = useCallback(({ forceOpen }: { forceOpen: boolean }) => {
     const editorInstance = editorRef.current
     if (!editorInstance) return
@@ -199,6 +222,7 @@ export default function AdminPage() {
         setImagePopoverSelectedKey(null)
         setImagePopoverSelectedPos(null)
         setImageWidthError(null)
+        setResizeHandlePos(null)
         return
       }
     }
@@ -213,6 +237,7 @@ export default function AdminPage() {
       setImagePopoverSelectedKey(null)
       setImagePopoverSelectedPos(null)
       setImageWidthError(null)
+      setResizeHandlePos(null)
       return
     }
 
@@ -223,7 +248,10 @@ export default function AdminPage() {
     setImagePopoverSelectedPos(found.pos)
 
     const canOpen = forceOpen || !isSuppressed
-    if (!canOpen) return
+    if (!canOpen) {
+      updateResizeHandlePosition()
+      return
+    }
 
     if (key !== imagePopoverSelectedKeyRef.current || !imagePopoverOpenRef.current) {
       const parsed = parseNoticeWidthText(found.node.attrs['data-notice-width'])
@@ -235,8 +263,9 @@ export default function AdminPage() {
     setImagePopoverOpen(true)
     requestAnimationFrame(() => {
       updateImagePopoverPosition()
+      updateResizeHandlePosition()
     })
-  }, [updateImagePopoverPosition])
+  }, [updateImagePopoverPosition, updateResizeHandlePosition])
 
   const applyImageWidth = () => {
     const editorInstance = editorRef.current
@@ -376,6 +405,111 @@ export default function AdminPage() {
       window.removeEventListener('resize', handleReposition)
     }
   }, [closeImagePopover, imagePopoverOpen, updateImagePopoverPosition])
+
+  useEffect(() => {
+    if (!resizeHandlePos || imagePopoverOpen) return
+
+    const handleReposition = () => {
+      updateResizeHandlePosition()
+    }
+
+    window.addEventListener('scroll', handleReposition, true)
+    window.addEventListener('resize', handleReposition)
+
+    return () => {
+      window.removeEventListener('scroll', handleReposition, true)
+      window.removeEventListener('resize', handleReposition)
+    }
+  }, [resizeHandlePos, imagePopoverOpen, updateResizeHandlePosition])
+
+  const handleResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const editorEl = editorRootRef.current
+    if (!editorEl) return
+
+    const selectedEl = editorEl.querySelector('.ProseMirror-selectednode') as HTMLImageElement | null
+    if (!selectedEl || selectedEl.tagName.toLowerCase() !== 'img') return
+
+    const rect = selectedEl.getBoundingClientRect()
+    const currentWidth = rect.width
+    const aspectRatio = rect.width / rect.height
+
+    setDragStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: currentWidth,
+      aspectRatio,
+    })
+    setDragCurrentWidth(currentWidth)
+    setIsDragging(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isDragging || !dragStart) return
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const deltaX = e.clientX - dragStart.x
+      const newWidth = Math.max(50, Math.min(5000, dragStart.width + deltaX))
+      setDragCurrentWidth(newWidth)
+      updateResizeHandlePosition()
+    }
+
+    const handleMouseUp = () => {
+      if (dragCurrentWidth !== null) {
+        const roundedWidth = Math.round(dragCurrentWidth)
+        setImageWidthInput(String(roundedWidth))
+        setImageWidthUnit('px')
+        setImageWidthError(null)
+
+        setTimeout(() => {
+          const editorInstance = editorRef.current
+          if (!editorInstance) return
+
+          const state = getWysiwygEditorState(editorInstance)
+          if (!state) return
+
+          let found: { pos: number, node: ProseMirrorNode } | null = null
+
+          if (imagePopoverSelectedPos !== null) {
+            const nodeAt = state.doc.nodeAt(imagePopoverSelectedPos)
+            if (nodeAt?.type?.name === 'image') {
+              found = { pos: imagePopoverSelectedPos, node: nodeAt }
+            }
+          }
+
+          if (!found) {
+            found = findSelectedImage(state)
+          }
+
+          if (found) {
+            editorInstance.exec('setNoticeImageWidth', {
+              width: String(roundedWidth),
+              unit: 'px',
+              pos: found.pos,
+            })
+
+            requestAnimationFrame(() => {
+              syncImagePopoverFromSelection({ forceOpen: false })
+            })
+          }
+        }, 0)
+      }
+
+      setIsDragging(false)
+      setDragStart(null)
+      setDragCurrentWidth(null)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isDragging, dragStart, dragCurrentWidth, imagePopoverSelectedPos, syncImagePopoverFromSelection, updateResizeHandlePosition])
 
     useEffect(() => {
       let cancelled = false
@@ -698,6 +832,34 @@ export default function AdminPage() {
            <div className="rounded-lg border border-[color:var(--line)] bg-white">
              <div ref={editorRootRef} />
            </div>
+
+           {resizeHandlePos && !imagePopoverOpen && (
+             <>
+               <div
+                 ref={resizeHandleRef}
+                 onMouseDown={handleResizeStart}
+                 className="fixed z-50 w-4 h-4 rounded-full bg-[color:var(--jade)] border-2 border-white cursor-nwse-resize shadow-lg hover:scale-125 transition-transform"
+                 style={{
+                   top: resizeHandlePos.top,
+                   left: resizeHandlePos.left,
+                   pointerEvents: isDragging ? 'none' : 'auto',
+                 }}
+                 role="button"
+                 aria-label="이미지 크기 조절"
+               />
+               {isDragging && dragCurrentWidth !== null && (
+                 <div
+                   className="fixed z-50 px-3 py-2 rounded-lg bg-[color:var(--ink)] text-white text-xs font-semibold shadow-lg pointer-events-none"
+                   style={{
+                     top: resizeHandlePos.top - 40,
+                     left: resizeHandlePos.left - 30,
+                   }}
+                 >
+                   {Math.round(dragCurrentWidth)}px
+                 </div>
+               )}
+             </>
+           )}
 
            {imagePopoverOpen && (
              <div
