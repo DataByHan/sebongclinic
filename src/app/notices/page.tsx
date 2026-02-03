@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { site } from '@/lib/site'
 import type { Notice } from '@/types/cloudflare'
 import { sanitizeNoticeHtml } from '@/lib/sanitize'
+import { applyNoticeImageWidths } from '@/lib/apply-notice-image-width'
 
 export default function NoticesPage() {
   const [notices, setNotices] = useState<Notice[]>([])
   const [loading, setLoading] = useState(true)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchNotices = async () => {
@@ -24,6 +26,12 @@ export default function NoticesPage() {
 
     fetchNotices()
   }, [])
+
+  useEffect(() => {
+    if (containerRef.current) {
+      applyNoticeImageWidths(containerRef.current)
+    }
+  }, [notices])
   return (
     <div className="min-h-screen">
       <header className="border-b border-[color:var(--line)] bg-[color:var(--paper)]">
@@ -40,31 +48,31 @@ export default function NoticesPage() {
         </div>
       </header>
 
-      <main className="frame py-12">
-        {loading ? (
-          <div className="text-center text-[color:var(--muted)]">로딩 중...</div>
-        ) : notices.length === 0 ? (
-          <div className="flat-card p-7 text-center text-[color:var(--muted)]">
-            등록된 공지사항이 없습니다.
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {notices.map((notice) => (
-              <article key={notice.id} className="flat-card p-7">
-                <div className="flex items-center justify-between gap-6">
-                  <div className="text-base font-semibold">{notice.title}</div>
-                  <div className="text-sm text-[color:var(--muted)]">
-                    {new Date(notice.created_at).toLocaleDateString('ko-KR')}
-                  </div>
-                </div>
-                <div
-                  className="mt-4 text-sm leading-relaxed text-[color:var(--muted)] prose max-w-none"
-                  dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
-                />
-              </article>
-            ))}
-          </div>
-        )}
+      <main className="frame py-12" ref={containerRef}>
+         {loading ? (
+           <div className="text-center text-[color:var(--muted)]">로딩 중...</div>
+         ) : notices.length === 0 ? (
+           <div className="flat-card p-7 text-center text-[color:var(--muted)]">
+             등록된 공지사항이 없습니다.
+           </div>
+         ) : (
+           <div className="grid gap-4">
+             {notices.map((notice) => (
+               <article key={notice.id} className="flat-card p-7">
+                 <div className="flex items-center justify-between gap-6">
+                   <div className="text-base font-semibold">{notice.title}</div>
+                   <div className="text-sm text-[color:var(--muted)]">
+                     {new Date(notice.created_at).toLocaleDateString('ko-KR')}
+                   </div>
+                 </div>
+                 <div
+                   className="mt-4 text-sm leading-relaxed text-[color:var(--muted)] prose max-w-none"
+                   dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
+                 />
+               </article>
+             ))}
+           </div>
+         )}
 
         <div className="mt-10 flat-card p-7 text-sm text-[color:var(--muted)]">
           방문 안내는 메인 페이지의 <a className="flat-link text-[color:var(--ink)]" href="/#visit">오시는 길</a> 섹션에서 확인할 수 있습니다.

@@ -38,7 +38,7 @@ const xssFilter = new FilterXSS({
     pre: [],
     span: [],
     div: [],
-    img: ['src', 'alt', 'data-notice-size'],
+    img: ['src', 'alt', 'data-notice-size', 'data-notice-width'],
   },
   stripIgnoreTag: true,
   stripIgnoreTagBody: ['script', 'style'],
@@ -60,6 +60,27 @@ const xssFilter = new FilterXSS({
       const trimmed = value.trim()
       if (!isSafeUrl(trimmed) || /^javascript:/i.test(trimmed)) return ''
       return `src="${escapeAttrValue(trimmed)}"`
+    }
+
+    if (tag === 'img' && name === 'data-notice-width') {
+      const trimmed = value.trim()
+      // Validate pattern: digits with optional decimal, followed by px or %
+      const match = /^(\d+(?:\.\d+)?)(px|%)$/.exec(trimmed)
+      if (!match) return ''
+
+      const numValue = parseFloat(match[1])
+      const unit = match[2]
+
+      let finalValue = numValue
+      if (unit === '%') {
+        // Clamp percentage to [10, 100]
+        finalValue = Math.max(10, Math.min(100, numValue))
+      } else if (unit === 'px') {
+        // Clamp pixels to [120, 1200]
+        finalValue = Math.max(120, Math.min(1200, numValue))
+      }
+
+      return `data-notice-width="${escapeAttrValue(`${finalValue}${unit}`)}"`
     }
 
     // Disallow inline event handlers universally.
