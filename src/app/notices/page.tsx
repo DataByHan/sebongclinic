@@ -1,19 +1,28 @@
-import { site } from '@/lib/site'
+'use client'
 
-const demoNotices = [
-  {
-    title: '공지사항 페이지 구조',
-    date: '—',
-    body: '향후 휴진/이벤트/진료 안내를 이곳에 게시합니다.',
-  },
-  {
-    title: '진료 시간 변동',
-    date: '—',
-    body: '변동이 있을 경우 본 페이지에 업데이트됩니다.',
-  },
-] as const
+import { useState, useEffect } from 'react'
+import { site } from '@/lib/site'
+import type { Notice } from '@/types/cloudflare'
 
 export default function NoticesPage() {
+  const [notices, setNotices] = useState<Notice[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const res = await fetch('/api/notices')
+        const data = await res.json() as { notices: Notice[] }
+        setNotices(data.notices || [])
+      } catch (error) {
+        console.error('Failed to fetch notices:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchNotices()
+  }, [])
   return (
     <div className="min-h-screen">
       <header className="border-b border-[color:var(--line)] bg-[color:var(--paper)]">
@@ -31,17 +40,30 @@ export default function NoticesPage() {
       </header>
 
       <main className="frame py-12">
-        <div className="grid gap-4">
-          {demoNotices.map((n) => (
-            <article key={n.title} className="flat-card p-7">
-              <div className="flex items-center justify-between gap-6">
-                <div className="text-base font-semibold">{n.title}</div>
-                <div className="text-sm text-[color:var(--muted)]">{n.date}</div>
-              </div>
-              <p className="mt-4 text-sm leading-relaxed text-[color:var(--muted)]">{n.body}</p>
-            </article>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center text-[color:var(--muted)]">로딩 중...</div>
+        ) : notices.length === 0 ? (
+          <div className="flat-card p-7 text-center text-[color:var(--muted)]">
+            등록된 공지사항이 없습니다.
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {notices.map((notice) => (
+              <article key={notice.id} className="flat-card p-7">
+                <div className="flex items-center justify-between gap-6">
+                  <div className="text-base font-semibold">{notice.title}</div>
+                  <div className="text-sm text-[color:var(--muted)]">
+                    {new Date(notice.created_at).toLocaleDateString('ko-KR')}
+                  </div>
+                </div>
+                <div
+                  className="mt-4 text-sm leading-relaxed text-[color:var(--muted)] prose max-w-none"
+                  dangerouslySetInnerHTML={{ __html: notice.content }}
+                />
+              </article>
+            ))}
+          </div>
+        )}
 
         <div className="mt-10 flat-card p-7 text-sm text-[color:var(--muted)]">
           방문 안내는 메인 페이지의 <a className="flat-link text-[color:var(--ink)]" href="/#visit">오시는 길</a> 섹션에서 확인할 수 있습니다.
