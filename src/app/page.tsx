@@ -92,7 +92,7 @@ export default function HomePage() {
                     {[
                       { 
                         label: 'MFT(Meridian Finger Test) 진료', 
-                        desc: '경동맥의 24경락 파동 측정을 통한 정확한 진료.'
+                        desc: '24경락(경동맥) 파동 측정을 통한 정확한 진료.'
                       },
                       { 
                         label: '형상의학(形象醫學)', 
