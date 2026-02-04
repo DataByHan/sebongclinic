@@ -3,6 +3,7 @@ import type { Notice } from '@/types/cloudflare'
 import { getCloudflareContext } from '@opennextjs/cloudflare'
 import { isSameOriginRequest, noStoreHeaders, sleep, timingSafeEqualString } from '@/lib/security'
 import { sanitizeNoticeHtml } from '@/lib/sanitize'
+import { marked } from 'marked'
 
 type NoticeFormat = 'html' | 'markdown'
 
@@ -43,12 +44,15 @@ export async function GET(
     }
 
     const format: NoticeFormat = notice.format === 'markdown' ? 'markdown' : 'html'
+    const renderedHtml = (format === 'markdown' && notice.content_md)
+      ? await marked(notice.content_md)
+      : notice.content
     const res = NextResponse.json({
       notice: {
         ...notice,
         format,
         content_md: format === 'markdown' ? (notice.content_md ?? null) : null,
-        content: sanitizeNoticeHtml(notice.content),
+        content: sanitizeNoticeHtml(renderedHtml),
       },
     })
     noStoreHeaders(res.headers)
@@ -121,22 +125,30 @@ export async function PUT(
       return res
     }
 
-    if (!title || !contentTrimmed) {
-      const res = NextResponse.json({ error: 'Title and content are required' }, { status: 400 })
+    if (!title) {
+      const res = NextResponse.json({ error: 'Title is required' }, { status: 400 })
       noStoreHeaders(res.headers)
       return res
     }
 
-    if (format === 'markdown' && (!contentMdTrimmed || !contentTrimmed)) {
+    if (format === 'html' && !contentTrimmed) {
+      const res = NextResponse.json({ error: 'Content is required for html' }, { status: 400 })
+      noStoreHeaders(res.headers)
+      return res
+    }
+
+    if (format === 'markdown' && !contentMdTrimmed) {
       const res = NextResponse.json(
-        { error: 'Content and content_md are required for markdown' },
+        { error: 'content_md is required for markdown' },
         { status: 400 }
       )
       noStoreHeaders(res.headers)
       return res
     }
 
-    const safeContent = sanitizeNoticeHtml(content)
+    const safeContent = format === 'markdown'
+      ? sanitizeNoticeHtml(await marked(contentMd))
+      : sanitizeNoticeHtml(content)
     const safeContentMd = format === 'markdown' ? contentMd : null
 
     const db = getDB()
