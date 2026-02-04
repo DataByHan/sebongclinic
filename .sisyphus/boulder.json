@@ -1,8 +1,12 @@
 {
   "active_plan": "/home/han/project/sebongclinic/.sisyphus/plans/notice-image-drag-resize.md",
   "started_at": "2026-02-03T23:02:18.161Z",
+  "completed_at": "2026-02-04T00:10:00.000Z",
   "session_ids": [
-    "ses_3da682b72ffev54GeutJJHwNaQ"
+    "ses_3da682b72ffev54GeutJJHwNaQ",
+    "ses_3da417247ffesv3T559SEXJztG",
+    "ses_3da3b183cffejuWv7aS8wNw6tR"
   ],
-  "plan_name": "notice-image-drag-resize"
+  "plan_name": "notice-image-drag-resize",
+  "status": "completed"
 }
