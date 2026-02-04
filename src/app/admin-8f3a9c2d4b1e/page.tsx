@@ -39,6 +39,7 @@ export default function AdminPage() {
           initialEditType: 'markdown',
           previewStyle: 'vertical',
           usageStatistics: false,
+          placeholder: '',
           toolbarItems: [['heading', 'bold', 'italic', 'ul', 'ol', 'link', 'image']],
           hooks: {
             addImageBlobHook: (blob: Blob | File, callback: (url: string, text?: string) => void) => {
