@@ -228,7 +228,7 @@ curl -s http://localhost:8787/api/notices | grep -q '"notices"' && echo "OK: res
 ```
 
 ### Final Checklist
-- [ ] Markdown notices always render as HTML on `/notices` after save
-- [ ] Corrupted state (`format='markdown'` + missing `content_md`) no longer leaks raw Markdown
-- [ ] `format='html'` notices unchanged
-- [ ] No new client-side markdown rendering library added
+- [x] Markdown notices always render as HTML on `/notices` after save
+- [x] Corrupted state (`format='markdown'` + missing `content_md`) no longer leaks raw Markdown
+- [x] `format='html'` notices unchanged
+- [x] No new client-side markdown rendering library added
