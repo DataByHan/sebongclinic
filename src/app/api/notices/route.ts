@@ -36,18 +36,20 @@ export async function GET(request: NextRequest) {
      const sanitized = await Promise.all(results.map(async (n) => {
        const format: NoticeFormat = n.format === 'markdown' ? 'markdown' : 'html'
 
-       // For markdown notices, prefer rendering from Markdown source when available.
-       // This avoids "raw markdown" accidentally being stored in `content`.
+       // For markdown notices, ALWAYS render via marked() to ensure HTML output
        let renderedHtml = n.content
-       if (format === 'markdown' && n.content_md?.trim()) {
-         renderedHtml = await marked(n.content_md)
-       } else if (format === 'markdown' && !n.content.trim().startsWith('<')) {
-         // Fallback: markdown stored in content, needs rendering
-         try {
-           renderedHtml = await marked(n.content)
-         } catch (error) {
-           console.error('Markdown fallback failed:', error)
-           // Keep n.content, already going through sanitize
+       if (format === 'markdown') {
+         const source = n.content_md?.trim() || n.content
+         if (source.trim()) {
+           try {
+             renderedHtml = await marked(source)
+           } catch (error) {
+             console.error(`Markdown render failed for notice ${n.id}:`, error)
+             // Last resort: escape and wrap in <pre> so it's at least visible
+             renderedHtml = `<pre>${source.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')}</pre>`
+           }
+         } else {
+           renderedHtml = ''
          }
        }
 

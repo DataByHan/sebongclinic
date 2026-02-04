@@ -45,15 +45,17 @@ export async function GET(
 
      const format: NoticeFormat = notice.format === 'markdown' ? 'markdown' : 'html'
      let renderedHtml = notice.content
-     if (format === 'markdown' && notice.content_md?.trim()) {
-       renderedHtml = await marked(notice.content_md)
-     } else if (format === 'markdown' && !notice.content.trim().startsWith('<')) {
-       // Fallback: markdown stored in content, needs rendering
-       try {
-         renderedHtml = await marked(notice.content)
-       } catch (error) {
-         console.error('Markdown fallback failed:', error)
-         // Keep notice.content, already going through sanitize
+     if (format === 'markdown') {
+       const source = notice.content_md?.trim() || notice.content
+       if (source.trim()) {
+         try {
+           renderedHtml = await marked(source)
+         } catch (error) {
+           console.error(`Markdown render failed for notice ${notice.id}:`, error)
+           renderedHtml = `<pre>${source.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')}</pre>`
+         }
+       } else {
+         renderedHtml = ''
        }
      }
      const res = NextResponse.json({
