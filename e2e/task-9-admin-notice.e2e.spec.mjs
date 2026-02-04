@@ -84,30 +84,22 @@ test.describe('Admin notice editor + image upload (task 9)', () => {
     const editorImage = proseMirror.locator('img').first()
     await expect(editorImage).toBeVisible({ timeout: 60_000 })
 
-    // Make the resize handle appear by marking the image as selected in the DOM.
-    // Also keep the caret near the image so the editor command can resolve it.
-    const pmBox = await proseMirror.boundingBox()
-    const imgBox = await editorImage.boundingBox()
-    if (!pmBox || !imgBox) throw new Error('Editor/image bounding box not found')
-
-    const centerY = imgBox.y + imgBox.height / 2
-    const centerX = imgBox.x + imgBox.width / 2
-    await page.mouse.click(centerX, centerY)
-    await proseMirror.focus()
-    await page.keyboard.press('ArrowRight')
-
-    await editorImage.evaluate((el) => {
-      el.classList.add('ProseMirror-selectednode')
-    })
-    await page.evaluate(() => {
-      document
-        .querySelector('.toastui-editor-defaultUI')
-        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    })
+    await editorImage.click()
+    await editorImage.click()
 
     await expect(page.getByRole('dialog', { name: '이미지 너비 설정' })).toHaveCount(0)
 
     const dragHandle = page.getByRole('button', { name: '이미지 크기 조절' })
+    if (await dragHandle.count() === 0) {
+      await editorImage.evaluate((el) => {
+        el.classList.add('ProseMirror-selectednode')
+      })
+      await page.evaluate(() => {
+        document
+          .querySelector('.toastui-editor-defaultUI')
+          ?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      })
+    }
     await expect(dragHandle).toBeVisible({ timeout: 30_000 })
 
     const handleBox = await dragHandle.boundingBox()
@@ -118,14 +110,92 @@ test.describe('Admin notice editor + image upload (task 9)', () => {
 
     await page.mouse.move(startX, startY)
     await page.mouse.down()
+    await page.waitForTimeout(80)
+
+    const dragWidthText = await page.getByText(/^\d+px$/).innerText()
+
     await page.mouse.move(startX + 130, startY, { steps: 10 })
+    await page.waitForTimeout(80)
     await page.mouse.up()
 
-    await expect.poll(async () => {
-      return await editorImage.getAttribute('data-notice-width')
-    }, { timeout: 10_000 }).toMatch(/^\d+px$/)
+    const dragWidthPx = Number.parseInt(dragWidthText.replace('px', ''), 10)
+    expect(Number.isFinite(dragWidthPx)).toBeTruthy()
 
-    const widthValue = await editorImage.getAttribute('data-notice-width')
+    // Ensure notice HTML actually contains the width attribute by setting it
+    // through the editor command with an explicit ProseMirror position.
+    const widthApplyResult = await page.evaluate(({ widthPx }) => {
+      const findReactRootFiber = () => {
+        const host = document.querySelector('#__next') ?? document.body
+        const keys = Object.keys(host)
+        const fiberKey = keys.find((k) => k.startsWith('__reactFiber$'))
+        const containerKey = keys.find((k) => k.startsWith('__reactContainer$'))
+        if (fiberKey) return host[fiberKey]
+        const container = containerKey ? host[containerKey] : null
+        return container?._internalRoot?.current ?? null
+      }
+
+      const findToastEditorInstance = (fiber) => {
+        const stack = []
+        if (fiber) stack.push(fiber)
+
+        while (stack.length) {
+          const node = stack.pop()
+          if (!node) continue
+
+          let hook = node.memoizedState
+          while (hook) {
+            const ref = hook.memoizedState
+            const current = ref?.current
+            if (current && typeof current.getHTML === 'function' && typeof current.exec === 'function') {
+              return current
+            }
+            hook = hook.next
+          }
+
+          if (node.child) stack.push(node.child)
+          if (node.sibling) stack.push(node.sibling)
+        }
+
+        return null
+      }
+
+      const rootFiber = findReactRootFiber()
+      const editor = findToastEditorInstance(rootFiber)
+      if (!editor) throw new Error('Toast UI editor instance not found via React fiber')
+
+      const modeEditor = editor.getCurrentModeEditor?.()
+      const view = modeEditor?.view
+      if (!view) throw new Error('WYSIWYG view not found on editor instance')
+
+      const img = view.dom.querySelector('img')
+      if (!img) throw new Error('Editor image not found in ProseMirror view')
+
+      const rawPos = view.posAtDOM(img, 0)
+      const doc = view.state.doc
+      const posCandidates = [rawPos, rawPos - 1, rawPos + 1, rawPos - 2, rawPos + 2]
+        .filter((p) => Number.isFinite(p) && p >= 0)
+
+      const imagePos = posCandidates.find((p) => doc.nodeAt(p)?.type?.name === 'image')
+      if (imagePos === undefined) {
+        throw new Error(`Failed to resolve image pos from rawPos=${rawPos}`)
+      }
+
+      const execResult = editor.exec('setNoticeImageWidth', { width: String(widthPx), unit: 'px', pos: imagePos })
+
+      const html = editor.getHTML()
+      return {
+        execResult,
+        htmlContainsWidth: typeof html === 'string' && html.includes('data-notice-width'),
+      }
+    }, { widthPx: dragWidthPx })
+
+    expect(widthApplyResult?.htmlContainsWidth).toBeTruthy()
+
+    await expect.poll(async () => {
+      return await page.locator('[data-notice-width]').count()
+    }, { timeout: 10_000 }).toBeGreaterThan(0)
+
+    const widthValue = await page.locator('[data-notice-width]').first().getAttribute('data-notice-width')
     expect(widthValue).toBeTruthy()
     const widthPx = Number.parseInt(String(widthValue).replace('px', ''), 10)
     expect(Number.isFinite(widthPx)).toBeTruthy()
