@@ -266,7 +266,7 @@ kill $DEV_PID
 ```
 
 ### Final Checklist
-- [ ] Admin editor: selecting image shows drag handle, no width popover.
-- [ ] Drag clamp matches sanitizer/runtime clamp (120–1200).
-- [ ] Public notices preserve and apply `data-notice-width`.
-- [ ] Lint, types, build, and E2E pass.
+- [x] Admin editor: selecting image shows drag handle, no width popover.
+- [x] Drag clamp matches sanitizer/runtime clamp (120–1200).
+- [x] Public notices preserve and apply `data-notice-width`.
+- [x] Lint, types, build, and E2E pass.
