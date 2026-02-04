@@ -83,21 +83,11 @@ const parseNoticeImageWidthPayload = (payload: unknown): NoticeImageWidthPayload
   return { kind: 'set', width: widthText, unit: unitText, pos: posNum }
 }
 
-const parseNoticeWidthText = (value: unknown): { width: string, unit: NoticeImageWidthUnit } | null => {
-  if (typeof value !== 'string') return null
-  const match = value.trim().match(/^(\d+(?:\.\d+)?)(px|%)$/)
-  if (!match) return null
-  const unit = match[2] === 'px' ? 'px' : '%'
-  return { width: match[1], unit }
-}
-
 const getWysiwygEditorState = (editor: ToastEditorInstance): EditorState | null => {
   const maybe = editor as unknown as { getCurrentModeEditor?: () => unknown }
   const mode = maybe.getCurrentModeEditor?.() as { view?: { state?: EditorState } } | undefined
   return mode?.view?.state ?? null
 }
-
-const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -107,15 +97,6 @@ export default function AdminPage() {
   const [title, setTitle] = useState('')
   const [previewHtml, setPreviewHtml] = useState('')
 
-  const [imagePopoverOpen, setImagePopoverOpen] = useState(false)
-  const [imagePopoverTop, setImagePopoverTop] = useState(0)
-  const [imagePopoverLeft, setImagePopoverLeft] = useState(0)
-  const [imagePopoverSelectedKey, setImagePopoverSelectedKey] = useState<string | null>(null)
-  const [imagePopoverSelectedPos, setImagePopoverSelectedPos] = useState<number | null>(null)
-  const [imageWidthInput, setImageWidthInput] = useState('')
-  const [imageWidthUnit, setImageWidthUnit] = useState<NoticeImageWidthUnit>('px')
-  const [imageWidthError, setImageWidthError] = useState<string | null>(null)
-
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState<{ x: number, y: number, width: number, aspectRatio: number } | null>(null)
   const [dragCurrentWidth, setDragCurrentWidth] = useState<number | null>(null)
@@ -124,73 +105,13 @@ export default function AdminPage() {
   const editorRef = useRef<ToastEditorInstance | null>(null)
   const editorRootRef = useRef<HTMLDivElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
-  const imagePopoverRef = useRef<HTMLDivElement>(null)
   const resizeHandleRef = useRef<HTMLDivElement>(null)
 
   const passwordRef = useRef(password)
-  const imagePopoverOpenRef = useRef(false)
-  const imagePopoverSelectedKeyRef = useRef<string | null>(null)
-  const suppressPopoverForKeyRef = useRef<string | null>(null)
 
   useEffect(() => {
     passwordRef.current = password
   }, [password])
-
-  useEffect(() => {
-    imagePopoverOpenRef.current = imagePopoverOpen
-  }, [imagePopoverOpen])
-
-  useEffect(() => {
-    imagePopoverSelectedKeyRef.current = imagePopoverSelectedKey
-  }, [imagePopoverSelectedKey])
-
-  const closeImagePopover = useCallback(({ suppress }: { suppress: boolean }) => {
-    if (suppress) {
-      suppressPopoverForKeyRef.current = imagePopoverSelectedKeyRef.current
-    }
-    setImagePopoverOpen(false)
-    setImageWidthError(null)
-  }, [])
-
-  const validateImageWidth = useCallback(({ widthText, unit }: { widthText: string, unit: NoticeImageWidthUnit }): string | null => {
-    const trimmed = widthText.trim()
-    if (!trimmed) return '값을 입력해 주세요.'
-    if (!/^\d+(\.\d+)?$/.test(trimmed)) return '숫자만 입력해 주세요.'
-
-    const value = Number.parseFloat(trimmed)
-    if (!Number.isFinite(value)) return '유효한 숫자를 입력해 주세요.'
-    if (value <= 0) return '0보다 큰 값을 입력해 주세요.'
-    if (unit === '%' && value > 100) return '퍼센트(%)는 100 이하로 입력해 주세요.'
-    if (unit === 'px' && value > 5000) return '픽셀(px)은 5000 이하로 입력해 주세요.'
-    return null
-  }, [])
-
-  const updateImagePopoverPosition = useCallback(() => {
-    const editorEl = editorRootRef.current
-    const popoverEl = imagePopoverRef.current
-    if (!editorEl || !popoverEl) return
-
-    const selectedEl = editorEl.querySelector('.ProseMirror-selectednode') as HTMLElement | null
-    if (!selectedEl) return
-
-    const anchorRect = selectedEl.getBoundingClientRect()
-    const popRect = popoverEl.getBoundingClientRect()
-
-    const gutter = 10
-    const belowTop = anchorRect.bottom + 10
-    const aboveTop = anchorRect.top - popRect.height - 10
-    const top = (belowTop + popRect.height <= window.innerHeight - gutter) ? belowTop : aboveTop
-
-    const nextTop = clamp(Math.round(top), gutter, Math.max(gutter, window.innerHeight - popRect.height - gutter))
-    const nextLeft = clamp(
-      Math.round(anchorRect.left),
-      gutter,
-      Math.max(gutter, window.innerWidth - popRect.width - gutter),
-    )
-
-    setImagePopoverTop(nextTop)
-    setImagePopoverLeft(nextLeft)
-  }, [])
 
   const updateResizeHandlePosition = useCallback(() => {
     const editorEl = editorRootRef.current
@@ -209,205 +130,22 @@ export default function AdminPage() {
     })
   }, [])
 
-  const syncImagePopoverFromSelection = useCallback(({ forceOpen }: { forceOpen: boolean }) => {
-    const editorInstance = editorRef.current
-    if (!editorInstance) return
+  const updateSelectedImageHandle = useCallback(() => {
+    const editorEl = editorRootRef.current
+    if (!editorEl) return
 
-    if (!forceOpen) {
-      const selectedEl = editorRootRef.current?.querySelector('.ProseMirror-selectednode') as HTMLElement | null
-      const isImageNodeSelected = selectedEl?.tagName?.toLowerCase() === 'img'
-      if (!isImageNodeSelected) {
-        suppressPopoverForKeyRef.current = null
-        setImagePopoverOpen(false)
-        setImagePopoverSelectedKey(null)
-        setImagePopoverSelectedPos(null)
-        setImageWidthError(null)
-        setResizeHandlePos(null)
-        return
-      }
-    }
-
-    const state = getWysiwygEditorState(editorInstance)
-    if (!state) return
-
-    const found = findSelectedImage(state)
-    if (!found) {
-      suppressPopoverForKeyRef.current = null
-      setImagePopoverOpen(false)
-      setImagePopoverSelectedKey(null)
-      setImagePopoverSelectedPos(null)
-      setImageWidthError(null)
+    const selectedEl = editorEl.querySelector('.ProseMirror-selectednode') as HTMLElement | null
+    const isImageNodeSelected = selectedEl?.tagName?.toLowerCase() === 'img'
+    if (!isImageNodeSelected) {
       setResizeHandlePos(null)
       return
     }
 
-    const key = `${found.pos}:${String(found.node.attrs.src ?? '')}`
-    const isSuppressed = suppressPopoverForKeyRef.current === key
-
-    setImagePopoverSelectedKey(key)
-    setImagePopoverSelectedPos(found.pos)
-
-    const canOpen = forceOpen || !isSuppressed
-    if (!canOpen) {
-      updateResizeHandlePosition()
-      return
-    }
-
-    if (key !== imagePopoverSelectedKeyRef.current || !imagePopoverOpenRef.current) {
-      const parsed = parseNoticeWidthText(found.node.attrs['data-notice-width'])
-      setImageWidthInput(parsed?.width ?? '')
-      setImageWidthUnit(parsed?.unit ?? 'px')
-      setImageWidthError(null)
-    }
-
-    setImagePopoverOpen(true)
-    requestAnimationFrame(() => {
-      updateImagePopoverPosition()
-      updateResizeHandlePosition()
-    })
-  }, [updateImagePopoverPosition, updateResizeHandlePosition])
-
-  const applyImageWidth = () => {
-    const editorInstance = editorRef.current
-    if (!editorInstance) return
-
-    const widthText = imageWidthInput.trim()
-    const error = validateImageWidth({ widthText, unit: imageWidthUnit })
-    if (error) {
-      setImageWidthError(error)
-      return
-    }
-
-    // Validate target image BEFORE calling exec()
-    const state = getWysiwygEditorState(editorInstance)
-    if (!state) {
-      alert('이미지를 선택해 주세요.')
-      return
-    }
-
-    let found: { pos: number, node: ProseMirrorNode } | null = null
-
-    // Try stored position first
-    if (imagePopoverSelectedPos !== null) {
-      const nodeAt = state.doc.nodeAt(imagePopoverSelectedPos)
-      if (nodeAt?.type?.name === 'image') {
-        found = { pos: imagePopoverSelectedPos, node: nodeAt }
-      }
-    }
-
-    // Fall back to selection-based search if needed
-    if (!found) {
-      found = findSelectedImage(state)
-    }
-
-    // Only show alert if we truly have no target image
-    if (!found) {
-      alert('이미지를 선택해 주세요.')
-      return
-    }
-
-    setImageWidthError(null)
-    suppressPopoverForKeyRef.current = null
-    
-    // Safe to call exec() - we know the image exists
-    editorInstance.exec('setNoticeImageWidth', { 
-      width: widthText, 
-      unit: imageWidthUnit,
-      pos: found.pos
-    })
-
-    requestAnimationFrame(() => {
-      syncImagePopoverFromSelection({ forceOpen: true })
-    })
-  }
-
-  const clearImageWidth = () => {
-    const editorInstance = editorRef.current
-    if (!editorInstance) return
-
-    // Validate target image BEFORE calling exec()
-    const state = getWysiwygEditorState(editorInstance)
-    if (!state) {
-      alert('이미지를 선택해 주세요.')
-      return
-    }
-
-    let found: { pos: number, node: ProseMirrorNode } | null = null
-
-    // Try stored position first
-    if (imagePopoverSelectedPos !== null) {
-      const nodeAt = state.doc.nodeAt(imagePopoverSelectedPos)
-      if (nodeAt?.type?.name === 'image') {
-        found = { pos: imagePopoverSelectedPos, node: nodeAt }
-      }
-    }
-
-    // Fall back to selection-based search if needed
-    if (!found) {
-      found = findSelectedImage(state)
-    }
-
-    // Only show alert if we truly have no target image
-    if (!found) {
-      alert('이미지를 선택해 주세요.')
-      return
-    }
-
-    setImageWidthInput('')
-    setImageWidthError(null)
-    suppressPopoverForKeyRef.current = null
-    
-    // Safe to call exec() - we know the image exists
-    editorInstance.exec('setNoticeImageWidth', { 
-      action: 'clear',
-      pos: found.pos
-    })
-
-    requestAnimationFrame(() => {
-      syncImagePopoverFromSelection({ forceOpen: true })
-    })
-  }
+    updateResizeHandlePosition()
+  }, [updateResizeHandlePosition])
 
   useEffect(() => {
-    if (!imagePopoverOpen) return
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        closeImagePopover({ suppress: true })
-      }
-    }
-
-    const handlePointerDown = (e: MouseEvent) => {
-      const target = e.target as Node | null
-      if (!target) return
-      if (imagePopoverRef.current?.contains(target)) return
-
-      const selectedEl = editorRootRef.current?.querySelector('.ProseMirror-selectednode')
-      if (selectedEl && selectedEl.contains(target)) return
-
-      closeImagePopover({ suppress: true })
-    }
-
-    const handleReposition = () => {
-      updateImagePopoverPosition()
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('mousedown', handlePointerDown)
-    window.addEventListener('scroll', handleReposition, true)
-    window.addEventListener('resize', handleReposition)
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.removeEventListener('mousedown', handlePointerDown)
-      window.removeEventListener('scroll', handleReposition, true)
-      window.removeEventListener('resize', handleReposition)
-    }
-  }, [closeImagePopover, imagePopoverOpen, updateImagePopoverPosition])
-
-  useEffect(() => {
-    if (!resizeHandlePos || imagePopoverOpen) return
+    if (!resizeHandlePos) return
 
     const handleReposition = () => {
       updateResizeHandlePosition()
@@ -420,7 +158,7 @@ export default function AdminPage() {
       window.removeEventListener('scroll', handleReposition, true)
       window.removeEventListener('resize', handleReposition)
     }
-  }, [resizeHandlePos, imagePopoverOpen, updateResizeHandlePosition])
+  }, [resizeHandlePos, updateResizeHandlePosition])
 
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
@@ -451,7 +189,7 @@ export default function AdminPage() {
 
     const handleMouseMove = (e: MouseEvent) => {
       const deltaX = e.clientX - dragStart.x
-      const newWidth = Math.max(50, Math.min(5000, dragStart.width + deltaX))
+      const newWidth = Math.max(120, Math.min(1200, dragStart.width + deltaX))
       setDragCurrentWidth(newWidth)
       updateResizeHandlePosition()
     }
@@ -459,10 +197,6 @@ export default function AdminPage() {
     const handleMouseUp = () => {
       if (dragCurrentWidth !== null) {
         const roundedWidth = Math.round(dragCurrentWidth)
-        setImageWidthInput(String(roundedWidth))
-        setImageWidthUnit('px')
-        setImageWidthError(null)
-
         setTimeout(() => {
           const editorInstance = editorRef.current
           if (!editorInstance) return
@@ -470,28 +204,16 @@ export default function AdminPage() {
           const state = getWysiwygEditorState(editorInstance)
           if (!state) return
 
-          let found: { pos: number, node: ProseMirrorNode } | null = null
-
-          if (imagePopoverSelectedPos !== null) {
-            const nodeAt = state.doc.nodeAt(imagePopoverSelectedPos)
-            if (nodeAt?.type?.name === 'image') {
-              found = { pos: imagePopoverSelectedPos, node: nodeAt }
-            }
-          }
-
-          if (!found) {
-            found = findSelectedImage(state)
-          }
+          const found = findSelectedImage(state)
 
           if (found) {
             editorInstance.exec('setNoticeImageWidth', {
               width: String(roundedWidth),
               unit: 'px',
-              pos: found.pos,
             })
 
             requestAnimationFrame(() => {
-              syncImagePopoverFromSelection({ forceOpen: false })
+              updateSelectedImageHandle()
             })
           }
         }, 0)
@@ -509,7 +231,7 @@ export default function AdminPage() {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isDragging, dragStart, dragCurrentWidth, imagePopoverSelectedPos, syncImagePopoverFromSelection, updateResizeHandlePosition])
+  }, [isDragging, dragStart, dragCurrentWidth, updateResizeHandlePosition, updateSelectedImageHandle])
 
     useEffect(() => {
       let cancelled = false
@@ -517,7 +239,7 @@ export default function AdminPage() {
       let editorEl: HTMLDivElement | null = null
 
       const handleMaybeSyncSelection = () => {
-        syncImagePopoverFromSelection({ forceOpen: false })
+        updateSelectedImageHandle()
       }
 
       const handleEditorClick = (e: MouseEvent) => {
@@ -526,12 +248,11 @@ export default function AdminPage() {
 
         const clickedImage = target.closest('img')
         if (clickedImage) {
-          suppressPopoverForKeyRef.current = null
-          syncImagePopoverFromSelection({ forceOpen: true })
+          updateSelectedImageHandle()
           return
         }
 
-        syncImagePopoverFromSelection({ forceOpen: false })
+        updateSelectedImageHandle()
       }
 
       const initEditor = async () => {
@@ -644,10 +365,10 @@ export default function AdminPage() {
           editorEl.addEventListener('focusin', handleMaybeSyncSelection)
           editorEl.addEventListener('click', handleEditorClick)
 
-          requestAnimationFrame(() => {
-            syncImagePopoverFromSelection({ forceOpen: false })
-          })
-       }
+           requestAnimationFrame(() => {
+             updateSelectedImageHandle()
+           })
+        }
 
      void initEditor()
 
@@ -666,11 +387,9 @@ export default function AdminPage() {
         }
         editorRef.current = null
 
-        suppressPopoverForKeyRef.current = null
-        setImagePopoverOpen(false)
-        setImagePopoverSelectedKey(null)
+        setResizeHandlePos(null)
       }
-    }, [isAuthenticated, syncImagePopoverFromSelection])
+    }, [isAuthenticated, updateSelectedImageHandle])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -833,11 +552,11 @@ export default function AdminPage() {
              <div ref={editorRootRef} />
            </div>
 
-           {resizeHandlePos && !imagePopoverOpen && (
-             <>
-               <div
-                 ref={resizeHandleRef}
-                 onMouseDown={handleResizeStart}
+           {resizeHandlePos && (
+              <>
+                <div
+                  ref={resizeHandleRef}
+                  onMouseDown={handleResizeStart}
                  className="fixed z-50 w-4 h-4 rounded-full bg-[color:var(--jade)] border-2 border-white cursor-nwse-resize shadow-lg hover:scale-125 transition-transform"
                  style={{
                    top: resizeHandlePos.top,
@@ -861,94 +580,6 @@ export default function AdminPage() {
              </>
            )}
 
-           {imagePopoverOpen && (
-             <div
-               ref={imagePopoverRef}
-               className="fixed z-50 w-[min(360px,calc(100vw-20px))] flat-card p-4"
-               style={{ top: imagePopoverTop, left: imagePopoverLeft }}
-               role="dialog"
-               aria-label="이미지 너비 설정"
-             >
-               <div className="flex items-start justify-between gap-3 mb-3">
-                 <div className="text-sm font-semibold">이미지 너비</div>
-                 <button
-                   type="button"
-                   onClick={() => closeImagePopover({ suppress: true })}
-                   className="cta-ghost px-3 py-2 text-sm"
-                 >
-                   닫기
-                 </button>
-               </div>
-
-               <div className="text-xs text-[color:var(--muted)] mb-2">
-                 선택된 이미지에만 적용됩니다.
-               </div>
-
-               <div className="flex items-center gap-2">
-                 <input
-                   type="text"
-                   inputMode="decimal"
-                   value={imageWidthInput}
-                   onChange={(e) => {
-                     setImageWidthInput(e.target.value)
-                     if (imageWidthError) setImageWidthError(null)
-                   }}
-                   onKeyDown={(e) => {
-                     if (e.key === 'Enter') {
-                       e.preventDefault()
-                       applyImageWidth()
-                     }
-                   }}
-                   placeholder="예: 320"
-                   className={[
-                     'flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--jade)]',
-                     imageWidthError ? 'border-[color:var(--tangerine)]' : 'border-[color:var(--line)]',
-                   ].join(' ')}
-                   aria-invalid={Boolean(imageWidthError)}
-                 />
-
-                 <div className="inline-flex rounded-xl border border-[color:var(--line)] overflow-hidden">
-                   <button
-                     type="button"
-                     onClick={() => setImageWidthUnit('px')}
-                     className={[
-                       'px-3 py-2 text-sm',
-                       imageWidthUnit === 'px' ? 'bg-[color:var(--paper)] text-[color:var(--ink)]' : 'bg-white text-[color:var(--muted)]',
-                     ].join(' ')}
-                     aria-pressed={imageWidthUnit === 'px'}
-                   >
-                     px
-                   </button>
-                   <button
-                     type="button"
-                     onClick={() => setImageWidthUnit('%')}
-                     className={[
-                       'px-3 py-2 text-sm border-l border-[color:var(--line)]',
-                       imageWidthUnit === '%' ? 'bg-[color:var(--paper)] text-[color:var(--ink)]' : 'bg-white text-[color:var(--muted)]',
-                     ].join(' ')}
-                     aria-pressed={imageWidthUnit === '%'}
-                   >
-                     %
-                   </button>
-                 </div>
-               </div>
-
-               {imageWidthError && (
-                 <div className="text-xs mt-2 text-[color:var(--tangerine)]">
-                   {imageWidthError}
-                 </div>
-               )}
-
-               <div className="flex gap-2 mt-4">
-                 <button type="button" onClick={applyImageWidth} className="cta">
-                   적용
-                 </button>
-                 <button type="button" onClick={clearImageWidth} className="cta-ghost">
-                   지우기
-                 </button>
-               </div>
-             </div>
-           )}
 
            <div className="mt-6 rounded-lg border border-[color:var(--line)] bg-white p-6">
              <h3 className="text-lg font-semibold mb-4">게시 미리보기</h3>
