@@ -304,7 +304,7 @@ export default function AdminPage() {
         instance = new ToastEditor({
           el: editorRootRef.current,
           height: '300px',
-          initialEditType: 'wysiwyg',
+          initialEditType: 'markdown',
           previewStyle: 'vertical',
           usageStatistics: false,
           toolbarItems: [['heading', 'bold', 'italic', 'ul', 'ol', 'link', 'image']],
