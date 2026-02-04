@@ -394,9 +394,9 @@ npx playwright test e2e/task-9-admin-notice.e2e.spec.mjs
 ```
 
 ### Final Checklist
-- [ ] New notices store Markdown source (`content_md`) and are labeled `format='markdown'`.
-- [ ] Public notices render tables/task lists/strikethrough correctly.
-- [ ] Image uploads still work.
-- [ ] No separate preview panel exists in admin page.
-- [ ] XSS vectors are stripped.
-- [ ] Existing HTML notices still render.
+- [x] New notices store Markdown source (`content_md`) and are labeled `format='markdown'`.
+- [x] Public notices render tables/task lists/strikethrough correctly.
+- [x] Image uploads still work.
+- [x] No separate preview panel exists in admin page.
+- [x] XSS vectors are stripped.
+- [x] Existing HTML notices still render.
