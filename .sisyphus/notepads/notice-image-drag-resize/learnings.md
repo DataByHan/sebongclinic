@@ -29,3 +29,7 @@ All acceptance criteria verified:
 - Stable Playwright selectors (aria-label, getByRole) are essential for E2E reliability
 - Clamp enforcement at multiple layers (editor, sanitizer, runtime) prevents user confusion
 - Fixture files must be valid image formats (PNG/JPEG, not .ico)
+
+## Follow-up (2026-02-04)
+
+- If clicking an image doesn't apply `.ProseMirror-selectednode`, force a ProseMirror `NodeSelection` from click coords (`view.posAtCoords(...)`) and update the handle on the next frame.

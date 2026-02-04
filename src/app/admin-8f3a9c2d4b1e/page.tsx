@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import '@toast-ui/editor/dist/toastui-editor.css'
+import { NodeSelection } from 'prosemirror-state'
 import type { EditorState, Selection } from 'prosemirror-state'
 import type { Node as ProseMirrorNode } from 'prosemirror-model'
+import type { EditorView } from 'prosemirror-view'
 import type { Notice } from '@/types/cloudflare'
 import { sanitizeNoticeHtml } from '@/lib/sanitize'
 import { applyNoticeImageWidths } from '@/lib/apply-notice-image-width'
@@ -87,6 +89,34 @@ const getWysiwygEditorState = (editor: ToastEditorInstance): EditorState | null 
   const maybe = editor as unknown as { getCurrentModeEditor?: () => unknown }
   const mode = maybe.getCurrentModeEditor?.() as { view?: { state?: EditorState } } | undefined
   return mode?.view?.state ?? null
+}
+
+const getWysiwygEditorView = (editor: ToastEditorInstance): EditorView | null => {
+  const maybe = editor as unknown as { getCurrentModeEditor?: () => unknown }
+  const mode = maybe.getCurrentModeEditor?.() as { view?: EditorView } | undefined
+  return mode?.view ?? null
+}
+
+const ensureWysiwygImageNodeSelectionFromClick = (
+  editor: ToastEditorInstance,
+  e: MouseEvent,
+): boolean => {
+  const view = getWysiwygEditorView(editor)
+  if (!view) return false
+
+  const posInfo = view.posAtCoords({ left: e.clientX, top: e.clientY })
+  if (!posInfo) return false
+
+  const { state } = view
+  const candidates = [posInfo.pos, posInfo.pos - 1, posInfo.pos + 1]
+    .filter((pos) => pos >= 0)
+
+  const imagePos = candidates.find((pos) => state.doc.nodeAt(pos)?.type?.name === 'image')
+  if (imagePos === undefined) return false
+
+  view.focus()
+  view.dispatch(state.tr.setSelection(NodeSelection.create(state.doc, imagePos)).scrollIntoView())
+  return true
 }
 
 export default function AdminPage() {
@@ -248,11 +278,20 @@ export default function AdminPage() {
 
         const clickedImage = target.closest('img')
         if (clickedImage) {
-          updateSelectedImageHandle()
+          const editorInstance = editorRef.current
+          if (editorInstance) {
+            ensureWysiwygImageNodeSelectionFromClick(editorInstance, e)
+          }
+
+          requestAnimationFrame(() => {
+            updateSelectedImageHandle()
+          })
           return
         }
 
-        updateSelectedImageHandle()
+        requestAnimationFrame(() => {
+          updateSelectedImageHandle()
+        })
       }
 
       const initEditor = async () => {
