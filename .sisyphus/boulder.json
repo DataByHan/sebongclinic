@@ -1,7 +1,7 @@
 {
   "active_plan": "/home/han/project/sebongclinic/.sisyphus/plans/notice-editor-rebuild.md",
   "started_at": "2026-02-04T03:35:41.482Z",
-  "completed_at": "2026-02-04T12:50:00.000Z",
+  "completed_at": "2026-02-04T13:00:00.000Z",
   "session_ids": [
     "ses_3d95c0042ffee1Tq1D9YKlbfTa"
   ],
@@ -9,5 +9,7 @@
   "status": "COMPLETE",
   "tasks_completed": 8,
   "tasks_total": 8,
-  "final_commit": "928470d"
+  "acceptance_criteria_completed": 6,
+  "acceptance_criteria_total": 6,
+  "final_commit": "5cc0385"
 }
