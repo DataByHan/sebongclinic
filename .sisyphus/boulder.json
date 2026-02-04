@@ -1,12 +1,8 @@
 {
-  "active_plan": "/home/han/project/sebongclinic/.sisyphus/plans/notice-image-drag-resize.md",
-  "started_at": "2026-02-03T23:02:18.161Z",
-  "completed_at": "2026-02-04T00:10:00.000Z",
+  "active_plan": "/home/han/project/sebongclinic/.sisyphus/plans/notice-editor-rebuild.md",
+  "started_at": "2026-02-04T03:35:41.482Z",
   "session_ids": [
-    "ses_3da682b72ffev54GeutJJHwNaQ",
-    "ses_3da417247ffesv3T559SEXJztG",
-    "ses_3da3b183cffejuWv7aS8wNw6tR"
+    "ses_3d95c0042ffee1Tq1D9YKlbfTa"
   ],
-  "plan_name": "notice-image-drag-resize",
-  "status": "completed"
+  "plan_name": "notice-editor-rebuild"
 }

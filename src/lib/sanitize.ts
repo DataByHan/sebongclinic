@@ -39,6 +39,14 @@ const xssFilter = new FilterXSS({
     span: [],
     div: [],
     img: ['src', 'alt', 'data-notice-size', 'data-notice-width'],
+    table: [],
+    thead: [],
+    tbody: [],
+    tr: [],
+    th: ['align'],
+    td: ['align'],
+    del: [],
+    input: ['type', 'checked', 'disabled'],
   },
   stripIgnoreTag: true,
   stripIgnoreTagBody: ['script', 'style'],
@@ -81,6 +89,17 @@ const xssFilter = new FilterXSS({
       }
 
       return `data-notice-width="${escapeAttrValue(`${finalValue}${unit}`)}"`
+    }
+
+    // Restrict input to checkbox type only (for GFM task lists).
+    if (tag === 'input' && name === 'type') {
+      if (value !== 'checkbox') return ''
+      return 'type="checkbox"'
+    }
+
+    // Allow checked and disabled attributes for checkboxes (HTML5 boolean attributes).
+    if (tag === 'input' && (name === 'checked' || name === 'disabled')) {
+      return name
     }
 
     // Disallow inline event handlers universally.

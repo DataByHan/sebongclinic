@@ -12,6 +12,8 @@ export type Notice = {
   content: string
   created_at: string
   updated_at: string
+  format: 'html' | 'markdown'
+  content_md?: string | null
 }
 
 export {}

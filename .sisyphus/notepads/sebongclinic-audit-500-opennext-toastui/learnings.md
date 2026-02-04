@@ -252,3 +252,14 @@ hooks: {
 
 **Next**: Commit all changes and document final status
 
+## Task 10: Toast UI Editor Default Mode (2026-02-04)
+
+**Completed**: ✅
+
+**What was done**:
+- Updated `src/app/admin-8f3a9c2d4b1e/page.tsx` to set `initialEditType: 'markdown'` (was `'wysiwyg'`).
+
+**Verification**:
+- ✅ `npx tsc --noEmit`
+- ✅ `npm run lint` (warns on `<img>` rule; expected)
+- ✅ `npm run build`

@@ -4,6 +4,18 @@ import { getCloudflareContext } from '@opennextjs/cloudflare'
 import { isSameOriginRequest, noStoreHeaders, sleep, timingSafeEqualString } from '@/lib/security'
 import { sanitizeNoticeHtml } from '@/lib/sanitize'
 
+type NoticeFormat = 'html' | 'markdown'
+
+function parseNoticeFormat(value: unknown): { ok: true; value: NoticeFormat } | { ok: false } {
+  if (value === undefined || value === null || value === '') return { ok: true, value: 'html' }
+  if (value === 'html' || value === 'markdown') return { ok: true, value }
+  return { ok: false }
+}
+
+function readBodyString(value: unknown): string {
+  return typeof value === 'string' ? value : ''
+}
+
 function getDB(): D1Database {
   const { env } = getCloudflareContext()
   if (!env?.DB) {
@@ -20,10 +32,15 @@ export async function GET(request: NextRequest) {
       .all<Notice>()
 
     // Defense-in-depth: sanitize on read to protect against legacy stored content.
-    const sanitized = results.map((n) => ({
-      ...n,
-      content: sanitizeNoticeHtml(n.content),
-    }))
+    const sanitized = results.map((n) => {
+      const format: NoticeFormat = n.format === 'markdown' ? 'markdown' : 'html'
+      return {
+        ...n,
+        format,
+        content_md: format === 'markdown' ? (n.content_md ?? null) : null,
+        content: sanitizeNoticeHtml(n.content),
+      }
+    })
 
     const res = NextResponse.json({ notices: sanitized })
     noStoreHeaders(res.headers)
@@ -47,9 +64,21 @@ export async function POST(request: NextRequest) {
       return res
     }
 
-    let body: { title: string; content: string; password: string }
+    let body: {
+      title?: unknown
+      content?: unknown
+      content_md?: unknown
+      format?: unknown
+      password?: unknown
+    }
     try {
-      body = await request.json() as { title: string; content: string; password: string }
+      body = await request.json() as {
+        title?: unknown
+        content?: unknown
+        content_md?: unknown
+        format?: unknown
+        password?: unknown
+      }
     } catch {
       const res = NextResponse.json(
         { error: 'Invalid JSON body' },
@@ -58,7 +87,21 @@ export async function POST(request: NextRequest) {
       noStoreHeaders(res.headers)
       return res
     }
-    const { title, content, password } = body
+
+    const title = readBodyString(body.title).trim()
+    const content = readBodyString(body.content)
+    const contentTrimmed = content.trim()
+    const contentMd = readBodyString(body.content_md)
+    const contentMdTrimmed = contentMd.trim()
+    const password = readBodyString(body.password)
+
+    const parsedFormat = parseNoticeFormat(body.format)
+    if (!parsedFormat.ok) {
+      const res = NextResponse.json({ error: 'Invalid format' }, { status: 400 })
+      noStoreHeaders(res.headers)
+      return res
+    }
+    const format = parsedFormat.value
 
     const { env } = getCloudflareContext()
     const ok = await timingSafeEqualString(password ?? '', env.ADMIN_PASSWORD)
@@ -69,20 +112,30 @@ export async function POST(request: NextRequest) {
       return res
     }
 
-    if (!title || !content) {
+    if (!title || !contentTrimmed) {
       const res = NextResponse.json({ error: 'Title and content are required' }, { status: 400 })
       noStoreHeaders(res.headers)
       return res
     }
 
+    if (format === 'markdown' && (!contentMdTrimmed || !contentTrimmed)) {
+      const res = NextResponse.json(
+        { error: 'Content and content_md are required for markdown' },
+        { status: 400 }
+      )
+      noStoreHeaders(res.headers)
+      return res
+    }
+
     const safeContent = sanitizeNoticeHtml(content)
+    const safeContentMd = format === 'markdown' ? contentMd : null
 
     const db = getDB()
     const result = await db
       .prepare(
-        'INSERT INTO notices (title, content, created_at, updated_at) VALUES (?, ?, datetime("now", "localtime"), datetime("now", "localtime"))'
+        'INSERT INTO notices (title, content, format, content_md, created_at, updated_at) VALUES (?, ?, ?, ?, datetime("now", "localtime"), datetime("now", "localtime"))'
       )
-      .bind(title, safeContent)
+      .bind(title, safeContent, format, safeContentMd)
       .run()
 
     const res = NextResponse.json(
@@ -90,6 +143,8 @@ export async function POST(request: NextRequest) {
         id: result.meta?.last_row_id ?? 0,
         title,
         content: safeContent,
+        format,
+        content_md: safeContentMd,
       },
       { status: 201 }
     )
