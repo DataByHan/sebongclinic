@@ -286,10 +286,10 @@ export default function AdminPage() {
           {notices.map((notice) => (
             <div key={notice.id} className="flat-card p-6">
               <h3 className="text-lg font-semibold mb-2">{notice.title}</h3>
-              <div
-                className="prose max-w-none mb-4"
-                dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
-              />
+               <div
+                 className="notice-content mt-4 text-sm leading-relaxed text-[color:var(--muted)] mb-4"
+                 dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
+               />
               <div className="text-sm text-[color:var(--muted)] mb-4">
                 {new Date(notice.created_at).toLocaleDateString('ko-KR')}
               </div>
