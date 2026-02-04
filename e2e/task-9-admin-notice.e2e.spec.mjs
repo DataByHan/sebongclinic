@@ -15,6 +15,7 @@ const evidence = {
   imagePublic: path.join(evidenceDir, 'task-9-image-public.png'),
   gfmPublic: path.join(evidenceDir, 'task-7-gfm-public.png'),
   xssSanitized: path.join(evidenceDir, 'task-7-xss-sanitized.png'),
+  markdownHeadings: path.join(evidenceDir, 'task-9-markdown-headings-render.png'),
 }
 
 async function loginAdmin(page) {
@@ -238,8 +239,46 @@ test.describe('Admin notice editor (GFM/XSS) + image upload (task 9)', () => {
     const createResponse = await createResponsePromise
     expect(createResponse.ok()).toBeTruthy()
 
-    const notice = await findNoticeArticle(page, { titleSubstring: title })
-    await expect(notice.locator('img').first()).toBeVisible({ timeout: 30_000 })
-    await page.screenshot({ path: evidence.imagePublic, fullPage: true })
-  })
+     const notice = await findNoticeArticle(page, { titleSubstring: title })
+     await expect(notice.locator('img').first()).toBeVisible({ timeout: 30_000 })
+     await page.screenshot({ path: evidence.imagePublic, fullPage: true })
+   })
+
+   test('Markdown headings render as HTML (not raw text)', async ({ page }) => {
+     test.setTimeout(120_000)
+     test.skip(!password, 'Missing ADMIN_PASSWORD')
+     await page.setViewportSize({ width: 1280, height: 900 })
+
+     await loginAdmin(page)
+
+     const now = Date.now()
+     const title = `Markdown Headings Test ${now}`
+     const markdown = [
+       '# Heading',
+       '## H2',
+       '### H3',
+     ].join('\n')
+
+     await createNoticeFromAdmin(page, { title, markdown })
+
+     const notice = await findNoticeArticle(page, { titleSubstring: title })
+     
+     // Assert: h1 element exists with text "Heading"
+     await expect(notice.locator('h1')).toContainText('Heading')
+     
+     // Assert: h2 element exists with text "H2"
+     await expect(notice.locator('h2')).toContainText('H2')
+     
+     // Assert: h3 element exists with text "H3"
+     await expect(notice.locator('h3')).toContainText('H3')
+     
+     // Assert: raw markdown text is NOT visible in notice content
+     const noticeContent = notice.locator('.notice-content')
+     const contentHtml = await noticeContent.evaluate((el) => el.innerHTML)
+     expect(contentHtml.includes('# Heading')).toBeFalsy()
+     expect(contentHtml.includes('## H2')).toBeFalsy()
+     expect(contentHtml.includes('### H3')).toBeFalsy()
+
+     await page.screenshot({ path: evidence.markdownHeadings, fullPage: true })
+   })
 })

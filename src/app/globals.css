@@ -88,10 +88,100 @@
     width: 640px;
   }
 
-  .prose img[data-notice-size="full"],
-  .toastui-editor-contents img[data-notice-size="full"] {
-    width: 100%;
-  }
+   .prose img[data-notice-size="full"],
+   .toastui-editor-contents img[data-notice-size="full"] {
+     width: 100%;
+   }
+
+   .notice-content {
+     @apply space-y-4;
+   }
+
+   .notice-content h1 {
+     @apply text-2xl font-bold text-[color:var(--ink)] mt-6 mb-3;
+   }
+
+   .notice-content h2 {
+     @apply text-xl font-bold text-[color:var(--ink)] mt-5 mb-2;
+   }
+
+   .notice-content h3 {
+     @apply text-lg font-bold text-[color:var(--ink)] mt-4 mb-2;
+   }
+
+   .notice-content h4,
+   .notice-content h5,
+   .notice-content h6 {
+     @apply font-bold text-[color:var(--ink)] mt-3 mb-2;
+   }
+
+   .notice-content p {
+     @apply text-[color:var(--ink)] leading-relaxed;
+   }
+
+   .notice-content ul,
+   .notice-content ol {
+     @apply ml-6 space-y-1;
+   }
+
+   .notice-content li {
+     @apply text-[color:var(--ink)];
+   }
+
+   .notice-content ul li {
+     @apply list-disc;
+   }
+
+   .notice-content ol li {
+     @apply list-decimal;
+   }
+
+   .notice-content strong,
+   .notice-content b {
+     @apply font-bold text-[color:var(--ink)];
+   }
+
+   .notice-content em,
+   .notice-content i {
+     @apply italic;
+   }
+
+   .notice-content code {
+     @apply bg-[color:var(--paper-2)] px-2 py-1 rounded font-mono text-sm;
+   }
+
+   .notice-content pre {
+     @apply bg-[color:var(--paper-2)] p-4 rounded overflow-x-auto;
+   }
+
+   .notice-content pre code {
+     @apply bg-transparent px-0 py-0;
+   }
+
+   .notice-content blockquote {
+     @apply border-l-4 border-[color:var(--jade)] pl-4 italic text-[color:var(--muted)];
+   }
+
+   .notice-content a {
+     @apply text-[color:var(--jade)] underline hover:text-[color:var(--jade-2)];
+   }
+
+   .notice-content table {
+     @apply w-full border-collapse border border-[color:var(--line)];
+   }
+
+   .notice-content th,
+   .notice-content td {
+     @apply border border-[color:var(--line)] px-3 py-2 text-left;
+   }
+
+   .notice-content th {
+     @apply bg-[color:var(--paper-2)] font-bold;
+   }
+
+   .notice-content hr {
+     @apply my-6 border-t border-[color:var(--line)];
+   }
 }
 
 @layer utilities {

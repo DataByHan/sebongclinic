@@ -65,10 +65,10 @@ export default function NoticesPage() {
                      {new Date(notice.created_at).toLocaleDateString('ko-KR')}
                    </div>
                  </div>
-                 <div
-                   className="mt-4 text-sm leading-relaxed text-[color:var(--muted)] prose max-w-none"
-                   dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
-                 />
+                  <div
+                    className="notice-content mt-4 text-sm leading-relaxed text-[color:var(--muted)]"
+                    dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
+                  />
                </article>
              ))}
            </div>
