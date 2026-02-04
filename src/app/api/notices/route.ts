@@ -32,23 +32,32 @@ export async function GET(request: NextRequest) {
       .prepare('SELECT * FROM notices ORDER BY created_at DESC')
       .all<Notice>()
 
-    // Defense-in-depth: sanitize on read to protect against legacy stored content.
-    const sanitized = await Promise.all(results.map(async (n) => {
-      const format: NoticeFormat = n.format === 'markdown' ? 'markdown' : 'html'
+     // Defense-in-depth: sanitize on read to protect against legacy stored content.
+     const sanitized = await Promise.all(results.map(async (n) => {
+       const format: NoticeFormat = n.format === 'markdown' ? 'markdown' : 'html'
 
-      // For markdown notices, prefer rendering from Markdown source when available.
-      // This avoids "raw markdown" accidentally being stored in `content`.
-      const renderedHtml = (format === 'markdown' && n.content_md)
-        ? await marked(n.content_md)
-        : n.content
+       // For markdown notices, prefer rendering from Markdown source when available.
+       // This avoids "raw markdown" accidentally being stored in `content`.
+       let renderedHtml = n.content
+       if (format === 'markdown' && n.content_md?.trim()) {
+         renderedHtml = await marked(n.content_md)
+       } else if (format === 'markdown' && !n.content.trim().startsWith('<')) {
+         // Fallback: markdown stored in content, needs rendering
+         try {
+           renderedHtml = await marked(n.content)
+         } catch (error) {
+           console.error('Markdown fallback failed:', error)
+           // Keep n.content, already going through sanitize
+         }
+       }
 
-      return {
-        ...n,
-        format,
-        content_md: format === 'markdown' ? (n.content_md ?? null) : null,
-        content: sanitizeNoticeHtml(renderedHtml),
-      }
-    }))
+       return {
+         ...n,
+         format,
+         content_md: format === 'markdown' ? (n.content_md ?? null) : null,
+         content: sanitizeNoticeHtml(renderedHtml),
+       }
+     }))
 
     const res = NextResponse.json({ notices: sanitized })
     noStoreHeaders(res.headers)

@@ -43,18 +43,27 @@ export async function GET(
       return res
     }
 
-    const format: NoticeFormat = notice.format === 'markdown' ? 'markdown' : 'html'
-    const renderedHtml = (format === 'markdown' && notice.content_md)
-      ? await marked(notice.content_md)
-      : notice.content
-    const res = NextResponse.json({
-      notice: {
-        ...notice,
-        format,
-        content_md: format === 'markdown' ? (notice.content_md ?? null) : null,
-        content: sanitizeNoticeHtml(renderedHtml),
-      },
-    })
+     const format: NoticeFormat = notice.format === 'markdown' ? 'markdown' : 'html'
+     let renderedHtml = notice.content
+     if (format === 'markdown' && notice.content_md?.trim()) {
+       renderedHtml = await marked(notice.content_md)
+     } else if (format === 'markdown' && !notice.content.trim().startsWith('<')) {
+       // Fallback: markdown stored in content, needs rendering
+       try {
+         renderedHtml = await marked(notice.content)
+       } catch (error) {
+         console.error('Markdown fallback failed:', error)
+         // Keep notice.content, already going through sanitize
+       }
+     }
+     const res = NextResponse.json({
+       notice: {
+         ...notice,
+         format,
+         content_md: format === 'markdown' ? (notice.content_md ?? null) : null,
+         content: sanitizeNoticeHtml(renderedHtml),
+       },
+     })
     noStoreHeaders(res.headers)
     return res
   } catch (error) {

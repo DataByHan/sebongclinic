@@ -1,15 +1,8 @@
 {
-  "active_plan": "/home/han/project/sebongclinic/.sisyphus/plans/notice-editor-rebuild.md",
-  "started_at": "2026-02-04T03:35:41.482Z",
-  "completed_at": "2026-02-04T13:00:00.000Z",
+  "active_plan": "/home/han/project/sebongclinic/.sisyphus/plans/notice-markdown-render-fix.md",
+  "started_at": "2026-02-04T09:49:26.170Z",
   "session_ids": [
     "ses_3d95c0042ffee1Tq1D9YKlbfTa"
   ],
-  "plan_name": "notice-editor-rebuild",
-  "status": "COMPLETE",
-  "tasks_completed": 8,
-  "tasks_total": 8,
-  "acceptance_criteria_completed": 6,
-  "acceptance_criteria_total": 6,
-  "final_commit": "5cc0385"
+  "plan_name": "notice-markdown-render-fix"
 }
