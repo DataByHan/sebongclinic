@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { marked } from 'marked'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import type { Notice } from '@/types/cloudflare'
 import { sanitizeNoticeHtml } from '@/lib/sanitize'
@@ -117,37 +118,37 @@ export default function AdminPage() {
     setIsAuthenticated(false)
   }
 
-  const handleSubmit = async () => {
-    const editorInstance = editorRef.current
-    if (!editorInstance) return
-    if (!title.trim()) {
-      alert('제목을 입력해 주세요.')
-      return
-    }
-    if (!password.trim()) {
-      handleUnauthorized()
-      return
-    }
+   const handleSubmit = async () => {
+     const editorInstance = editorRef.current
+     if (!editorInstance) return
+     if (!title.trim()) {
+       alert('제목을 입력해 주세요.')
+       return
+     }
+     if (!password.trim()) {
+       handleUnauthorized()
+       return
+     }
 
-    const markdown = editorInstance.getMarkdown()
-    const html = editorInstance.getHTML()
-    const hasText = markdown.trim().length > 0
-    const hasImage = html.includes('<img')
-    if (!hasText && !hasImage) {
-      alert('내용을 입력해 주세요.')
-      return
-    }
+     const markdown = editorInstance.getMarkdown()
+     const hasText = markdown.trim().length > 0
+     const hasImage = markdown.includes('![')
+     if (!hasText && !hasImage) {
+       alert('내용을 입력해 주세요.')
+       return
+     }
 
-    const content = sanitizeNoticeHtml(html)
-    const url = editingId ? `/api/notices/${editingId}` : '/api/notices'
-    const method = editingId ? 'PUT' : 'POST'
+     const html = await marked(markdown)
+     const content = sanitizeNoticeHtml(html)
+     const url = editingId ? `/api/notices/${editingId}` : '/api/notices'
+     const method = editingId ? 'PUT' : 'POST'
 
-    const editingNotice = editingId ? notices.find(n => n.id === editingId) : null
-    const isEditingLegacyHtml = editingNotice && !editingNotice.content_md
+     const editingNotice = editingId ? notices.find(n => n.id === editingId) : null
+     const isEditingLegacyHtml = editingNotice && !editingNotice.content_md
 
-    const payload = isEditingLegacyHtml
-      ? { title, content, format: 'html', password }
-      : { title, content, content_md: markdown, format: 'markdown', password }
+     const payload = isEditingLegacyHtml
+       ? { title, content, format: 'html', password }
+       : { title, content, content_md: markdown, format: 'markdown', password }
 
     try {
       const res = await fetch(url, {
