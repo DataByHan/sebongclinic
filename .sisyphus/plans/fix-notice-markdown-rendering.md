@@ -111,7 +111,7 @@ Critical Path: Task 2 + Task 3 4 Task 5
 
 ## TODOs (Execution Order)
 
-- [ ] 1. Reproduce current failure and capture baseline evidence
+- [x] 1. Reproduce current failure and capture baseline evidence
 
   **What to do**:
   - Run dev server.
@@ -135,7 +135,7 @@ Critical Path: Task 2 + Task 3 4 Task 5
   - [ ] Evidence captured: `.sisyphus/evidence/baseline-raw-markdown.png`
   - [ ] `curl -s http://localhost:3000/api/notices | jq -r '.notices[] | select(.format=="markdown") | .content' | head -n 1` shows raw markdown markers (e.g. `# `) for at least one markdown notice (baseline).
 
-- [ ] 2. Fix markdown rendering logic in list GET handler
+- [x] 2. Fix markdown rendering logic in list GET handler
 
   **What to do**:
   - In `src/app/api/notices/route.ts` GET mapping, replace existing conditional fallback block with:
@@ -169,7 +169,7 @@ Critical Path: Task 2 + Task 3 4 Task 5
   - [ ] On render error, response returns escaped `<pre>...</pre>` (not raw markdown) and does not crash the whole list.
   - [ ] `curl -s http://localhost:3000/api/notices | jq -r '.notices[] | select(.title=="E2E Markdown Heading") | .content'` contains `<h1>` and does not contain `# Heading`.
 
-- [ ] 3. Apply the same markdown rendering fix to detail GET handler
+- [x] 3. Apply the same markdown rendering fix to detail GET handler
 
   **What to do**:
   - Apply the identical logic from Task 2 to `src/app/api/notices/[id]/route.ts` GET handler.
@@ -191,7 +191,7 @@ Critical Path: Task 2 + Task 3 4 Task 5
   - [ ] `curl -s "http://localhost:3000/api/notices/${id}" | jq -r '.notice.content'` contains `<h1>` and does not contain `# Heading`.
   - [ ] HTML notices remain unchanged.
 
-- [ ] 4. Add/adjust Playwright E2E coverage to prevent regression (recommended)
+- [x] 4. Add/adjust Playwright E2E coverage to prevent regression (recommended)
 
   **What to do**:
   - Extend `e2e/task-9-admin-notice.e2e.spec.mjs` (or add a small new spec) with an assertion that a markdown notice displays as headings on `/notices`.
@@ -213,7 +213,7 @@ Critical Path: Task 2 + Task 3 4 Task 5
   - [ ] `npx playwright test e2e/task-9-admin-notice.e2e.spec.mjs` passes.
   - [ ] New assertion fails on baseline behavior (raw markdown) and passes after fix.
 
-- [ ] 5. Run verification commands (typecheck, lint, build) and final API checks
+- [x] 5. Run verification commands (typecheck, lint, build) and final API checks
 
   **What to do**:
   - Run:
