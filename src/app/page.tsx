@@ -53,11 +53,7 @@ export default function HomePage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="flat-chip">
                       <span className="h-2 w-2 rounded-full bg-[color:var(--jade)]" />
-                      진료: 공진단 · 척추치료 · 총명탕
-                    </span>
-                    <span className="flat-chip">
-                      <span className="h-2 w-2 rounded-full bg-[color:var(--tangerine)]" />
-                      원장 {site.doctorName}
+                      전문 진료 영역 : 근골격계 · 면역 기능 · 여성 질환 · 불임 등
                     </span>
                   </div>
 
@@ -70,12 +66,12 @@ export default function HomePage() {
                   </h1>
 
                   <p className="max-w-2xl text-base leading-relaxed text-[color:var(--muted)] sm:text-lg">
-                    {site.tagline} 과장된 약속 대신, 진단과 기록, 그리고 생활 리듬까지.
-                    한 번의 처치가 아니라 “회복의 과정”을 설계합니다.
+                    근골격계·관절 질환, 경두개 질환, 심혈관계 질환 등 다양한 분야에서 40여 년의 임상 경험과 600여 처방 이상의 치료 사례를 바탕으로, MFT 진단 기반의 치료 효과를 지속적으로 축적·검증해 온 진료를 시행하고 있습니다.
                   </p>
 
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                     <a href="#visit" className="cta">오시는 길</a>
+                    <a href="/notices" className="cta-ghost">공지사항</a>
                     <a href={`tel:${site.phone}`} className="cta-ghost">전화 {site.phone}</a>
                   </div>
                 </div>
@@ -84,19 +80,26 @@ export default function HomePage() {
               <Reveal delayMs={120}>
                 <div className="flat-card bg-[color:var(--paper-2)] p-7 sm:p-9">
                   <div>
-                    <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">SEBONG</div>
-                    <div className="mt-3 type-serif text-2xl">진료 포인트</div>
+                    <div className="mt-3 type-serif text-2xl">🩺세봉한의원 진료 과정</div>
                   </div>
 
                   <div className="mt-8 space-y-6">
                     {[
                       { 
-                        label: 'MFT(Meridian Finger Test) 진료', 
-                        desc: '24경락(경동맥) 파동 측정을 통한 정확한 진료.'
+                        label: '체질·면역 진단', 
+                        desc: 'MFT 진단 시스템을 통해 사상체질 감별 및 정·기·신·혈로 구분되는 면역 기능을 측정합니다.'
                       },
                       { 
-                        label: '형상의학(形象醫學)', 
-                        desc: '개인별 형상적 특징을 분석하여 임상부터 치료까지.'
+                        label: '전신 경락 에너지 분석', 
+                        desc: '24전신 경락 에너지 흐름의 상태를 정밀하게 파악합니다.'
+                      },
+                      { 
+                        label: '병변 경락 및 원인 경락 확인', 
+                        desc: '경락 흐름의 이상이 감지되면 병변 경락과 이에 영향을 주는 이차성 원인 경락까지 함께 체크합니다.'
+                      },
+                      { 
+                        label: '맞춤 치료 설명 및 시행', 
+                        desc: '환자의 증상, 병력, 기존 검사 결과를 종합하여 MFT 치료의 특징과 차별점을 충분히 설명한 후 치료를 시작합니다.'
                       },
                     ].map((item, idx) => (
                       <div key={item.label} className="flex items-start gap-4">
@@ -107,10 +110,6 @@ export default function HomePage() {
                         </div>
                       </div>
                     ))}
-                  </div>
-
-                  <div className="mt-8 border-t border-[color:var(--line)] pt-6 text-sm text-[color:var(--muted)]">
-                    예약 및 문의: <a className="flat-link text-[color:var(--ink)]" href={`tel:${site.phone}`}>{site.phone}</a>
                   </div>
                 </div>
               </Reveal>
