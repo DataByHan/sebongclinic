@@ -30,7 +30,7 @@ export default function HomePage() {
     <div className="grain">
       <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-[color:var(--paper)]/75 backdrop-blur">
         <div className="frame flex items-center justify-between py-4">
-          <a href="#top" className="inline-flex items-baseline gap-2">
+          <a href="#top" className="inline-flex items-center gap-2">
             <img src="/img/Icon_Noround.png" alt="" className="h-6 w-6" />
             <span className="type-serif text-lg tracking-tight">{site.name}</span>
             <span className="text-xs text-[color:var(--muted)]">Korean Medicine Clinic</span>
