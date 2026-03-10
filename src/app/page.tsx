@@ -101,7 +101,7 @@ export default function HomePage() {
                         label: '맞춤 치료 설명 및 시행', 
                         desc: '환자의 증상, 병력, 기존 검사 결과를 종합하여 MFT 치료의 특징과 차별점을 충분히 설명한 후 치료를 시작합니다.'
                       },
-                    ].map((item, idx) => (
+                    ].map((item) => (
                       <div key={item.label} className="flex items-start gap-4">
                         <div className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
                         <div className="space-y-1.5">
