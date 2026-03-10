@@ -154,11 +154,6 @@ export default function HomePage() {
                   data-testid="doctor-profile-card"
                   className="flat-card bg-[color:var(--paper-2)] p-7 sm:p-9"
                 >
-                  <img 
-                    src="/img/원장님.png" 
-                    alt="김형규 원장" 
-                    className="w-full rounded-lg mb-6 border border-[color:var(--line)]"
-                  />
                   <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">Doctor&apos;s Profile</div>
                   
                   <div className="mt-6 space-y-4">
