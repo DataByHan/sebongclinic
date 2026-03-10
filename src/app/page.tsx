@@ -286,7 +286,7 @@ export default function HomePage() {
                     title: '세봉단',
                     description: '수년간의 연구와 임상 경험을 바탕으로 5차 제조 공정을 거쳐 완성된 면역 증강 처방을 통해 기력을 회복하고 활력을 증진시킵니다.',
                     bullets: ['전 연령 · 전 체질 적용 가능', '수술 후 회복기, 노년기 면역 저하', '수험생, 스트레스가 많은 직장인'],
-                    image: '/img/세봉단.png',
+                    image: '/img/세봉단2.png',
                   },
                   {
                     title: '세봉침 요법',
