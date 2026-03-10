@@ -38,7 +38,7 @@ export default function HomePage() {
           <nav className="hidden md:flex items-center gap-6 text-sm text-[color:var(--muted)]">
             <a href="#doctor" className="hover:text-[color:var(--ink)]">의료진</a>
             <a href="#specialties" className="hover:text-[color:var(--ink)]">전문영역</a>
-            <a href="#links" className="hover:text-[color:var(--ink)]">소식</a>
+            <a href="#treatments" className="hover:text-[color:var(--ink)]">대표처방</a>
             <a href="#visit" className="hover:text-[color:var(--ink)]">오시는 길</a>
             <a href="/notices" className="hover:text-[color:var(--ink)]">공지</a>
           </nav>
@@ -241,7 +241,7 @@ export default function HomePage() {
             <div className="mt-10 grid gap-4 lg:grid-cols-3">
               {site.specialties.map((s, idx) => (
                 <Reveal key={s.title} delayMs={idx * 90}>
-                  <div className="flat-card overflow-hidden p-0">
+                  <div className="flat-card overflow-hidden p-0 flex flex-col">
                     {s.image && (
                       <div className="relative aspect-[5/3] overflow-hidden bg-[color:var(--paper-2)]">
                         <img
@@ -251,7 +251,7 @@ export default function HomePage() {
                         />
                       </div>
                     )}
-                    <div className="p-7">
+                    <div className="p-7 flex-1">
                       <div>
                         <div className="type-serif text-2xl tracking-tight">{s.title}</div>
                         <div className="mt-2 text-sm text-[color:var(--muted)]">{s.subtitle}</div>
@@ -265,35 +265,72 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="links" className="scroll-mt-24 py-24 md:py-40">
+        <section id="treatments" className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
               <Reveal>
                 <div className="space-y-4">
-                  <div className="flat-chip">공지 · 블로그</div>
-                  <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세봉을 더 알아보기</h2>
+                  <div className="flat-chip">대표 처방</div>
+                  <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세봉한의원 대표 처방 방법</h2>
                   <p className="text-[color:var(--muted)] leading-relaxed">
-                    처음 방문하시는 분이라면 이곳에서 정보를 확인해 보세요.
+                    수년간의 임상 경험을 바탕으로 정립한 세봉한의원만의 처방 방법입니다.
                   </p>
                 </div>
               </Reveal>
 
               <div className="grid gap-4">
-                {site.externalLinks.map((l, idx) => {
-                  const isExternal = l.href.startsWith('http')
-                  const LinkComponent = isExternal ? ExternalAnchor : 'a'
-                  return (
-                    <Reveal key={l.href} delayMs={idx * 80}>
-                      <LinkComponent href={l.href} className="flat-card block p-6 transition-colors hover:bg-[color:var(--paper-2)]">
-                        <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">LINK</div>
-                        <div className="mt-2 flex items-center justify-between gap-4">
-                          <div className="text-base font-semibold">{l.label}</div>
-                          <div className="text-sm text-[color:var(--muted)]">{isExternal ? '↗' : '→'}</div>
+                {[
+                  {
+                    title: '세봉단',
+                    description: '수년간의 연구와 임상 경험을 바탕으로 5차 제조 공정을 거쳐 완성된 면역 증강 처방을 통해 기력을 회복하고 활력을 증진시킵니다.',
+                    bullets: ['전 연령 · 전 체질 적용 가능', '수술 후 회복기, 노년기 면역 저하', '수험생, 스트레스가 많은 직장인'],
+                    image: '/img/세봉단.png',
+                  },
+                  {
+                    title: '세봉침 요법',
+                    description: '세봉침 요법은 기존의 침 치료 방식을 새롭게 정립하고 MFT 경락 진단을 바탕으로 좌우 경락의 강약과 균형을 정밀하게 분석하는 침법입니다. 진단 결과에 따라 좌우를 동일하게 시술하지 않고',
+                    bullets: ['좌측에는 오장육부의 허실 상태를 고려한 체질침을 적용하고', '우측에는 병변이 나타난 경락을 조절하는 경락 조정침을 시술합니다.'],
+                    footer: '이처럼 인체의 흐름과 균형에 맞춘 맞춤 시술을 통해 시술 직후부터 몸의 변화와 호전 반응을 체감할 수 있는 것이 세봉침 요법의 가장 큰 특징입니다.',
+                    image: '/img/세봉침.png',
+                  },
+                  {
+                    title: '해독활력방',
+                    description: '위·소장·대장·담·방광·자궁에 축적된 노폐물과 독소를 배출하여체내 기혈 순환을 정화하는 처방',
+                    bullets: ['성인병 예방', '체중 감량 효과 우수'],
+                    image: '/img/활력방.png',
+                  },
+                ].map((item, idx) => (
+                  <Reveal key={item.title} delayMs={idx * 80}>
+                    <div className="flat-card overflow-hidden p-0 flex flex-col">
+                      {item.image && (
+                        <div className="relative aspect-[5/3] overflow-hidden bg-[color:var(--paper-2)]">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="h-full w-full object-cover opacity-90"
+                          />
                         </div>
-                      </LinkComponent>
-                    </Reveal>
-                  )
-                })}
+                      )}
+                      <div className="p-7 flex-1">
+                        <h3 className="type-serif text-xl font-semibold text-[color:var(--ink)]">{item.title}</h3>
+                        <p className="mt-3 text-sm text-[color:var(--muted)] leading-relaxed">{item.description}</p>
+                        {item.bullets && (
+                          <ul className="mt-4 space-y-2">
+                            {item.bullets.map((bullet, i) => (
+                              <li key={i} className="flex items-start gap-2 text-sm text-[color:var(--muted)]">
+                                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[color:var(--jade)]" />
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {item.footer && (
+                          <p className="mt-4 text-sm text-[color:var(--muted)] leading-relaxed">{item.footer}</p>
+                        )}
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
               </div>
             </div>
           </div>

@@ -32,7 +32,7 @@ export const site = {
       subtitle: 'Immune Function Disorders',
       href: '#',
       description: '면역 기능을 정·기·신·혈로 세분화하여 이목구비를 통한 MFT 진단으로 부족한 요소를 정확히 파악하고 근본적인 면역 회복을 돕습니다.',
-      image: '/img/면역.png',
+      image: '/img/면역2.png',
     },
     {
       title: '여성질환 · 불임',
