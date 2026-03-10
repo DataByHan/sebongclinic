@@ -54,7 +54,7 @@ export default function HomePage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="flat-chip">
                       <span className="h-2 w-2 rounded-full bg-[color:var(--jade)]" />
-                      전문 진료 영역 : 근골격계 · 면역 기능 · 여성 질환 · 불임 등
+                      전문 영역 : 근골격계 · 면역 기능 · 여성 질환/불임 등
                     </span>
                   </div>
 
