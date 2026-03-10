@@ -120,16 +120,16 @@ export default function HomePage() {
 
         <section id="doctor" className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
               <Reveal>
                 <div className="space-y-6">
                   <div className="flat-chip">한의사 소개</div>
                   
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-start gap-4">
                     <img 
                       src="/img/원장님.png" 
                       alt="김형규 원장" 
-                      className="h-20 w-20 rounded-full border-2 border-[color:var(--line)] object-cover shrink-0"
+                      className="h-28 w-28 rounded-full border-2 border-[color:var(--line)] object-cover shrink-0"
                     />
                     <h2 className="type-serif text-3xl tracking-tight sm:text-4xl flex flex-wrap items-center gap-3">
                       {site.doctorName} 원장
