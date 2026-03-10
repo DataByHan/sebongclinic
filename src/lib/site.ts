@@ -21,28 +21,25 @@ export const site = {
   kakaoMapLink: 'https://kko.to/WLKRNS3gmy',
   specialties: [
     {
-      title: '공진단',
-      subtitle: '기력 · 회복 · 컨디션',
-      href: 'https://seoulgongmyung.com/product02',
-      description:
-        '일상에서 흐트러진 리듬을 회복하고, 장기적인 체력 기반을 다지는 처방을 목표로 합니다.',
-      image: '/img/dan.jpg',
+      title: '근골격계 질환',
+      subtitle: 'Musculoskeletal Disorders',
+      href: '#',
+      description: '환부에 진단용 키트를 부착하여 파동을 증폭시킨 뒤, MFT 검사로 관련 경락을 진단하여 체질에 맞는 침 치료와 한약 처방을 시행합니다.',
+      image: '/img/근골격계3.png',
     },
     {
-      title: '척추치료',
-      subtitle: '자세 · 통증 · 균형',
-      href: 'https://jangdeuk.com/menu02/menu02_04_01.php',
-      description:
-        '척추와 주변 조직의 균형을 점검하고, 움직임을 방해하는 긴장을 단계적으로 풀어갑니다.',
-      image: '/img/chim.jpg',
+      title: '면역 기능 저하 질환',
+      subtitle: 'Immune Function Disorders',
+      href: '#',
+      description: '면역 기능을 정·기·신·혈로 세분화하여 이목구비를 통한 MFT 진단으로 부족한 요소를 정확히 파악하고 근본적인 면역 회복을 돕습니다.',
+      image: '/img/면역.png',
     },
     {
-      title: '총명탕',
-      subtitle: '집중 · 기억 · 학습 컨디션',
-      href: 'https://www.xn--299at5mi2e3rootax68d.com/kr/index.php?pCode=MN1000108',
-      description:
-        '공부와 일의 집중력을 해치지 않도록 컨디션을 정돈하고, 흐릿한 피로감을 가볍게 합니다.',
-      image: '/img/tang.jpg',
+      title: '여성질환 · 불임',
+      subtitle: 'Women\'s Health & Infertility',
+      href: '#',
+      description: '여성질환은 뇌신경계, 소화기계, 순환기계 등의 기능 이상이 자궁 질환, 생리 불순, 생리통, 불임으로 이어지는 경우가 많습니다. 특히 불임의 경우 다양한 원인 경락을 정밀하게 치료하여 임신 성공률 향상을 도모합니다.',
+      image: '/img/여성질환2.png',
     },
   ] satisfies Specialty[],
   externalLinks: [

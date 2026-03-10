@@ -31,6 +31,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-[color:var(--paper)]/75 backdrop-blur">
         <div className="frame flex items-center justify-between py-4">
           <a href="#top" className="inline-flex items-baseline gap-2">
+            <img src="/img/Icon_Noround.png" alt="" className="h-6 w-6" />
             <span className="type-serif text-lg tracking-tight">{site.name}</span>
             <span className="text-xs text-[color:var(--muted)]">Korean Medicine Clinic</span>
           </a>
@@ -47,7 +48,7 @@ export default function HomePage() {
       <main id="top" className="mesh">
         <section className="scroll-mt-24 py-24 md:py-40">
           <div className="frame">
-            <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+            <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
               <Reveal>
                 <div className="space-y-6">
                   <div className="flex flex-wrap items-center gap-3">
@@ -121,7 +122,17 @@ export default function HomePage() {
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
-                <div className="space-y-6">
+                <div 
+                  className="space-y-6 rounded-2xl p-8 md:p-10"
+                  style={{
+                    backgroundImage: 'url(\'/img/원장님.png\')',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundColor: 'rgba(246, 245, 241, 0.95)',
+                    backgroundBlendMode: 'overlay',
+                    backdropFilter: 'blur(2px)',
+                  }}
+                >
                   <div className="flat-chip">한의사 소개</div>
                   <h2 className="type-serif text-3xl tracking-tight sm:text-4xl flex flex-wrap items-center gap-3">
                     {site.doctorName} 원장
@@ -133,20 +144,8 @@ export default function HomePage() {
                     </span>
                   </h2>
                   <div className="space-y-5 text-[15px] text-[color:var(--muted)] leading-[1.8]">
-                    <p>
-                      빠른 결론보다 충분한 관찰을 우선합니다.<br />
-                      증상만 보는 것이 아니라, 그 증상이 생긴 흐름을 함께 봅니다.
-                    </p>
-                    <p>
-                      한의학은 몸 안의 리듬을 읽는 작업입니다.<br />
-                      무너진 균형을 다시 세우고, 일상으로 돌아갈 힘을 회복시키는 것.<br />
-                      그것이 세봉이 집중하는 방향입니다.
-                    </p>
-                    <p>
-                      과장된 약속 대신, 환자가 스스로 이해할 수 있는 설명을 드립니다.<br />
-                      기록으로 남는 치료, 재발을 줄이는 관리 계획까지.<br />
-                      단순한 처방이 아니라, &ldquo;회복의 과정&rdquo;을 함께 설계합니다.
-                    </p>
+                    <p>현대의 첨단 과학적 검사와 초정밀 기계로도 규명하기 어려운 질환의 원인에 대해 MFT(Meridian Finger Test) 진단기법을 활용하여 체질 감별, 면역 상태, 경락 에너지 흐름의 상호 소통 관계를 종합적으로 분석합니다.</p>
+                    <p>겉으로 드러난 질환뿐 아니라, 보이지 않지만 상호 연관되어 인과적 영향을 미치는 기능적 이상과 난치성 질환에 대하여 보다 정확하고 근본적인 진료를 지향합니다.</p>
                   </div>
                 </div>
               </Reveal>
@@ -233,9 +232,9 @@ export default function HomePage() {
             <Reveal>
               <div className="space-y-3">
                 <div className="flat-chip">전문영역</div>
-                <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세 가지 집중 진료</h2>
-                <p className="max-w-2xl text-[color:var(--muted)] leading-relaxed">
-                  공진단 · 척추치료 · 총명탕. 자주 찾는 핵심 영역을 중심으로 상담과 치료를 설계합니다.
+                <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세봉한의원 임상 대표 사례</h2>
+                <p className="mt-2 max-w-2xl text-[color:var(--muted)]">
+                  금골격계 · 면역기능 · 여성질환 및 불임등 자주 찾는 핵심 영역을 중심으로 상담과 치료를 설계합니다.
                 </p>
               </div>
             </Reveal>
