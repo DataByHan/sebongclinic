@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { Notice } from '@/types/cloudflare'
 import { getCloudflareContext } from '@opennextjs/cloudflare'
-import { isSameOriginRequest, noStoreHeaders, sleep, timingSafeEqualString } from '@/lib/security'
+import { isSameOriginRequest, noStoreHeaders } from '@/lib/security'
 import { sanitizeNoticeHtml } from '@/lib/sanitize'
 import { marked } from 'marked'
 
@@ -96,7 +96,6 @@ export async function PUT(
       content?: unknown
       content_md?: unknown
       format?: unknown
-      password?: unknown
     }
     try {
       body = await request.json() as {
@@ -104,7 +103,6 @@ export async function PUT(
         content?: unknown
         content_md?: unknown
         format?: unknown
-        password?: unknown
       }
     } catch {
       const res = NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
@@ -117,7 +115,6 @@ export async function PUT(
     const contentTrimmed = content.trim()
     const contentMd = readBodyString(body.content_md)
     const contentMdTrimmed = contentMd.trim()
-    const password = readBodyString(body.password)
 
     const parsedFormat = parseNoticeFormat(body.format)
     if (!parsedFormat.ok) {
@@ -126,15 +123,6 @@ export async function PUT(
       return res
     }
     const format = parsedFormat.value
-
-    const { env } = getCloudflareContext()
-    const ok = await timingSafeEqualString(password ?? '', env.ADMIN_PASSWORD)
-    if (!ok) {
-      await sleep(250)
-      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      noStoreHeaders(res.headers)
-      return res
-    }
 
     if (!title) {
       const res = NextResponse.json({ error: 'Title is required' }, { status: 400 })
@@ -196,21 +184,11 @@ export async function DELETE(
     }
 
     const { id } = params
-    let body: { password: string }
+    let body: Record<string, unknown>
     try {
-      body = await request.json() as { password: string }
+      body = await request.json() as Record<string, unknown>
     } catch {
       const res = NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
-      noStoreHeaders(res.headers)
-      return res
-    }
-    const { password } = body
-
-    const { env } = getCloudflareContext()
-    const ok = await timingSafeEqualString(password ?? '', env.ADMIN_PASSWORD)
-    if (!ok) {
-      await sleep(250)
-      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       noStoreHeaders(res.headers)
       return res
     }

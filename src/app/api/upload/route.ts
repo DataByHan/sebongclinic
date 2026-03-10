@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCloudflareContext } from '@opennextjs/cloudflare'
-import { isSameOriginRequest, noStoreHeaders, randomHex, sleep, timingSafeEqualString } from '@/lib/security'
+import { isSameOriginRequest, noStoreHeaders, randomHex } from '@/lib/security'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
@@ -23,16 +23,6 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData()
     const file = formData.get('file') as File | null
-    const password = formData.get('password') as string | null
-
-    const { env } = getCloudflareContext()
-    const ok = await timingSafeEqualString(password ?? '', env.ADMIN_PASSWORD)
-    if (!ok) {
-      await sleep(250)
-      const res = NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      noStoreHeaders(res.headers)
-      return res
-    }
 
     if (!file) {
       const res = NextResponse.json({ error: 'No file provided' }, { status: 400 })
