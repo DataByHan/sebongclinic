@@ -58,17 +58,19 @@ export default function NoticesPage() {
          ) : (
            <div className="grid gap-4">
              {notices.map((notice) => (
-               <article key={notice.id} className="flat-card p-7">
-                 <div className="flex items-center justify-between gap-6">
-                   <div className="text-base font-semibold">{notice.title}</div>
-                   <div className="text-sm text-[color:var(--muted)]">
-                     {new Date(notice.created_at).toLocaleDateString('ko-KR')}
+                <article key={notice.id} className="flat-card p-7">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                    <div className="text-base font-semibold">{notice.title}</div>
+                    <div className="text-sm text-[color:var(--muted)] sm:shrink-0">
+                      {new Date(notice.created_at).toLocaleDateString('ko-KR')}
+                    </div>
+                  </div>
+                   <div className="overflow-x-auto">
+                     <div
+                       className="notice-content mt-4 text-sm leading-relaxed text-[color:var(--muted)]"
+                       dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
+                     />
                    </div>
-                 </div>
-                  <div
-                    className="notice-content mt-4 text-sm leading-relaxed text-[color:var(--muted)]"
-                    dangerouslySetInnerHTML={{ __html: sanitizeNoticeHtml(notice.content) }}
-                  />
                </article>
              ))}
            </div>

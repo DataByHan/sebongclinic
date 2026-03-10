@@ -75,22 +75,22 @@
 
   .prose img[data-notice-size="sm"],
   .toastui-editor-contents img[data-notice-size="sm"] {
-    width: 320px;
+    max-width: 320px;
   }
 
   .prose img[data-notice-size="md"],
   .toastui-editor-contents img[data-notice-size="md"] {
-    width: 480px;
+    max-width: 480px;
   }
 
   .prose img[data-notice-size="lg"],
   .toastui-editor-contents img[data-notice-size="lg"] {
-    width: 640px;
+    max-width: 640px;
   }
 
    .prose img[data-notice-size="full"],
    .toastui-editor-contents img[data-notice-size="full"] {
-     width: 100%;
+     max-width: 100%;
    }
 
    .notice-content {
@@ -167,7 +167,7 @@
    }
 
    .notice-content table {
-     @apply w-full border-collapse border border-[color:var(--line)];
+     @apply min-w-[600px] border-collapse border border-[color:var(--line)];
    }
 
    .notice-content th,
