@@ -124,15 +124,24 @@ export default function HomePage() {
               <Reveal>
                 <div className="space-y-6">
                   <div className="flat-chip">한의사 소개</div>
-                  <h2 className="type-serif text-3xl tracking-tight sm:text-4xl flex flex-wrap items-center gap-3">
-                    {site.doctorName} 원장
-                    <span 
-                      data-testid="doctor-credential-badge"
-                      className="inline-flex items-center rounded-full border border-[color:var(--jade)] bg-[color:var(--jade)]/5 px-3 py-1 text-sm font-normal text-[color:var(--jade)]"
-                    >
-                      한의학박사
-                    </span>
-                  </h2>
+                  
+                  <div className="flex items-center gap-4">
+                    <img 
+                      src="/img/원장님.png" 
+                      alt="김형규 원장" 
+                      className="h-20 w-20 rounded-full border-2 border-[color:var(--line)] object-cover shrink-0"
+                    />
+                    <h2 className="type-serif text-3xl tracking-tight sm:text-4xl flex flex-wrap items-center gap-3">
+                      {site.doctorName} 원장
+                      <span 
+                        data-testid="doctor-credential-badge"
+                        className="inline-flex items-center rounded-full border border-[color:var(--jade)] bg-[color:var(--jade)]/5 px-3 py-1 text-sm font-normal text-[color:var(--jade)]"
+                      >
+                        한의학박사
+                      </span>
+                    </h2>
+                  </div>
+                  
                   <div className="space-y-5 text-[15px] text-[color:var(--muted)] leading-[1.8]">
                     <p>현대의 첨단 과학적 검사와 초정밀 기계로도 규명하기 어려운 질환의 원인에 대해 MFT(Meridian Finger Test) 진단기법을 활용하여 체질 감별, 면역 상태, 경락 에너지 흐름의 상호 소통 관계를 종합적으로 분석합니다.</p>
                     <p>겉으로 드러난 질환뿐 아니라, 보이지 않지만 상호 연관되어 인과적 영향을 미치는 기능적 이상과 난치성 질환에 대하여 보다 정확하고 근본적인 진료를 지향합니다.</p>
