@@ -63,60 +63,86 @@
     @apply inline-flex items-center justify-center rounded-full border border-[color:var(--line)] bg-white px-5 py-3 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:bg-[color:var(--paper-2)];
   }
 
-  /* Notice image sizing - public pages (.prose) and admin editor preview */
-  .prose img,
-  .toastui-editor-contents img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .prose img[data-notice-size="sm"],
-  .toastui-editor-contents img[data-notice-size="sm"] {
-    max-width: 320px;
-  }
-
-  .prose img[data-notice-size="md"],
-  .toastui-editor-contents img[data-notice-size="md"] {
-    max-width: 480px;
-  }
-
-  .prose img[data-notice-size="lg"],
-  .toastui-editor-contents img[data-notice-size="lg"] {
-    max-width: 640px;
-  }
-
-   .prose img[data-notice-size="full"],
-   .toastui-editor-contents img[data-notice-size="full"] {
+   /* Notice image sizing - public pages (.prose) and admin editor preview */
+   .prose img,
+   .toastui-editor-contents img {
      max-width: 100%;
+     height: auto;
+     display: block;
+     margin-left: auto;
+     margin-right: auto;
    }
+
+   .prose img[data-notice-size="sm"],
+   .toastui-editor-contents img[data-notice-size="sm"] {
+     max-width: 320px;
+   }
+
+   .prose img[data-notice-size="md"],
+   .toastui-editor-contents img[data-notice-size="md"] {
+     max-width: 480px;
+   }
+
+   .prose img[data-notice-size="lg"],
+   .toastui-editor-contents img[data-notice-size="lg"] {
+     max-width: 640px;
+   }
+
+    .prose img[data-notice-size="full"],
+    .toastui-editor-contents img[data-notice-size="full"] {
+      max-width: 100%;
+    }
+
+    /* Force all notice images to fit container on mobile */
+    .notice-content img {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      display: block;
+    }
 
    .notice-content {
      @apply space-y-4;
+     overflow-wrap: break-word;
+     word-break: break-word;
+     max-width: 100%;
    }
 
    .notice-content h1 {
      @apply text-2xl font-bold text-[color:var(--ink)] mt-6 mb-3;
+     max-width: 100%;
+     overflow-wrap: break-word;
+     word-break: break-word;
    }
 
    .notice-content h2 {
      @apply text-xl font-bold text-[color:var(--ink)] mt-5 mb-2;
+     max-width: 100%;
+     overflow-wrap: break-word;
+     word-break: break-word;
    }
 
    .notice-content h3 {
      @apply text-lg font-bold text-[color:var(--ink)] mt-4 mb-2;
+     max-width: 100%;
+     overflow-wrap: break-word;
+     word-break: break-word;
    }
 
    .notice-content h4,
    .notice-content h5,
    .notice-content h6 {
      @apply font-bold text-[color:var(--ink)] mt-3 mb-2;
+     max-width: 100%;
+     overflow-wrap: break-word;
+     word-break: break-word;
    }
 
    .notice-content p {
      @apply text-[color:var(--ink)] leading-relaxed;
+     max-width: 100%;
+     overflow-wrap: break-word;
+     word-break: break-word;
    }
 
    .notice-content ul,
@@ -126,6 +152,9 @@
 
    .notice-content li {
      @apply text-[color:var(--ink)];
+     max-width: 100%;
+     overflow-wrap: break-word;
+     word-break: break-word;
    }
 
    .notice-content ul li {
@@ -167,12 +196,15 @@
    }
 
    .notice-content table {
-     @apply min-w-[600px] border-collapse border border-[color:var(--line)];
+     @apply w-full border-collapse border border-[color:var(--line)];
    }
 
    .notice-content th,
    .notice-content td {
      @apply border border-[color:var(--line)] px-3 py-2 text-left;
+     max-width: 100%;
+     overflow-wrap: break-word;
+     word-break: break-word;
    }
 
    .notice-content th {
