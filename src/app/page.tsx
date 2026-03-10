@@ -32,7 +32,7 @@ export default function HomePage() {
         <div className="frame flex items-center justify-between py-4">
           <a href="#top" className="inline-flex items-center gap-2">
             <img src="/img/Icon_Noround.png" alt="" className="h-6 w-6" />
-            <span className="type-serif text-lg tracking-tight">{site.name}</span>
+            <span className="type-serif text-lg tracking-tight self-center">{site.name}</span>
             <span className="text-xs text-[color:var(--muted)]">Korean Medicine Clinic</span>
           </a>
           <nav className="hidden md:flex items-center gap-6 text-sm text-[color:var(--muted)]">
