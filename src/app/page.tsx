@@ -122,17 +122,7 @@ export default function HomePage() {
           <div className="frame">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
               <Reveal>
-                <div 
-                  className="space-y-6 rounded-2xl p-8 md:p-10"
-                  style={{
-                    backgroundImage: 'url(\'/img/원장님.png\')',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundColor: 'rgba(246, 245, 241, 0.95)',
-                    backgroundBlendMode: 'overlay',
-                    backdropFilter: 'blur(2px)',
-                  }}
-                >
+                <div className="space-y-6">
                   <div className="flat-chip">한의사 소개</div>
                   <h2 className="type-serif text-3xl tracking-tight sm:text-4xl flex flex-wrap items-center gap-3">
                     {site.doctorName} 원장
@@ -155,6 +145,11 @@ export default function HomePage() {
                   data-testid="doctor-profile-card"
                   className="flat-card bg-[color:var(--paper-2)] p-7 sm:p-9"
                 >
+                  <img 
+                    src="/img/원장님.png" 
+                    alt="김형규 원장" 
+                    className="w-full rounded-lg mb-6 border border-[color:var(--line)]"
+                  />
                   <div className="text-xs tracking-[0.18em] text-[color:var(--muted)]">Doctor&apos;s Profile</div>
                   
                   <div className="mt-6 space-y-4">
@@ -234,7 +229,7 @@ export default function HomePage() {
                 <div className="flat-chip">전문영역</div>
                 <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">세봉한의원 임상 대표 사례</h2>
                 <p className="mt-2 max-w-2xl text-[color:var(--muted)]">
-                  금골격계 · 면역기능 · 여성질환 및 불임등 자주 찾는 핵심 영역을 중심으로 상담과 치료를 설계합니다.
+                  근골격계 · 면역기능 · 여성질환 및 불임등 자주 찾는 핵심 영역을 중심으로 상담과 치료를 설계합니다.
                 </p>
               </div>
             </Reveal>
