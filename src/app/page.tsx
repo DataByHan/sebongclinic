@@ -125,21 +125,23 @@ export default function HomePage() {
                 <div className="space-y-6">
                   <div className="flat-chip">한의사 소개</div>
                   
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-center gap-4">
                     <img 
                       src="/img/원장님.png" 
                       alt="김형규 원장" 
-                      className="h-28 w-28 rounded-full border-2 border-[color:var(--line)] object-cover shrink-0"
+                      className="h-36 w-36 rounded-full border-2 border-[color:var(--line)] object-cover shrink-0"
                     />
-                    <h2 className="type-serif text-3xl tracking-tight sm:text-4xl flex flex-wrap items-center gap-3">
-                      {site.doctorName} 원장
+                    <div className="flex flex-col justify-center gap-2 h-36">
+                      <h2 className="type-serif text-3xl tracking-tight sm:text-4xl">
+                        {site.doctorName} 원장
+                      </h2>
                       <span 
                         data-testid="doctor-credential-badge"
-                        className="inline-flex items-center rounded-full border border-[color:var(--jade)] bg-[color:var(--jade)]/5 px-3 py-1 text-sm font-normal text-[color:var(--jade)]"
+                        className="inline-flex items-center rounded-full border border-[color:var(--jade)] bg-[color:var(--jade)]/5 px-3 py-1 text-sm font-normal text-[color:var(--jade)] w-fit"
                       >
                         한의학박사
                       </span>
-                    </h2>
+                    </div>
                   </div>
                   
                   <div className="space-y-5 text-[15px] text-[color:var(--muted)] leading-[1.8]">
