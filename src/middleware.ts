@@ -10,11 +10,12 @@ function buildCsp(): string {
     "object-src 'none'",
     "frame-ancestors 'none'",
     "form-action 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://dapi.kakao.com https://t1.daumcdn.net https://static.cloudflareinsights.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://dapi.kakao.com https://t1.daumcdn.net https://static.cloudflareinsights.com https://www.googletagmanager.com",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https:",
+    "img-src 'self' data: blob: https: https://www.google-analytics.com",
     "font-src 'self' data:",
-    "connect-src 'self' https://dapi.kakao.com https://t1.daumcdn.net https://cloudflareinsights.com",
+    "connect-src 'self' https://dapi.kakao.com https://t1.daumcdn.net https://cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com",
+    "frame-src 'self' https://www.googletagmanager.com",
     'upgrade-insecure-requests',
   ].join('; ')
 }
